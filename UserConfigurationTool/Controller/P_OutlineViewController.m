@@ -158,7 +158,7 @@
     if ([identifier isEqualToString:PlistColumnIdentifier.Key])
     {
         NSTextFieldCell *textCell =(NSTextFieldCell *)cell;
-        [textCell setStringValue:p.name];
+        [textCell setStringValue:p.key];
     }
     if ([identifier isEqualToString:PlistColumnIdentifier.Type])
     {

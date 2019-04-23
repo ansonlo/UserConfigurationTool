@@ -14,29 +14,60 @@
 @property (nonatomic, assign) int level;
 @property (nonatomic, strong) NSMutableArray <P_Data *>*m_childDatas;
 
+#pragma mark - extern
+/** 展开状态 */
+@property (nonatomic, assign) BOOL expandState;
+
+/** 可编辑key */
+@property (nonatomic, assign) BOOL editableKey;
+/** 可编辑type */
+@property (nonatomic, assign) BOOL editableType;
+/** 可编辑value */
+@property (nonatomic, assign) BOOL editableValue;
+
 @end
 
 @implementation P_Data
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        
+        _expandState = NO;
+        
+        _editableKey = YES;
+        _editableType = YES;
+        _editableValue = YES;
+    }
+    return self;
+}
 
 + (instancetype)rootWithPlistUrl:(NSURL *)plistUrl
 {
     NSDictionary *PlistDictionary = [NSDictionary dictionaryWithContentsOfURL:plistUrl];
     NSArray *PlistArray = [NSArray arrayWithContentsOfURL:plistUrl];
     if (PlistDictionary) {
-        return [[[self class] alloc] initWithPlistName:@"Root" value:PlistDictionary];
+        P_Data *p = [[[self class] alloc] initWithPlistKey:@"Root" value:PlistDictionary];
+        p.expandState = YES;
+        p.editableKey = NO;
+        return p;
     } else if (PlistArray) {
-        return [[[self class] alloc] initWithPlistName:@"Root" value:PlistArray];
+        P_Data *p = [[[self class] alloc] initWithPlistKey:@"Root" value:PlistArray];
+        p.expandState = YES;
+        p.editableKey = NO;
+        return p;
     } else {
         NSLog(@"The plistUrl is not a plist file url.");
     }
     return nil;
 }
 
-- (instancetype)initWithPlistName:(NSString *)name value:(id)value
+- (instancetype)initWithPlistKey:(NSString *)key value:(id)value
 {
-    self = [super init];
+    self = [self init];
     if (self) {
-        _name = name;
+        _key = key;
         _value = value;
         if ([value isKindOfClass:[NSDictionary class]]) {
             _type = Plist.Dictionary;
@@ -70,7 +101,7 @@
         NSDictionary *plistData = (NSDictionary *)contents;
         for (NSString *key in plistData) {
             id value = plistData[key];
-            P_Data *p = [[[self class] alloc] initWithPlistName:key value:value];
+            P_Data *p = [[[self class] alloc] initWithPlistKey:key value:value];
             if (p) {
                 p.level = self.level+1;
                 [childDatas addObject:p];
@@ -82,7 +113,7 @@
         for (NSInteger i=0; i<plistData.count; i++) {
             NSString *key = [NSString stringWithFormat:@"Item %lu", (unsigned long)i];
             id value = plistData[i];
-            P_Data *p = [[[self class] alloc] initWithPlistName:key value:value];
+            P_Data *p = [[[self class] alloc] initWithPlistKey:key value:value];
             if (p) {
                 p.level = self.level+1;
                 [childDatas addObject:p];
@@ -141,6 +172,12 @@
     return _m_childDatas;
 }
 
+- (BOOL)editableValue
+{
+    /** 非展开类型才能编辑值 */
+    return _editableValue && !self.isExpandable;
+}
+
 #pragma mark - conver to plist
 
 - (id)plist
@@ -149,7 +186,7 @@
     if (self.type == Plist.Dictionary) {
         NSMutableDictionary *tmpPlist = [NSMutableDictionary dictionary];
         for (P_Data *p in self.childDatas) {
-            [tmpPlist setObject:p.plist forKey:p.name];
+            [tmpPlist setObject:p.plist forKey:p.key];
         }
         plist = tmpPlist;
     } else if (self.type == Plist.Array) {

@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface P_Data : NSObject
 
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *key;
 @property (nonatomic, strong) NSString *type;
 @property (nonatomic, strong) id value;
 @property (nonatomic, readonly) NSString *valueDesc;

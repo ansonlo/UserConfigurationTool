@@ -32,6 +32,7 @@
 		C714397B226D681D008D15C6 /* P_Data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_Data.h; sourceTree = "<group>"; };
 		C714397C226D681D008D15C6 /* P_Data.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_Data.m; sourceTree = "<group>"; };
 		C714397F226D6966008D15C6 /* P_TypeHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_TypeHeader.h; sourceTree = "<group>"; };
+		C71439A2226EB4D0008D15C6 /* P_Data+P_Exten.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "P_Data+P_Exten.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +95,7 @@
 			children = (
 				C714397B226D681D008D15C6 /* P_Data.h */,
 				C714397C226D681D008D15C6 /* P_Data.m */,
+				C71439A2226EB4D0008D15C6 /* P_Data+P_Exten.h */,
 			);
 			path = Model;
 			sourceTree = "<group>";
