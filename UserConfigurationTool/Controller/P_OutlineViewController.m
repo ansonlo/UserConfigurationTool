@@ -247,7 +247,7 @@
     
     if(column == 0)
     {
-        if([self _containsChildrenWithKey:value excludingData:item] == NO)
+        if([item containsChildrenWithKey:value] == NO)
         {
             [self _updateKey:value ofItem:item withView:NO];
         }
@@ -357,11 +357,6 @@
         NSLog(@"不匹配这种类型:%@", type);
     }
     return n_value;
-}
-
-- (BOOL)_containsChildrenWithKey:(NSString*)key excludingData:(P_Data *)excludedData
-{
-    return [[excludedData.parentData childDatas] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@ && self != %@", key, excludedData]].count > 0;
 }
 
 - (id)_fixedValue:(id)value ofType:(P_PlistTypeName)type

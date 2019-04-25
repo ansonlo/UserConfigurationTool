@@ -60,7 +60,6 @@
 		C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+P_Animation.m"; sourceTree = "<group>"; };
 		C7BD99BC226FF96900CA3351 /* P_PropertyListBasicCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListBasicCellView.h; sourceTree = "<group>"; };
 		C7BD99BD226FF96900CA3351 /* P_PropertyListBasicCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_PropertyListBasicCellView.m; sourceTree = "<group>"; };
-		C7BD99BF227150D800CA3351 /* P_Data+P_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "P_Data+P_Private.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,7 +125,6 @@
 				C714397B226D681D008D15C6 /* P_Data.h */,
 				C714397C226D681D008D15C6 /* P_Data.m */,
 				C71439A2226EB4D0008D15C6 /* P_Data+P_Exten.h */,
-				C7BD99BF227150D800CA3351 /* P_Data+P_Private.h */,
 			);
 			path = Model;
 			sourceTree = "<group>";

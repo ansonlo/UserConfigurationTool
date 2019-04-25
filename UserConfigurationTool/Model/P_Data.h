@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface P_Data : NSObject
+@interface P_Data : NSObject <NSCopying>
 
 @property (nonatomic, strong) NSString *key;
 @property (nonatomic, strong) P_PlistTypeName type;
@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)insertChildData:(P_Data *)data atIndex:(NSUInteger)idx;
 - (void)removeChildDataAtIndex:(NSUInteger)idx;
 
+/** key是否在同级中有相同的 */
+- (BOOL)containsChildrenWithKey:(NSString*)key;
 @end
 
 NS_ASSUME_NONNULL_END
