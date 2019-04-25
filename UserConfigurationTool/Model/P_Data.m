@@ -217,6 +217,11 @@
     p.parentData = nil;
 }
 
+- (BOOL)containsChildrenWithKey:(NSString*)key
+{
+    return [self.parentData.m_childDatas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@ && self != %@", key, self]].count > 0;
+}
+
 #pragma mark - conver to plist
 
 - (id)plist
@@ -238,6 +243,28 @@
         plist = self.value;
     }
     return plist;
+}
+
+#pragma mark - NSCopying
+- (id)copyWithZone:(nullable NSZone *)zone
+{
+    P_Data *p = [[[self class] allocWithZone:zone] init];
+    // basic
+    p.key = self.key;
+    p.type = self.type;
+    p.value = self.value;
+    // exten
+    p.editable = self.editable;
+    p.operation = self.operation;
+    // child
+    P_Data *c_subData = nil;
+    for (P_Data *subData in _m_childDatas) {
+        c_subData = [subData copy];
+        [p.m_childDatas addObject:c_subData];
+        c_subData.parentData = p;
+    }
+    
+    return p;
 }
 
 @end
