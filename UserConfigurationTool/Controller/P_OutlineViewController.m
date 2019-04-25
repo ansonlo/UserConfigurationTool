@@ -10,7 +10,6 @@
 #import "P_TypeHeader.h"
 #import "P_Data.h"
 #import "P_Data+P_Exten.h"
-#import "P_Data+P_Private.h"
 
 #import "NSView+P_Animation.h"
 
