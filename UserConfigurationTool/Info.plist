@@ -28,5 +28,18 @@
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>aaa</key>
+	<date>2019-04-24T03:14:35Z</date>
+	<key>bb</key>
+	<true/>
+	<key>nnn</key>
+	<integer>122131</integer>
+	<key>ccc</key>
+	<dict>
+		<key>hhh</key>
+		<array>
+			<date>2019-04-24T06:50:53Z</date>
+		</array>
+	</dict>
 </dict>
 </plist>

@@ -9,33 +9,73 @@
 #ifndef P_TypeHeader_h
 #define P_TypeHeader_h
 
+#import <Cocoa/Cocoa.h>
+
+typedef NSString *P_PlistColumnIdentifierName NS_EXTENSIBLE_STRING_ENUM;
+
 struct PlistColumnIdentifierType {
-    NSString *Key;
-    NSString *Type;
-    NSString *Value;
+    P_PlistColumnIdentifierName Key;
+    P_PlistColumnIdentifierName Type;
+    P_PlistColumnIdentifierName Value;
 };
 
+typedef NSString *P_PlistTypeName NS_EXTENSIBLE_STRING_ENUM;
 
 struct PlistType {
-    NSString *Dictionary;
-    NSString *Array;
+    P_PlistTypeName Dictionary;
+    P_PlistTypeName Array;
     
-    NSString *Boolean;
+    P_PlistTypeName Boolean;
     
-    NSString *String;
-    NSString *Number;
-    NSString *Date;
-    NSString *Data;
+    P_PlistTypeName String;
+    P_PlistTypeName Number;
+    P_PlistTypeName Date;
+    P_PlistTypeName Data;
 };
 
+typedef NSString *P_PlistBooleanName NS_EXTENSIBLE_STRING_ENUM;
+
 struct PlistBooleanType {
+    P_PlistBooleanName Y;
+    P_PlistBooleanName N;
+};
+
+typedef NSString *P_PlistCellName NS_EXTENSIBLE_STRING_ENUM;
+
+struct PlistCellType {
     
-    NSString *Y;
-    NSString *N;
+    P_PlistCellName KeyCell;
+    P_PlistCellName TypeCell;
+    P_PlistCellName ValueCell;
+    P_PlistCellName ValueBoolCell;
+    P_PlistCellName ValueDateCell;
 };
 
 static struct PlistColumnIdentifierType PlistColumnIdentifier = {@"Key", @"Type", @"Value"};
 static struct PlistType Plist = {@"Dictionary", @"Array", @"Boolean", @"String", @"Number", @"Date", @"Data"};
 static struct PlistBooleanType PlistBoolean = {@"YES", @"NO"};
+static struct PlistCellType PlistCell = {@"P_KeyCell", @"P_TypeCell", @"P_ValueCell", @"P_ValueBoolCell", @"P_ValueDateCell"};
+
+typedef NS_ENUM(NSUInteger, P_Data_EditableType) {
+    /** 可编辑key */
+    P_Data_Editable_Key = 1 << 0,
+    /** 可编辑type */
+    P_Data_Editable_Type = 1 << 1,
+    /** 可编辑value */
+    P_Data_Editable_Value = 1 << 2,
+    /** 可编辑所有 */
+    P_Data_Editable_All = ~0UL,
+};
+
+typedef NS_ENUM(NSUInteger, P_Data_OperationType) {
+    /** 可新增行 */
+    P_Data_Operation_Insert = 1 << 0,
+    /** 可删除行 */
+    P_Data_Operation_Delete = 1 << 1,
+    /** 可移动行 */
+    P_Data_Operation_Move = 1 << 2,
+    /** 可编辑所有 */
+    P_Data_Operation_All = ~0UL,
+};
 
 #endif /* P_TypeHeader_h */

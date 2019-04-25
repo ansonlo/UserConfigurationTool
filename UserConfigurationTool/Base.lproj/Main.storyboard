@@ -799,11 +799,11 @@
                             </customView>
                             <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gz0-Cc-DAE">
                                 <rect key="frame" x="0.0" y="0.0" width="720" height="436"/>
-                                <clipView key="contentView" copiesOnScroll="NO" id="JNl-bk-FaF">
+                                <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="JNl-bk-FaF">
                                     <rect key="frame" x="0.0" y="0.0" width="720" height="436"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" headerView="JEg-JM-MTD" indentationPerLevel="16" outlineTableColumn="23s-c7-gay" id="kM5-ov-lof">
+                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="JEg-JM-MTD" viewBased="YES" indentationPerLevel="16" outlineTableColumn="23s-c7-gay" id="kM5-ov-lof" customClass="P_PropertyListOutlineView">
                                             <rect key="frame" x="0.0" y="0.0" width="720" height="411"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -811,8 +811,8 @@
                                             <tableViewGridLines key="gridStyleMask" vertical="YES" dashed="YES"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="Key" editable="NO" width="240" minWidth="40" maxWidth="1000" id="23s-c7-gay">
-                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Key">
+                                                <tableColumn identifier="Key" width="240" minWidth="40" maxWidth="1000" id="23s-c7-gay">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Key">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -822,10 +822,73 @@
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
+                                                    <sortDescriptor key="sortDescriptorPrototype" selector="localizedCaseInsensitiveCompare:" sortKey="key"/>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                    <prototypeCellViews>
+                                                        <tableCellView identifier="P_KeyCell" id="Uum-ob-r42" customClass="P_PropertyList2ButtonCellView">
+                                                            <rect key="frame" x="1" y="1" width="240" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3ty-OT-mPX">
+                                                                    <rect key="frame" x="227" y="3" width="11" height="11"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="11" id="aRr-hR-fQj"/>
+                                                                        <constraint firstAttribute="height" constant="11" id="tGh-Ed-rUz"/>
+                                                                    </constraints>
+                                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="minus" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="UpA-ob-kUA">
+                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="p_minusAction:" target="Uum-ob-r42" id="ysq-1l-J9j"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hjt-pY-XuY">
+                                                                    <rect key="frame" x="214" y="3" width="11" height="11"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="11" id="CrO-vw-Ncy"/>
+                                                                        <constraint firstAttribute="height" constant="11" id="XnK-az-3vV"/>
+                                                                    </constraints>
+                                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="plus" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="hlP-Ce-qKq">
+                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="p_plusAction:" target="Uum-ob-r42" id="Anq-Vf-4ez"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="fo4-Ve-Klr" userLabel="Key Title">
+                                                                    <rect key="frame" x="4" y="2" width="208" height="14"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" title="Key" usesSingleLineMode="YES" id="PJx-Bq-GCH">
+                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                    <connections>
+                                                                        <outlet property="delegate" destination="Uum-ob-r42" id="E9S-hh-NzN"/>
+                                                                    </connections>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="fo4-Ve-Klr" firstAttribute="centerY" secondItem="Uum-ob-r42" secondAttribute="centerY" id="8ev-sc-fMt"/>
+                                                                <constraint firstItem="fo4-Ve-Klr" firstAttribute="leading" secondItem="Uum-ob-r42" secondAttribute="leading" constant="6" id="Cmx-DZ-MPJ"/>
+                                                                <constraint firstItem="hjt-pY-XuY" firstAttribute="leading" secondItem="fo4-Ve-Klr" secondAttribute="trailing" constant="4" id="JHL-yU-4Q0"/>
+                                                                <constraint firstItem="hjt-pY-XuY" firstAttribute="centerY" secondItem="3ty-OT-mPX" secondAttribute="centerY" id="JzB-fF-wt6"/>
+                                                                <constraint firstAttribute="trailing" secondItem="3ty-OT-mPX" secondAttribute="trailing" constant="2" id="YAw-8V-4U6"/>
+                                                                <constraint firstAttribute="trailing" secondItem="fo4-Ve-Klr" secondAttribute="trailing" priority="999" constant="2" id="Zqw-cA-sAO"/>
+                                                                <constraint firstItem="3ty-OT-mPX" firstAttribute="centerY" secondItem="Uum-ob-r42" secondAttribute="centerY" id="oT9-G7-fJO"/>
+                                                                <constraint firstItem="3ty-OT-mPX" firstAttribute="leading" secondItem="hjt-pY-XuY" secondAttribute="trailing" constant="2" id="yE1-yR-XSc"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="minusButton" destination="3ty-OT-mPX" id="8kS-lX-HTY"/>
+                                                                <outlet property="plusButton" destination="hjt-pY-XuY" id="rYu-1S-Ohv"/>
+                                                                <outlet property="textField" destination="fo4-Ve-Klr" id="f1b-oK-sn9"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                    </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="Type" editable="NO" width="100" minWidth="40" maxWidth="1000" id="Fl6-I2-J4P">
-                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Type">
+                                                <tableColumn identifier="Type" width="100" minWidth="40" maxWidth="1000" id="Fl6-I2-J4P">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Type">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -835,10 +898,78 @@
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
+                                                    <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="type"/>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                    <prototypeCellViews>
+                                                        <tableCellView identifier="P_TypeCell" id="3Z7-No-DHz" customClass="P_PropertyListPopUpButtonCellView">
+                                                            <rect key="frame" x="244" y="1" width="100" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="NZO-uY-h39" userLabel="Type Button">
+                                                                    <rect key="frame" x="-8" y="0.0" width="108" height="18"/>
+                                                                    <popUpButtonCell key="cell" type="bevel" title="Array" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" arrowPosition="noArrow" selectedItem="7Ob-pV-Xsn" id="JB1-PY-Vx9" customClass="P_PropertyListPopUpButtonCell">
+                                                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <menu key="menu" id="yG9-DR-e3C">
+                                                                            <items>
+                                                                                <menuItem title="Array" state="on" id="7Ob-pV-Xsn">
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="3Z7-No-DHz" id="gDZ-DS-xI5"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                                <menuItem title="Dictionary" id="tS9-0k-AzT">
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="3Z7-No-DHz" id="WfB-vF-2oN"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                                <menuItem isSeparatorItem="YES" id="oDc-nh-h2Y"/>
+                                                                                <menuItem title="Boolean" id="hTU-m1-Xia">
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="3Z7-No-DHz" id="F7o-9q-Kjf"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                                <menuItem title="Data" id="LfJ-nV-UH3">
+                                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="3Z7-No-DHz" id="xaU-cD-IfW"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                                <menuItem title="Date" id="vSy-fT-g1M">
+                                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="3Z7-No-DHz" id="qTp-Ol-GLY"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                                <menuItem title="Number" id="mT1-gW-X3y">
+                                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="3Z7-No-DHz" id="PIx-mb-MTg"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                                <menuItem title="String" id="jTu-0r-4d7">
+                                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="3Z7-No-DHz" id="uOi-tT-ZzL"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                            </items>
+                                                                        </menu>
+                                                                    </popUpButtonCell>
+                                                                </popUpButton>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstAttribute="trailing" secondItem="NZO-uY-h39" secondAttribute="trailing" id="7ut-tk-KwU"/>
+                                                                <constraint firstItem="NZO-uY-h39" firstAttribute="centerY" secondItem="3Z7-No-DHz" secondAttribute="centerY" id="CvW-aH-jhq"/>
+                                                                <constraint firstItem="NZO-uY-h39" firstAttribute="leading" secondItem="3Z7-No-DHz" secondAttribute="leading" constant="-8" id="jhP-8u-ytT"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="typeButton" destination="NZO-uY-h39" id="M0F-pl-SvC"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                    </prototypeCellViews>
                                                 </tableColumn>
                                                 <tableColumn identifier="Value" width="371" minWidth="10" maxWidth="3.4028234663852886e+38" id="H8m-KI-cQR">
-                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Value">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Value">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -849,6 +980,87 @@
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                    <prototypeCellViews>
+                                                        <tableCellView identifier="P_ValueCell" id="lkU-Zo-Cxp" customClass="P_PropertyListBasicCellView">
+                                                            <rect key="frame" x="347" y="1" width="371" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="q6w-JX-BqY" userLabel="Value Title">
+                                                                    <rect key="frame" x="0.0" y="2" width="371" height="14"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" title="Value" id="bGX-Cx-lNA">
+                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                    <connections>
+                                                                        <outlet property="delegate" destination="lkU-Zo-Cxp" id="PaM-Ji-w82"/>
+                                                                    </connections>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="q6w-JX-BqY" firstAttribute="leading" secondItem="lkU-Zo-Cxp" secondAttribute="leading" constant="2" id="0jS-I0-m2K"/>
+                                                                <constraint firstAttribute="trailing" secondItem="q6w-JX-BqY" secondAttribute="trailing" constant="2" id="tdr-Tj-o3n"/>
+                                                                <constraint firstItem="q6w-JX-BqY" firstAttribute="centerY" secondItem="lkU-Zo-Cxp" secondAttribute="centerY" id="wm7-0s-jr0"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="textField" destination="q6w-JX-BqY" id="wHq-S7-QFC"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                        <tableCellView identifier="P_ValueBoolCell" id="hCu-tD-J1u" customClass="P_PropertyListPopUpButtonCellView">
+                                                            <rect key="frame" x="347" y="20" width="371" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="SMu-y4-COc" userLabel="Type Button">
+                                                                    <rect key="frame" x="-8" y="0.0" width="379" height="18"/>
+                                                                    <popUpButtonCell key="cell" type="bevel" title="NO" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" selectedItem="gUz-lc-6ee" id="Yr5-kY-sbC" customClass="P_PropertyListPopUpButtonCell">
+                                                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <menu key="menu" id="Uc0-P4-rsO">
+                                                                            <items>
+                                                                                <menuItem title="NO" state="on" id="gUz-lc-6ee">
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="hCu-tD-J1u" id="USS-eV-liO"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                                <menuItem title="YES" id="8PZ-2K-Hql">
+                                                                                    <connections>
+                                                                                        <action selector="p_menuDidSelecter:" target="hCu-tD-J1u" id="p2b-WV-aUc"/>
+                                                                                    </connections>
+                                                                                </menuItem>
+                                                                            </items>
+                                                                        </menu>
+                                                                    </popUpButtonCell>
+                                                                </popUpButton>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="SMu-y4-COc" firstAttribute="centerY" secondItem="hCu-tD-J1u" secondAttribute="centerY" id="9iy-tB-GB8"/>
+                                                                <constraint firstItem="SMu-y4-COc" firstAttribute="leading" secondItem="hCu-tD-J1u" secondAttribute="leading" constant="-8" id="UvV-Pu-phF"/>
+                                                                <constraint firstAttribute="trailing" secondItem="SMu-y4-COc" secondAttribute="trailing" id="tGk-Jk-mCZ"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="typeButton" destination="SMu-y4-COc" id="hkt-J3-24T"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                        <tableCellView identifier="P_ValueDateCell" id="LJh-B1-fvH" customClass="P_PropertyListDatePickerCellView">
+                                                            <rect key="frame" x="347" y="39" width="371" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <customView placeholderIntrinsicWidth="279" placeholderIntrinsicHeight="17" translatesAutoresizingMaskIntoConstraints="NO" id="LDV-wA-aya" customClass="P_PropertyListDatePicker">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="279" height="17"/>
+                                                                    <connections>
+                                                                        <action selector="p_dateChanged:" target="LJh-B1-fvH" id="PLx-JR-Lyy"/>
+                                                                    </connections>
+                                                                </customView>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="LDV-wA-aya" firstAttribute="centerY" secondItem="LJh-B1-fvH" secondAttribute="centerY" id="BJd-WM-Laq"/>
+                                                                <constraint firstItem="LDV-wA-aya" firstAttribute="leading" secondItem="LJh-B1-fvH" secondAttribute="leading" id="mxI-nu-ONv"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="datePicker" destination="LDV-wA-aya" id="g2n-Lm-Tjc"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                    </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
@@ -896,6 +1108,8 @@
         <image name="add" width="32" height="32"/>
         <image name="chongzhi" width="32" height="32"/>
         <image name="dakai" width="32" height="28"/>
+        <image name="minus" width="11" height="11"/>
+        <image name="plus" width="11" height="11"/>
         <image name="remove" width="32" height="32"/>
         <image name="shengcheng" width="32" height="32"/>
     </resources>

@@ -9,10 +9,27 @@
 #import "P_OutlineViewController.h"
 #import "P_TypeHeader.h"
 #import "P_Data.h"
+#import "P_Data+P_Exten.h"
+#import "P_Data+P_Private.h"
 
-@interface P_OutlineViewController ()
+#import "NSView+P_Animation.h"
 
-@property (nonatomic, strong) NSTreeNode *rootTreeNode;
+#import "P_PropertyListRowView.h"
+#import "P_PropertyListBasicCellView.h"
+
+#import "P_PropertyList2ButtonCellView.h"
+#import "P_PropertyListPopUpButtonCellView.h"
+#import "P_PropertyListDatePickerCellView.h"
+
+@interface P_OutlineViewController () <P_PropertyListCellViewDelegate>
+{
+    NSUndoManager* _undoManager;
+}
+
+@property (nonatomic, strong) P_Data *root;
+
+@property (nonatomic, strong) NSArray *designatedList;
+
 
 @end
 
@@ -22,7 +39,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    
+    _undoManager = [NSUndoManager new];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -36,24 +53,19 @@
 {
     P_Data *p = [P_Data rootWithPlistUrl:plistUrl];
     if (p) {
-        _rootTreeNode = [NSTreeNode treeNodeWithRepresentedObject:nil];
-        [[_rootTreeNode mutableChildNodes] addObject:[self doTreeNodeFromData:p]];
+        _root = p;
         
         [self.outlineView setIndentationMarkerFollowsCell:YES];
 //        [self.outlineView setIgnoresMultiClick:YES];
-        [self.outlineView expandItem:_rootTreeNode expandChildren:YES];
         [self.outlineView reloadData];
-        if (_rootTreeNode.mutableChildNodes.count) {
-            //设置子项的展开
-            [self.outlineView isExpandable:[_rootTreeNode.mutableChildNodes objectAtIndex:0]];
-            [self.outlineView expandItem:[_rootTreeNode.mutableChildNodes objectAtIndex:0] expandChildren:NO];
-        }
+        //设置子项的展开
+        [self.outlineView expandItem:_root expandChildren:NO];
     }
 }
 
 - (void)__savePlistData:(NSURL *)plistUrl
 {
-    P_Data *root = _rootTreeNode.childNodes.firstObject.representedObject;
+    P_Data *root = self.root;
     
     id plist = root.plist;
     if ([plist isKindOfClass:[NSDictionary class]]) {
@@ -75,39 +87,16 @@
     }
 }
 
-#pragma mark - create tree data source
-- (NSTreeNode *)doTreeNodeFromData:(P_Data *) data
-{
-    NSArray <P_Data *>*children = data.childDatas;
-    // The image for the nodeData is lazily filled in, for performance.
-    // Create a NSTreeNode to wrap our model object. It will hold a cache of things such as the children.
-    NSTreeNode *result = [NSTreeNode treeNodeWithRepresentedObject:data];
-    // Walk the dictionary and create NSTreeNodes for each child.
-    for (P_Data * item in children) {
-        // A particular item can be another dictionary (ie: a container for more children), or a simple string
-        NSTreeNode *childTreeNode;
-        //if ([item isKindOfClass:[OutlineViewData class]])
-        if (item.hasChild)
-        {
-            // Recursively create the child tree node and add it as a child of this tree node
-            childTreeNode = [self doTreeNodeFromData:item];
-        } else {
-            // It is a regular leaf item with just the name
-            childTreeNode = [NSTreeNode treeNodeWithRepresentedObject:item];
-            // [childNodeData release];
-        }
-        // Now add the child to this parent tree node
-        [[result mutableChildNodes] addObject:childTreeNode];
-    }
-    return result;
-}
-
 // The NSOutlineView uses 'nil' to indicate the root item. We return our root tree node for that case.
 - (NSArray *)childrenForItem:(id)item {
     if (item == nil) {
-        return [_rootTreeNode childNodes];
+        if (_root) {
+            return @[_root];
+        } else {
+            return @[];
+        }
     } else {
-        return [item childNodes];
+        return [item childDatas];
     }
 }
 
@@ -128,7 +117,7 @@
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
     // 'item' will always be non-nil. It is an NSTreeNode, since those are always the objects we give NSOutlineView. We access our model object from it.
-    P_Data *p = [item representedObject];
+    P_Data *p = item;
     // We can expand items if the model tells us it is a container
     return p.isExpandable;
 }
@@ -140,36 +129,347 @@
     return nil;
 }
 
-// To get the "group row" look, we implement this method.
-- (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
+#pragma mark - NSOutlineViewDelegate
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldExpandItem:(id)item
 {
-    return NO;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldExpandItem:(id)item {
     // Query our model for the answer to this question
-    return YES;
+    P_Data *p = item;
+    // We can expand items if the model tells us it is a container
+    return p.isExpandable;
 }
 
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(NSCell *)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    P_Data *p = [item representedObject];
-    // For all the other columns, we don't do anything.
-    NSString *identifier =[tableColumn identifier];
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldCollapseItem:(id)item
+{
+    // Query our model for the answer to this question
+    P_Data *p = item;
+    // We can expand items if the model tells us it is a container
+    return p.isExpandable;
+}
+
+- (NSTableRowView *)outlineView:(NSOutlineView *)outlineView rowViewForItem:(id)item
+{
+    P_Data *p = item;
+    P_PropertyListRowView* rowView = [P_PropertyListRowView new];
+    rowView.p = p;
+    
+    return rowView;
+}
+
+- (nullable NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(nullable NSTableColumn *)tableColumn item:(id)item
+{
+    P_Data *p = item;
+    P_PlistCellName cellIdentifier = nil;
+    BOOL editable = YES;
+    
+    NSString *identifier = [tableColumn identifier];
     if ([identifier isEqualToString:PlistColumnIdentifier.Key])
     {
-        NSTextFieldCell *textCell =(NSTextFieldCell *)cell;
-        [textCell setStringValue:p.key];
+        cellIdentifier = PlistCell.KeyCell;
+        editable = (p.editable & P_Data_Editable_Key) && ![p.parentData.type isEqualToString: Plist.Array];
     }
-    if ([identifier isEqualToString:PlistColumnIdentifier.Type])
+    else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
     {
-        NSTextFieldCell *textCell =(NSTextFieldCell *)cell;
-        [textCell setStringValue:p.type];
+        cellIdentifier = PlistCell.TypeCell;
+        editable = (p.editable & P_Data_Editable_Type);
     }
     else if ([identifier isEqualToString:PlistColumnIdentifier.Value])
     {
-        NSTextFieldCell *textCell =(NSTextFieldCell *)cell;
-        [textCell setStringValue:p.valueDesc];
+        editable = (p.editable & P_Data_Editable_Value) && !([p.type isEqualToString: Plist.Array] || [p.type isEqualToString: Plist.Dictionary]);
+        if ([p.type isEqualToString: Plist.Boolean]) {
+            cellIdentifier = PlistCell.ValueBoolCell;
+        } else if ([p.type isEqualToString: Plist.Date]) {
+            cellIdentifier = PlistCell.ValueDateCell;
+        } else {
+            cellIdentifier = PlistCell.ValueCell;
+        }
+    }
+    
+    P_PropertyListBasicCellView *cellView = [outlineView makeViewWithIdentifier:cellIdentifier owner:self];
+    cellView.delegate = self;
+    [self outlineView:outlineView willDisplayCell:cellView forTableColumn:tableColumn item:item];
+    [cellView p_setControlEditable:editable];
+    
+    return cellView;
+}
+
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(P_PropertyListBasicCellView *)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    P_Data *p = item;
+    // For all the other columns, we don't do anything.
+    
+    NSString *identifier =[tableColumn identifier];
+    if ([identifier isEqualToString:PlistColumnIdentifier.Key])
+    {
+        [cell p_setControlWithString:p.key];
+    }
+    else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
+    {
+        [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithString:p.type];
+    }
+    else if ([identifier isEqualToString:PlistColumnIdentifier.Value])
+    {
+        if ([p.type isEqualToString: Plist.Boolean]) {
+            [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[p.value boolValue]];
+        } else if ([p.type isEqualToString: Plist.Date]) {
+            [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:p.value];
+        } else {
+            [cell p_setControlWithString:p.valueDesc];
+        }
     }
 }
 
+- (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray<NSSortDescriptor *> *)oldDescriptors;
+{
+    //Make the outline view as the first responder to prevent issues with currently edited text fields.
+    [outlineView.window makeFirstResponder:outlineView];
+    
+    /** 记录之前选中的对象 */
+    id item = [outlineView itemAtRow:outlineView.selectedRow];
+    
+    /** 排序&刷新 */
+    [_root sortWithSortDescriptors:outlineView.sortDescriptors recursively:YES];
+    [self.outlineView reloadItem:nil reloadChildren:YES];
+    
+    /** 重置选中对象的视图 */
+    NSInteger selectionRow = [outlineView rowForItem:item];
+    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
+    [outlineView scrollRowToVisible:selectionRow];
+}
+
+#pragma mark - P_PropertyListCellViewDelegate
+- (id)p_propertyListCellDidEndEditing:(P_PropertyListBasicCellView *)cellView value:(id)value
+{
+    NSUInteger row = [self.outlineView rowForView:cellView];
+    NSUInteger column = [self.outlineView columnForView:cellView];
+    
+    id item = [self.outlineView itemAtRow:row];
+    P_Data *p = item;
+    
+    if(column == 0)
+    {
+        if([self _containsChildrenWithKey:value excludingData:item] == NO)
+        {
+            [self _updateKey:value ofItem:item withView:NO];
+        }
+        else
+        {
+            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+            
+            NSAlert* alert = [NSAlert new];
+            alert.alertStyle = NSAlertStyleWarning;
+            alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), value];
+            [alert addButtonWithTitle:NSLocalizedString(@"OK", @"")];
+            [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
+            
+        }
+        return p.key;
+    }
+    else if(column == 1)
+    {
+        NSError *err;
+        id p_value = [self _verifyValue:p.value ofType:value error:&err];
+        if (err == nil) {
+            [self _updateType:value value:p_value childDatas:nil ofItem:item];
+        }
+    }
+    else if(column == 2)
+    {
+        id new_value = [self _fixedValue:value ofType:p.type];
+        if (new_value)
+        {
+            [self _updateValue:new_value ofItem:item withView:NO];
+        } else {
+            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+            // Your entry is not valid.  Do you want to keep editing and fix the error or cancel editing?
+        }
+        
+        return p.valueDesc;
+    }
+    
+    return nil;
+}
+#pragma mark - NSMenuItemValidation
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+//    if(menuItem.action == @selector(undo:))
+//    {
+//        return _undoManager.canUndo;
+//    }
+//
+//    if(menuItem.action == @selector(redo:))
+//    {
+//        return _undoManager.canRedo;
+//    }
+//
+//    if(menuItem.action == @selector(add:))
+//    {
+//        return [self _validateCanAddForSender:menuItem];
+//    }
+//
+//    BOOL extraCase = YES;
+//    if(menuItem.action == @selector(delete:))
+//    {
+//        extraCase = [self _validateCanDeleteForSender:menuItem];
+//    }
+//
+//    if(menuItem.action == @selector(cut:))
+//    {
+//        extraCase = [self _validateCanDeleteForSender:menuItem];
+//    }
+//    if(menuItem.action == @selector(paste:))
+//    {
+//        return [self _validateCanPasteForSender:menuItem];
+//    }
+    
+    return NO;
+}
+
+#pragma mark - private
+- (id)_verifyValue:(id)value ofType:(P_PlistTypeName)type error:(NSError **)error
+{
+    id n_value = nil;
+    if ([type isEqualToString: Plist.Dictionary]) {
+        n_value = @{};
+    } else if ([type isEqualToString: Plist.Array]) {
+        n_value = @[];
+    } else if ([type isEqualToString: Plist.String]) {
+        n_value = [value description];
+    } else if ([type isEqualToString: Plist.Number]) {
+        static NSNumberFormatter* __numberFormatter;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            __numberFormatter = [NSNumberFormatter new];
+        });
+        n_value = [__numberFormatter numberFromString:[value description]];
+        if (n_value == nil) {
+            n_value = @0;
+        }
+    } else if ([type isEqualToString: Plist.Boolean]) {
+        n_value = @([[value description] boolValue]);
+    } else if ([type isEqualToString: Plist.Date]) {
+        n_value = [NSDate date];
+    } else if ([type isEqualToString: Plist.Data]) {
+        n_value = [NSData data];
+    } else {
+        if (error) {
+            *error = [NSError errorWithDomain:@"ValueError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"不匹配这种类型:%@", type]}];
+        }
+        NSLog(@"不匹配这种类型:%@", type);
+    }
+    return n_value;
+}
+
+- (BOOL)_containsChildrenWithKey:(NSString*)key excludingData:(P_Data *)excludedData
+{
+    return [[excludedData.parentData childDatas] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@ && self != %@", key, excludedData]].count > 0;
+}
+
+- (id)_fixedValue:(id)value ofType:(P_PlistTypeName)type
+{
+    if ([type isEqualToString: Plist.Number]) {
+        return [self _verifyValue:value ofType:type error:nil];
+    } else if ([type isEqualToString: Plist.Data]) {
+#warning Data类型暂时禁止修改。未参透功能。
+        return nil;
+    }  else if ([type isEqualToString: Plist.Date]) {
+        if (![value isKindOfClass:[NSDate class]]) {
+            return nil;
+        }
+    }
+    return value;
+}
+
+- (void)_updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
+{
+    P_Data *p = item;
+    if([p.key isEqualToString:key])
+    {
+        return;
+    }
+    /** willChangeNode */
+    
+    NSString* oldKey = p.key;
+    p.key = key;
+    
+    
+    if (withView) {
+        NSUInteger row = [self.outlineView rowForItem:item];
+        NSUInteger column = 0;
+        
+        P_PropertyListBasicCellView *cellView = [self.outlineView viewAtColumn:column row:row makeIfNecessary:NO];
+        [cellView p_setControlWithString:key];
+    }
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
+        [target _updateKey:oldKey ofItem:item withView:YES];
+    }];
+    
+    /** didChangeNode */
+}
+
+- (void)_updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *)childDatas ofItem:(id)item
+{
+    P_Data *p = item;
+    if([p.type isEqualToString:type])
+    {
+        return;
+    }
+    
+    /** willChangeNode */
+    
+    P_PlistTypeName oldType = p.type;
+    id oldValue = p.value;
+    NSArray <P_Data *> *oldChildDatas = p.childDatas;
+    
+    p.type = type;
+    p.value = value;
+    p.childDatas = childDatas;
+    
+    [self.outlineView reloadItem:p reloadChildren:YES];
+    [self.outlineView scrollRowToVisible:[self.outlineView rowForItem:item]];
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
+        [target _updateType:oldType value:oldValue childDatas:oldChildDatas ofItem:item];
+    }];
+    
+    /** didChangeNode */
+}
+
+- (void)_updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
+{
+    P_Data *p = item;
+    if (p.value == value) {
+        return;
+    }
+    
+    /** willChangeNode */
+    
+    id oldValue = p.value;
+    p.value = value;
+    
+    
+    if(withView)
+    {
+        NSUInteger row = [self.outlineView rowForItem:item];
+        NSUInteger column = 2;
+        
+        P_PropertyListBasicCellView *cell = [self.outlineView viewAtColumn:column row:row makeIfNecessary:NO];
+        
+        if ([p.type isEqualToString: Plist.Boolean]) {
+            [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[p.value boolValue]];
+        } else if ([p.type isEqualToString: Plist.Date]) {
+            [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:p.value];
+        } else {
+            [cell p_setControlWithString:p.valueDesc];
+        }
+    }
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
+        [target _updateValue:oldValue ofItem:item withView:YES];
+    }];
+    
+    /** didChangeNode */
+}
+
 @end
+

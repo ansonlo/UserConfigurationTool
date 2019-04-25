@@ -7,20 +7,17 @@
 //
 
 #import "P_Data.h"
+#import "P_TypeHeader.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface P_Data (P_Exten)
 
-/** 展开状态 */
-@property (nonatomic, assign) BOOL expandState;
-
-/** 可编辑key */
-@property (nonatomic, assign) BOOL editableKey;
-/** 可编辑type */
-@property (nonatomic, assign) BOOL editableType;
-/** 可编辑value */
-@property (nonatomic, assign) BOOL editableValue;
+/** 编辑类型 */
+@property (nonatomic, assign) P_Data_EditableType editable;
+/** 操作类型 */
+@property (nonatomic, assign) P_Data_OperationType operation;
 
 @end
 
