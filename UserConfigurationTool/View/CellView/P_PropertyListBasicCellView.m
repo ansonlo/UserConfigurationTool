@@ -20,6 +20,12 @@
     self.toolTip = str;
 }
 
+- (void)p_setControlWithString:(NSString *)str toolTip:(NSString *)toolTip
+{
+    self.textField.stringValue = str;
+    self.toolTip = toolTip;
+}
+
 - (void)p_setControlEditable:(BOOL)editable
 {
     self.textField.selectable = self.textField.editable = editable;

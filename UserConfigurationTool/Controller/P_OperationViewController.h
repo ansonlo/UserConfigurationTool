@@ -14,5 +14,7 @@
 
 @property (nonatomic, readonly) NSURL *plistUrl;
 
+-(void)p_showAlertViewWith:(NSString *)InformativeText;
+
 @end
 

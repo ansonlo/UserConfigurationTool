@@ -26,8 +26,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) int level;
 /** 子数据对象 */
 @property (nonatomic, strong) NSArray <P_Data *>*childDatas;
-/** 文件数据 */
+
+/** 文件对象 */
 @property (nonatomic, readonly) id plist;
+/** 文件数据 */
+@property (nonatomic, readonly) id data;
 
 
 + (instancetype)rootWithPlistUrl:(NSURL *)plistUrl;

@@ -23,6 +23,7 @@
 		C71439C3226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439C2226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m */; };
 		C7BD99BA226FF78500CA3351 /* NSView+P_Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */; };
 		C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99BD226FF96900CA3351 /* P_PropertyListBasicCellView.m */; };
+		C7BD9A162272EC2600CA3351 /* AESCrypt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BD9A152272EC2600CA3351 /* AESCrypt.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+P_Animation.m"; sourceTree = "<group>"; };
 		C7BD99BC226FF96900CA3351 /* P_PropertyListBasicCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListBasicCellView.h; sourceTree = "<group>"; };
 		C7BD99BD226FF96900CA3351 /* P_PropertyListBasicCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_PropertyListBasicCellView.m; sourceTree = "<group>"; };
+		C7BD9A152272EC2600CA3351 /* AESCrypt.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AESCrypt.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7BD9A162272EC2600CA3351 /* AESCrypt.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +102,7 @@
 				C7143979226D67E7008D15C6 /* Controller */,
 				C71439AC226EF0F8008D15C6 /* View */,
 				C714397A226D67F4008D15C6 /* Model */,
+				C7BD99C322728EDE00CA3351 /* thrid-party */,
 				C71439592269CD80008D15C6 /* Assets.xcassets */,
 				C714395B2269CD80008D15C6 /* Main.storyboard */,
 				C714395E2269CD80008D15C6 /* Info.plist */,
@@ -183,6 +187,14 @@
 				C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */,
 			);
 			path = Category;
+			sourceTree = "<group>";
+		};
+		C7BD99C322728EDE00CA3351 /* thrid-party */ = {
+			isa = PBXGroup;
+			children = (
+				C7BD9A152272EC2600CA3351 /* AESCrypt.framework */,
+			);
+			path = "thrid-party";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -409,6 +421,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 3VDRUN62M8;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/UserConfigurationTool/thrid-party",
+				);
 				INFOPLIST_FILE = UserConfigurationTool/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -427,6 +443,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 3VDRUN62M8;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/UserConfigurationTool/thrid-party",
+				);
 				INFOPLIST_FILE = UserConfigurationTool/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

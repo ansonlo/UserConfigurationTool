@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<P_PropertyListCellViewDelegate> delegate;
 
 - (void)p_setControlWithString:(NSString *)str;
+- (void)p_setControlWithString:(NSString *)str toolTip:(NSString *)toolTip;
 - (void)p_setControlEditable:(BOOL)editable;
 
 @end

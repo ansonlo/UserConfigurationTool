@@ -22,7 +22,7 @@
 {
     self = [super initWithCoder:coder];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popUpButtonWillPopUpNotification:) name:NSPopUpButtonWillPopUpNotification object:nil];
+        [self customInit];
     }
     return self;
 }
@@ -31,9 +31,15 @@
 {
     self = [super init];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popUpButtonWillPopUpNotification:) name:NSPopUpButtonWillPopUpNotification object:nil];
+        [self customInit];
     }
     return self;
+}
+
+- (void)customInit
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popUpButtonWillPopUpNotification:) name:NSPopUpButtonWillPopUpNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(comboBoxWillPopUpNotification:) name:NSComboBoxWillPopUpNotification object:nil];
 }
 
 - (void)dealloc{
@@ -60,7 +66,15 @@
     
 }
 
-
+#pragma mark - NSComboBoxWillPopUpNotification
+- (void)comboBoxWillPopUpNotification:(NSNotification *)notify
+{
+    NSComboBox *box = notify.object;
+    NSInteger row = [self rowForView:box];
+    if (row > -1) {
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:false];
+    }
+}
 
 
 @end

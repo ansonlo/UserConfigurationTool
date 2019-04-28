@@ -8,6 +8,7 @@
 
 #import "P_Data.h"
 #import "P_TypeHeader.h"
+#import <AESCrypt/AESCrypt.h>
 
 @interface P_Data ()
 
@@ -41,21 +42,21 @@
 
 + (instancetype)rootWithPlistUrl:(NSURL *)plistUrl
 {
-    id obj = [NSPropertyListSerialization propertyListWithData:[NSData dataWithContentsOfURL:plistUrl] options:0 format:nil error:NULL];
-    if ([obj isKindOfClass:[NSDictionary class]]) {
-        P_Data *p = [[[self class] alloc] initWithPlistKey:@"Root" value:obj];
+    NSData *data = [NSData dataWithContentsOfURL:plistUrl];
+    if ([plistUrl.lastPathComponent.pathExtension isEqualToString:PlistGlobalConfig.encryptFileExtension]) {
+        data = [AESCrypt encrypt]->decrypt(data);
+    }
+    id obj = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    P_Data *p = nil;
+    if ([obj isKindOfClass:[NSDictionary class]] || [obj isKindOfClass:[NSArray class]]) {
+        p = [[[self class] alloc] initWithPlistKey:@"Root" value:obj];
         p.expandState = YES;
         p.editable ^= P_Data_Editable_Key;
-        return p;
-    } else if ([obj isKindOfClass:[NSArray class]]) {
-        P_Data *p = [[[self class] alloc] initWithPlistKey:@"Root" value:obj];
-        p.expandState = YES;
-        p.editable ^= P_Data_Editable_Key;
-        return p;
+        p.operation = P_Data_Operation_Insert;
     } else {
         NSLog(@"The plistUrl is not a plist file url.");
     }
-    return nil;
+    return p;
 }
 
 - (instancetype)initWithPlistKey:(NSString *)key value:(id)value
@@ -245,6 +246,21 @@
     return plist;
 }
 
+- (NSData *)data
+{
+    id plist = self.plist;
+    if (plist) {
+        NSData *data = [NSPropertyListSerialization dataWithPropertyList:plist
+                                                                  format:NSPropertyListBinaryFormat_v1_0
+                                                                 options:0
+                                                                   error:nil];
+        if (data) {
+            return [AESCrypt encrypt]->encrypt(data);
+        }
+    }
+    return nil;
+}
+
 #pragma mark - NSCopying
 - (id)copyWithZone:(nullable NSZone *)zone
 {
@@ -265,6 +281,19 @@
     }
     
     return p;
+}
+
+#pragma mark - description
+- (NSString *)description
+{
+    NSMutableString* builder = [NSMutableString stringWithFormat:@"<%@ %p", self.className, self];
+    
+    [builder appendFormat:@" key: “%@”", self.key];
+    [builder appendFormat:@" type: “%@”", self.type];
+    [builder appendFormat:@" value: “%@”", self.valueDesc];
+    [builder appendString:@">"];
+    
+    return builder;
 }
 
 @end

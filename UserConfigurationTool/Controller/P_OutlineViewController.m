@@ -66,23 +66,14 @@
 {
     P_Data *root = self.root;
     
-    id plist = root.plist;
-    if ([plist isKindOfClass:[NSDictionary class]]) {
-        BOOL success = [(NSDictionary *)plist writeToURL:plistUrl atomically:YES];
-        if (success) {
-            NSLog(@"save plist success!");
-        } else {
-            NSLog(@"save plist fail!");
-        }
-    } else if ([plist isKindOfClass:[NSArray class]]) {
-        BOOL success = [(NSArray *)plist writeToURL:plistUrl atomically:YES];
-        if (success) {
-            NSLog(@"save plist success!");
-        } else {
-            NSLog(@"save plist fail!");
-        }
+    NSData *data = root.data;
+    
+    BOOL success = [data writeToURL:plistUrl atomically:YES];
+    
+    if (success) {
+        [self p_showAlertViewWith:NSLocalizedString(@"save plist success!", @"")];
     } else {
-        NSLog(@"data convert to plist fail!");
+        [self p_showAlertViewWith:NSLocalizedString(@"save plist fail!", @"")];
     }
 }
 
@@ -254,11 +245,7 @@
         {
             [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
             
-            NSAlert* alert = [NSAlert new];
-            alert.alertStyle = NSAlertStyleWarning;
-            alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), value];
-            [alert addButtonWithTitle:NSLocalizedString(@"OK", @"")];
-            [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
+            [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), value]];
             
         }
         return p.key;
@@ -373,6 +360,8 @@
     return value;
 }
 
+#pragma mark - 更新值key、type、value
+
 - (void)_updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
 {
     P_Data *p = item;
@@ -399,6 +388,8 @@
     }];
     
     /** didChangeNode */
+    
+    NSLog(@"%@", p);
 }
 
 - (void)_updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *)childDatas ofItem:(id)item
@@ -427,6 +418,8 @@
     }];
     
     /** didChangeNode */
+    
+    NSLog(@"%@", p);
 }
 
 - (void)_updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
@@ -463,6 +456,8 @@
     }];
     
     /** didChangeNode */
+    
+    NSLog(@"%@", p);
 }
 
 @end
