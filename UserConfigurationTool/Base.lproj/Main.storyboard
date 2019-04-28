@@ -871,9 +871,6 @@
                                                                             <string>Item</string>
                                                                         </objectValues>
                                                                     </comboBoxCell>
-                                                                    <connections>
-                                                                        <outlet property="delegate" destination="Uum-ob-r42" id="f02-CS-1L6"/>
-                                                                    </connections>
                                                                 </comboBox>
                                                             </subviews>
                                                             <constraints>

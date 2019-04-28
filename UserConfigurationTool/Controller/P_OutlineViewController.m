@@ -12,6 +12,7 @@
 #import "P_Data+P_Exten.h"
 
 #import "NSView+P_Animation.h"
+#import "NSString+P_16Data.h"
 
 #import "P_PropertyListRowView.h"
 #import "P_PropertyListBasicCellView.h"

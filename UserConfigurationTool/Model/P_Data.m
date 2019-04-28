@@ -157,7 +157,7 @@
         return [self.value description];
     } else if ([self.type isEqualToString: Plist.Data]) {
         if ([self.value isKindOfClass:[NSData class]]) {
-            return @"<DATA开发>";
+            return [self.value description];
         }
     }
     return @"";

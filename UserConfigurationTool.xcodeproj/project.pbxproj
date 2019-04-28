@@ -24,6 +24,7 @@
 		C7BD99BA226FF78500CA3351 /* NSView+P_Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */; };
 		C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99BD226FF96900CA3351 /* P_PropertyListBasicCellView.m */; };
 		C7BD9A162272EC2600CA3351 /* AESCrypt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BD9A152272EC2600CA3351 /* AESCrypt.framework */; };
+		C7BD9A1B2275877600CA3351 /* NSString+P_16Data.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD9A1A2275877600CA3351 /* NSString+P_16Data.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +63,8 @@
 		C7BD99BC226FF96900CA3351 /* P_PropertyListBasicCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListBasicCellView.h; sourceTree = "<group>"; };
 		C7BD99BD226FF96900CA3351 /* P_PropertyListBasicCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_PropertyListBasicCellView.m; sourceTree = "<group>"; };
 		C7BD9A152272EC2600CA3351 /* AESCrypt.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AESCrypt.framework; sourceTree = "<group>"; };
+		C7BD9A192275877600CA3351 /* NSString+P_16Data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+P_16Data.h"; sourceTree = "<group>"; };
+		C7BD9A1A2275877600CA3351 /* NSString+P_16Data.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+P_16Data.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +188,8 @@
 			children = (
 				C7BD99B8226FF78500CA3351 /* NSView+P_Animation.h */,
 				C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */,
+				C7BD9A192275877600CA3351 /* NSString+P_16Data.h */,
+				C7BD9A1A2275877600CA3351 /* NSString+P_16Data.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -284,6 +289,7 @@
 				C71439C0226F06EE008D15C6 /* P_PropertyListDatePicker.mm in Sources */,
 				C71439C3226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m in Sources */,
 				C71439552269CD7F008D15C6 /* AppDelegate.m in Sources */,
+				C7BD9A1B2275877600CA3351 /* NSString+P_16Data.m in Sources */,
 				C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
