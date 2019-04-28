@@ -39,6 +39,7 @@
     // Do any additional setup after loading the view.
     
     _undoManager = [NSUndoManager new];
+    
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -321,14 +322,19 @@
     } else if ([type isEqualToString: Plist.String]) {
         n_value = [value description];
     } else if ([type isEqualToString: Plist.Number]) {
-        static NSNumberFormatter* __numberFormatter;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            __numberFormatter = [NSNumberFormatter new];
-        });
-        n_value = [__numberFormatter numberFromString:[value description]];
-        if (n_value == nil) {
+        // 准备对象
+        NSString * searchStr = [value description];
+        // 创建 NSRegularExpression 对象,匹配 正则表达式
+        NSString * regExpStr = @"^[0-9]*";
+        NSRegularExpression *regExp = [[NSRegularExpression alloc] initWithPattern:regExpStr
+                                                        options:NSRegularExpressionDotMatchesLineSeparators
+                                                                             error:nil];
+        NSRange range = [regExp rangeOfFirstMatchInString:searchStr options:NSMatchingAnchored range:NSMakeRange(0, searchStr.length)];
+        NSString *result_string = [searchStr substringWithRange:range];
+        if (result_string.length == 0) {
             n_value = @0;
+        } else {
+            n_value = result_string;
         }
     } else if ([type isEqualToString: Plist.Boolean]) {
         n_value = @([[value description] boolValue]);
