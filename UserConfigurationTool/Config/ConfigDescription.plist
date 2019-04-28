@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>文件名命名规范</key>
+	<string>客户名称【xxx.plist】，这是一份必须要的客户配置文件。为了方便调试，复制一份客户配置文件，将其重命名为【xxx_Simulator.plist】或【xxx_Debug.plist】；顾名思义_Simulator只在模拟器生效，_Debug只在Debug模式（包含模拟器与真机）生效，但打包后的客户配置文件不受_Simulator与_Debug影响。</string>
+	<key>内容规范</key>
+	<string>（没有说明【必填】可不设置【全局默认值DefaultConfig.plist】）可以参考全局配置文件格式</string>
+	<key>Root</key>
+	<dict>
+		<key>host</key>
+		<string>访问IM服务器的host【必填】</string>
+		<key>port</key>
+		<string>访问IM服务器socket的端口【必填】</string>
+		<key>webPort</key>
+		<string>访问IM服务器http的端口【必填】</string>
+		<key>appInHost</key>
+		<string>访问应用服务器的host【必填】</string>
+		<key>VPNFile</key>
+		<string>指向VPN配置文件名称（vpn1.plist,vpn2.plist），关联配置文件读取信息，多个配置文件使用逗号(,)隔开</string>
+		<key>VPNDefaultFile</key>
+		<string>vpn2.plist，默认显示的配置文件，必须在VPNFile内包含， 否则默认为第一个文件</string>
+		<key>Server_Key</key>
+		<dict>
+			<key>描述</key>
+			<string>服务器属性，可与网络同步</string>
+			<key>HomeView_Subviews</key>
+			<string>主界面子视图的数量与顺序（默认：Recent,AddressBook,AppCenter,CorpCircle,CorpOA,MySetting,AppSample,OAMailCenter,ZhongHeCenter）</string>
+			<key>HomeView_ActivateTabId</key>
+			<string>首页优先显示的子Tab页面（默认Recent，没有则为第一个）</string>
+			<key>HomeView_Subviews_Recent_Title</key>
+			<string>主界面消息</string>
+			<key>HomeView_Subviews_AddressBook_Title</key>
+			<string>主界面通讯录</string>
+			<key>HomeView_Subviews_AppCenter_Title</key>
+			<string>主界面应用</string>
+			<key>HomeView_Subviews_CorpCircle_Title</key>
+			<string>主界面圈子</string>
+			<key>HomeView_Subviews_CorpOA_Title</key>
+			<string>主界面OA</string>
+			<key>HomeView_Subviews_MySetting_Title</key>
+			<string>主界面我的</string>
+			<key>HomeView_Subviews_AppSample_Title</key>
+			<string>主界面工作</string>
+			<key>HomeView_Subviews_OAMailCenter_Title</key>
+			<string>主界面应用</string>
+			<key>HomeView_Subviews_ZhongHeCenter_Title</key>
+			<string>主界面应用</string>
+			<key>AddBook_UpMenu</key>
+			<string>通讯录上半区的菜单排序（默认：NewFriend,CorpAddBook,GroupList,FriendCorp,CorpGroup）</string>
+			<key>AddBook_UpMenu_NewFriend_Title</key>
+			<string>通讯录新的朋友</string>
+			<key>AddBook_UpMenu_CorpAddBook_Title</key>
+			<string>通讯录企业通讯录</string>
+			<key>AddBook_UpMenu_GroupList_Title</key>
+			<string>通讯录群组</string>
+			<key>AddBook_UpMenu_FriendCorp_Title</key>
+			<string>通讯录友好企业</string>
+			<key>AddBook_UpMenu_CorpGroup_Title</key>
+			<string>通讯录企业群</string>
+			<key>AddBook_MyDepartmentHidden</key>
+			<string>企业通讯录隐藏‘我的部门’;当设置为1时就把‘我的部门’口隐藏，否则其它值为显示；type=Boolean 默认NO</string>
+			<key>AddBook_PersonalDetailLabel_ReferenceKey</key>
+			<string>通讯录显示的人员Item的副标题（position,email）</string>
+			<key>AddBook_PersonalSearchDetailLabel_ReferenceKey</key>
+			<string>通讯录搜索显示的人员Item的副标题（position,email）</string>
+			<key>AppCenter_TopBar_ImageId</key>
+			<string>应用中心顶部图片（默认：AppIntroductionBG1），若多张使用逗号(,)分隔</string>
+			<key>AppCenter_TopBar_ImageList</key>
+			<string>应用中心顶部网络图片[{&quot;imgUrl&quot;:&quot;[imgUrlValue]&quot;,&quot;imgPadUrl&quot;:&quot;[imgPadUrl]&quot;,&quot;clickUrl&quot;:&quot;[clickUrlValue]&quot;}]</string>
+			<key>AppCenter_TopBar_ImageClickable</key>
+			<string>应用中心顶部图片点击是否打开链接（0或者1，默认1是可以点击）</string>
+			<key>AppCenter_TopBar_ImageInterval</key>
+			<string>本配置项需要在已设定另一个配置项“AppCenter_TopBar_ImageList” 存在下才发挥作用，当设置本配置项后，则对另一个配置项“AppCenter_TopBar_ImageList”里的图片做出间隔X秒的切换动作</string>
+			<key>AppCenter_GridView_ItemRoundCorner_Enable</key>
+			<string>应用中心页面的item项圆角（0或者1，默认1圆角效果）</string>
+			<key>AppCenter_UnreadCountRefresh_TimerSecond</key>
+			<string>定时刷新所有应用的未读，若设置为 “-1” 则禁止定时刷新</string>
+			<key>UserDefaultHead_URL</key>
+			<string>人员默认头像图片下载URL</string>
+			<key>LaunchView_URL</key>
+			<string>启动页面图片资源下载URL</string>
+			<key>PersonalCard_ExtItemHidden</key>
+			<string>当设置为1时就把个人名片的扩展属性块隐藏，不设置该项默认是0显示；
+当设置为1时就把个人名片的扩展属性块隐藏，不设置该项默认是0显示；</string>
+			<key>PersonalCard_ExtItemSort</key>
+			<string>联系人名片显示扩展属性顺序（默认：telephone,mobile,email,qq,weiXin,room,idNumber）</string>
+			<key>PersonalCard_Item_Title</key>
+			<string>联系人名片子属性名字 type=dictionary</string>
+			<key>PersonalCard_MobileEdit_URL</key>
+			<string>修改个人资料页面的&quot;手机号码&quot;不使用默认原生页面，改为webview请求URL</string>
+			<key>MyInfo_Edit</key>
+			<string>是否可以编辑本人资料信息当设置为0时，不可编辑，其它为编辑；type=Boolean 默认YES</string>
+			<key>MySetting_CustomerServiceHidden</key>
+			<string>&quot;我的&quot;在线客服隐藏入口，默认关闭1。(0/1)</string>
+			<key>MySetting_ContactUsHidden</key>
+			<string>&quot;我的&quot;联系我们隐藏入口，默认开启0。(0/1)</string>
+			<key>MySetting_OAMailCacheCleanHidden</key>
+			<string>&quot;设置&quot;清理缓存隐藏入口，默认关闭1。(0/1)</string>
+			<key>MySetting_GenernalSettingHidden</key>
+			<string>&quot;设置&quot;通用隐藏入口，默认开启0。(0/1)</string>
+			<key>MySetting_AccountSecurityHidden</key>
+			<string>设置页面隐藏“账号与安全”，默认开启0。(0/1)</string>
+			<key>MySetting_NewMsgNotificationHidden</key>
+			<string>设置页面隐藏“新消息通知”，默认开启0。(0/1)</string>
+			<key>AppContactUs_ServicePhone</key>
+			<string>&quot;联系我们&quot;客服电话，默认是020-87600139 </string>
+			<key>AppContactUs_ServiceEMail</key>
+			<string>&quot;联系我们&quot;邮箱，默认是maie@miracles.cn</string>
+			<key>AppContactUs_CopyRightHidden</key>
+			<string>&quot;联系我们&quot;页面隐藏底部版权所有</string>
+			<key>AppContactUs_ServicePhoneHidden</key>
+			<string>&quot;联系我们&quot;客户电话隐藏入口，默认开启0。(0/1)</string>
+			<key>AppContactUs_ServiceEMailHidden</key>
+			<string>&quot;联系我们&quot;电子邮件隐藏入口，默认开启0。(0/1)</string>
+			<key>AppContactUs_PrivacyPolicyHidden</key>
+			<string>&quot;联系我们&quot;隐私条款隐藏入口，默认开启0。(0/1)</string>
+			<key>AppContactUs_UserAgreementHidden</key>
+			<string>&quot;联系我们&quot;用户协议隐藏入口，默认开启0。(0/1)</string>
+			<key>AccountSecurity_PasswordEditHidden</key>
+			<string>帐号与安全页面里次级&quot;密码修改&quot;入口。0显示1隐藏</string>
+			<key>AccountSecurity_PasswordEdit_URL</key>
+			<string>用于账号与安全页面的子页面‘修改密码’入口,有值不使用默认原生页面，改为webview请求URL(url若需要传递用户登录账号userId请在url参数后使用${userId})</string>
+			<key>AccountSecurity_AccountBindHidden</key>
+			<string>用于账号与安全页面的子功能&quot;帐号管理&quot;入口是否隐藏，0显示1隐藏</string>
+			<key>AccountSecurity_OALiuchengshenpiAuthEnable</key>
+			<string> “审批启动验证” 开关显示，1显示0隐藏;默认隐藏</string>
+			<key>SocialShare_Enable</key>
+			<string>分享给朋友是否隐藏，1显示0隐藏;默认隐藏</string>
+			<key>AppDownPageURL</key>
+			<string>应用下载地址【必填】</string>
+			<key>AboutPage_UserGuideHidden</key>
+			<string>&quot;设置-关于&quot;使用指导隐藏入口，默认开启0。(0/1)</string>
+			<key>AboutPage_QRCodeHidden</key>
+			<string>&quot;设置-关于&quot;xx二维码隐藏入口，默认开启0。(0/1)</string>
+			<key>LoginView_PasswordForgotHidden</key>
+			<string>登录页面忘记密码入口隐藏隐藏。0显示1隐藏</string>
+			<key>LoginView_PasswordRecovery_URL</key>
+			<string>用于登录页面的‘忘记密码’入口,有值不使用默认原生页面，改为webview请求URL</string>
+			<key>LoginView_Register_URL</key>
+			<string>用于登录页面的‘注册’入口,有值不使用默认原生页面，改为webview请求URL</string>
+			<key>LoginView_SettingBtn_Hidden</key>
+			<string>登录页面右上角“设置”隐藏，type=Boolean 默认NO</string>
+			<key>WorkRemind_NewMsgPromptHidden</key>
+			<string>工作助手应用消息隐藏未读角标；默认显示，0显示1隐藏</string>
+			<key>ChatItem_User_Delete</key>
+			<string>默认0只是删除消息UI,1是删除消息与数据，type=Boolean 默认NO</string>
+			<key>ChatItem_Group_Delete</key>
+			<string>默认0只是删除消息UI,1是删除消息与数据，type=Boolean 默认NO</string>
+			<key>ChatItem_AppRemind_Delete</key>
+			<string>默认0只是删除消息UI,1是删除消息与数据，type=Boolean 默认NO</string>
+			<key>EnableRegistration</key>
+			<string>是否启用注册功能，type=Boolean 默认YES</string>
+			<key>BadgeCountRange</key>
+			<string>角标统计维度（默认：Recent）以英文逗号,分隔各值，key值请看HomeView_Subviews配置描述</string>
+			<key>ForceUpdateApp_Enable</key>
+			<string>强制更新APP版本，type=Boolean 默认NO</string>
+			<key>ForceUpdateApp_Reason</key>
+			<string>强制更新APP版本提示内容</string>
+			<key>ForceLogin</key>
+			<string>强制普通登陆，type=Boolean 默认NO</string>
+			<key>Login_AppVersion_Hidden</key>
+			<string>登录界面版本是否隐藏，type=Boolean 默认NO</string>
+			<key>IntroductionViewGroup_Disable</key>
+			<string>去掉每次安装都要看到的引导页面，type=Boolean 默认NO</string>
+			<key>DisableOpenFileByThirdParty</key>
+			<string>&quot;文件预览菜单&quot;其它应用打开，默认显示0,(0/1)</string>
+			<key>MessageFire_Enable</key>
+			<string>开启阅后即焚功能，type=Boolean 默认NO</string>
+			<key>MessageFire_GroupChat_Disable</key>
+			<string>开启阅后即焚功能群组，type=Boolean 默认NO</string>
+			<key>DBUpdateVersion</key>
+			<string>数据库APP版本更新执行的最低版本，默认初始值为版本列表的最高版本</string>
+			<key>EnableVPN</key>
+			<string>是否启用VPN连接，type=Boolean 默认YES，VPNFile必须有值才生效</string>
+			<key>OAMail_MailList_SearchBtnHidden</key>
+			<string>GDPSCOAMail项目主界面开启搜索 type=Boolean 默认是0</string>
+			<key>WebView_SSLCert_AuthDisable</key>
+			<string>是否开启SSL链接 type=Boolean 默认是0</string>
+			<key>MediaVoipChatEnable</key>
+			<string>语音视频功能开启 type=Boolean 默认是0</string>
+			<key>RequestToIMServer_BusinessTypeBanList</key>
+			<string>新增配置项来对IM类消息服务发起请求的在App禁止发起（业务类型: String  ，用英文逗号分隔）</string>
+			<key>MediaChatServerNode</key>
+			<string>&quot;Publicfree&quot; 表示使用 融云的免费服务器Demo; &quot;Commercialcharges&quot; ： https://www.rongcloud.cn/docs/server_rtc.html#get_rtc_token 获取token.</string>
+			<key>MicroApp_BatchSet_NoNewTag_AfterDays</key>
+			<string> 默认值是 0 ；当默认值为0时，则不做更新保持现状,配置项值 大于0 并且 当前时间对比消息时间大于该配置项值;对工作助手类型微应用的消息列表数据，根据设置的定时天数，对其批量进行“已读”设置</string>
+		</dict>
+		<key>Custom_Key</key>
+		<dict>
+			<key>描述</key>
+			<string>自定义属性</string>
+			<key>WorkRemind_AssistantEnable</key>
+			<string>工作助手聚合同类型子消息体，type=Boolean 默认YES，仅适用于首次登陆</string>
+			<key>LaunchView_ImgId</key>
+			<string>启动页面图片资源Id</string>
+			<key>GroupNormalHead_ImgId</key>
+			<string>群组正常头像图片资源id</string>
+			<key>UserDefaultHead_ImgId</key>
+			<string>人员默认头像图片资源Id</string>
+			<key>LoginView_PersonalLogoView_ImgId</key>
+			<string>登录页面的头像Logo，为企业Logo</string>
+			<key>LoginIdPrefix</key>
+			<string>登录id前缀，不计算在登录id上。仅为登录业务参数-登录id附加前缀</string>
+			<key>UseSSLSocketConnect</key>
+			<string> “1” 就使用 listServer 获取到的json结果的 message 节点里的 sslSocketport 链接 , 否则使用 socketPort 链接。</string>
+		</dict>
+		<key>Private_Key</key>
+		<dict>
+			<key>描述</key>
+			<string>私有属性</string>
+		</dict>
+		<key>Theme(主题个性设计)</key>
+		<dict>
+			<key>ThemeClientId</key>
+			<string>客户个性主题-自定义</string>
+			<key>ThemeName</key>
+			<string>选择主题名称</string>
+			<key>ThemePlistName</key>
+			<string>指定主题文件（与主题资源分离），默认ThemeName+ThemeClientId+&quot;ThemePlist&quot;</string>
+		</dict>
+		<key>Vendors_Key(商户key+产品key)</key>
+		<dict>
+			<key>Baidu</key>
+			<dict>
+				<key>MapServiceKey</key>
+				<string>百度地图key</string>
+			</dict>
+			<key>APPTestAccount</key>
+			<array>
+				<dict>
+					<key>Account</key>
+					<string>测试账号</string>
+					<key>Password</key>
+					<string>密码</string>
+				</dict>
+			</array>
+			<key>ShareSDK</key>
+			<string>QQ(QQ+AppID的16进制，如果AppID转换的16进制数不够8位则在前面补0)、微信(AppId)、新浪微博(wb+AppKey)需要额外添加URL Scheme</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

@@ -41,6 +41,13 @@
     
     _undoManager = [NSUndoManager new];
     
+    NSURL *configDescriptionListURL = [[NSBundle mainBundle] URLForResource:@"ConfigDescription" withExtension:@"plist"];
+    NSData *data = [NSData dataWithContentsOfURL:configDescriptionListURL];
+    NSDictionary *configPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    NSURL *configDefaultListURL = [[NSBundle mainBundle] URLForResource:@"DefaultConfig" withExtension:@"plist"];
+    data = [NSData dataWithContentsOfURL:configDefaultListURL];
+    NSDictionary *defaultPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    
 }
 
 - (void)setRepresentedObject:(id)representedObject {

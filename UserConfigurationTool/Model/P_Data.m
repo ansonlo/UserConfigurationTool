@@ -16,8 +16,6 @@
 @property (nonatomic, strong) NSMutableArray <P_Data *>*m_childDatas;
 
 #pragma mark - extern
-/** 展开状态 */
-@property (nonatomic, assign) BOOL expandState;
 
 /** 编辑类型 */
 @property (nonatomic, assign) P_Data_EditableType editable;
@@ -32,8 +30,6 @@
 {
     self = [super init];
     if (self) {
-        
-        _expandState = NO;
         _editable = P_Data_Editable_All;
         _operation = P_Data_Operation_All;
     }
@@ -50,7 +46,6 @@
     P_Data *p = nil;
     if ([obj isKindOfClass:[NSDictionary class]] || [obj isKindOfClass:[NSArray class]]) {
         p = [[[self class] alloc] initWithPlistKey:@"Root" value:obj];
-        p.expandState = YES;
         p.editable ^= P_Data_Editable_Key;
         p.operation = P_Data_Operation_Insert;
     } else {
@@ -281,6 +276,46 @@
     }
     
     return p;
+}
+
+#pragma mark - NSSecureCoding
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    
+    if(self)
+    {
+        self.key = [aDecoder decodeObjectForKey:@"key"];
+        self.type = [aDecoder decodeObjectForKey:@"type"];
+        self.value = [aDecoder decodeObjectForKey:@"value"];
+        self.m_childDatas = [aDecoder decodeObjectForKey:@"children"];
+        
+        self.editable = [[aDecoder decodeObjectForKey:@"editable"] integerValue];
+        self.operation = [[aDecoder decodeObjectForKey:@"operation"] integerValue];
+        
+        [self.m_childDatas enumerateObjectsUsingBlock:^(P_Data * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            obj.parentData = self;
+        }];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:self.key forKey:@"key"];
+    [aCoder encodeObject:self.type forKey:@"type"];
+    [aCoder encodeObject:self.value forKey:@"value"];
+    [aCoder encodeObject:self.m_childDatas forKey:@"children"];
+    
+    [aCoder encodeObject:@(self.editable) forKey:@"editable"];
+    [aCoder encodeObject:@(self.operation) forKey:@"operation"];
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
 }
 
 #pragma mark - description

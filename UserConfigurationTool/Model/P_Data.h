@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface P_Data : NSObject <NSCopying>
+@interface P_Data : NSObject <NSCopying, NSSecureCoding>
 
 @property (nonatomic, strong) NSString *key;
 @property (nonatomic, strong) P_PlistTypeName type;
