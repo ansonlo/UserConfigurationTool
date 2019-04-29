@@ -66,6 +66,7 @@
 {
     NSInteger cutIndex = [self.outlineView selectedRow];
     P_Data *cutItem = [self.outlineView itemAtRow:cutIndex];
+    P_Data *cutItemParentData = cutItem.parentData;
     
     NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
     [_pasteboard clearContents];
@@ -73,9 +74,11 @@
     NSPasteboardItem *pbitem = [[NSPasteboardItem alloc] init];
     [pbitem setData:archivedata forType:[NSBundle mainBundle].bundleIdentifier];
     [_pasteboard writeObjects:@[pbitem]];
+    
     [self.outlineView beginUpdates];
-    [cutItem.parentData removeChildDataAtIndex:cutIndex-1];
-    [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:cutIndex-1] inParent:cutItem.parentData withAnimation:NSTableViewAnimationSlideDown];
+    NSInteger index = [cutItemParentData.childDatas indexOfObject:cutItem];
+    [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:cutItemParentData withAnimation:NSTableViewAnimationSlideDown];
+    [cutItemParentData removeChildDataAtIndex:index];
     [self.outlineView endUpdates];
 
 }
@@ -85,13 +88,22 @@
     NSInteger operationIndex = [self.outlineView selectedRow];
     P_Data *operationItem = [self.outlineView itemAtRow:operationIndex];
     P_Data *operationParentData = operationItem.parentData;
-    if (operationItem.operation & P_Data_Operation_Delete) {
-        [self.outlineView beginUpdates];
-        NSInteger atParentDataIndex = [operationParentData.childDatas indexOfObject:operationItem];
-        [operationParentData removeChildDataAtIndex:atParentDataIndex];
-        [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:atParentDataIndex] inParent:operationParentData withAnimation:NSTableViewAnimationEffectNone];
-//        [self.outlineView reloadItem:operationParentData];
-        [self.outlineView endUpdates];
+    [self.outlineView beginUpdates];
+    NSInteger atParentDataIndex = [operationParentData.childDatas indexOfObject:operationItem];
+    [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:atParentDataIndex] inParent:operationParentData withAnimation:NSTableViewAnimationEffectNone];
+    [operationParentData removeChildDataAtIndex:atParentDataIndex];
+    [self.outlineView endUpdates];
+}
+
+- (void)pasteEditing
+{
+    NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
+    NSPasteboardItem *pbItem = [_pasteboard.pasteboardItems firstObject];
+    if (pbItem) {
+        NSInteger operationIndex = [self.outlineView selectedRow];
+        NSData *data = [pbItem dataForType:[NSBundle mainBundle].bundleIdentifier];
+        P_Data *pasteItem = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        NSLog(@"%@", pasteItem);
     }
 }
 
@@ -99,9 +111,11 @@
 {
     NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
     [_pasteboard clearContents];
-    NSInteger copyIndex = [self.outlineView selectedRow];
-    P_Data *copyItem = [self.outlineView itemAtRow:copyIndex];
-    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:copyItem];
+
+    NSInteger operationIndex = [self.outlineView selectedRow];
+    P_Data *operationItem = [self.outlineView itemAtRow:operationIndex];
+    
+    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:operationItem];
     NSPasteboardItem* pbItem = [[NSPasteboardItem alloc] init];
     [pbItem setData:archivedata forType:[NSBundle mainBundle].bundleIdentifier];
     return [_pasteboard writeObjects:@[pbItem]];

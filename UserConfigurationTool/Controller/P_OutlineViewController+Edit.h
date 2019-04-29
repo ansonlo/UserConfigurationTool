@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)copyEditing;
 
+- (void)pasteEditing;
+
 @end
 
 NS_ASSUME_NONNULL_END

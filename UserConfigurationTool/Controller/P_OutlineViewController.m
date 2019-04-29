@@ -22,6 +22,9 @@
 #import "P_PropertyListDatePickerCellView.h"
 #import "P_OutlineViewController+Edit.h"
 
+
+NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
+
 @interface P_OutlineViewController () <P_PropertyListCellViewDelegate, P_PropertyListOutlineView_MenuOperationDelegate>
 {
     NSUndoManager* _undoManager;
@@ -482,5 +485,25 @@
     NSLog(@"%@", p);
 }
 
+#pragma mark - P_PropertyListOutlineView_MenuOperationDelegate
+- (void)menuOperationForCut
+{
+    [self cutEditing];
+}
+
+- (void)menuOperationForDelete
+{
+    [self deleteEditing];
+}
+
+- (void)menuOperationForCopy
+{
+    [self copyEditing];
+}
+
+- (void)menuOperationForPaste
+{
+    [self pasteEditing];
+}
 @end
 
