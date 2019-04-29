@@ -8,6 +8,8 @@
 
 #import "P_OutlineViewController.h"
 #import "P_TypeHeader.h"
+#import "P_Data.h"
+#import "P_Data+P_Exten.h"
 
 #import "NSView+P_Animation.h"
 #import "NSString+P_16Data.h"
@@ -18,18 +20,14 @@
 #import "P_PropertyList2ButtonCellView.h"
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
-#import "P_OutlineViewController+Edit.h"
 
-NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
-
-@interface P_OutlineViewController () <P_PropertyListCellViewDelegate, P_PropertyListOutlineView_MenuOperationDelegate>
+@interface P_OutlineViewController () <P_PropertyListCellViewDelegate>
 {
     NSUndoManager* _undoManager;
 }
 
-@property (nonatomic, strong) NSArray *designatedList;
-
 @property (nonatomic, strong) P_Data *root;
+
 
 @end
 
@@ -38,19 +36,10 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
     self.outlineView.menuOperationDelegate = self;
-
-    _undoManager = [NSUndoManager new];
-    
-    NSURL *configDescriptionListURL = [[NSBundle mainBundle] URLForResource:@"ConfigDescription" withExtension:@"plist"];
-    NSData *data = [NSData dataWithContentsOfURL:configDescriptionListURL];
-    NSDictionary *configPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
-    NSURL *configDefaultListURL = [[NSBundle mainBundle] URLForResource:@"DefaultConfig" withExtension:@"plist"];
-    data = [NSData dataWithContentsOfURL:configDefaultListURL];
-    NSDictionary *defaultPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
- 
     [self enableDragNDrop];
+    _undoManager = [NSUndoManager new];
+
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -265,14 +254,17 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     else if(column == 1)
     {
         NSError *err;
-        id p_value = [self _verifyValue:p.value ofType:value error:&err];
+        id p_value = [self _fixedValue:p.value ofType:value error:&err];
         if (err == nil) {
             [self _updateType:value value:p_value childDatas:nil ofItem:item];
+        } else {
+            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+            [self p_showAlertViewWith:err.localizedDescription];
         }
     }
     else if(column == 2)
     {
-        id new_value = [self _fixedValue:value ofType:p.type];
+        id new_value = [self _fixedValue:value ofType:p.type error:nil];
         if (new_value)
         {
             [self _updateValue:new_value ofItem:item withView:NO];
@@ -286,42 +278,100 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     
     return nil;
 }
+#pragma mark - NSMenuItemValidation
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+//    if(menuItem.action == @selector(undo:))
+//    {
+//        return _undoManager.canUndo;
+//    }
+//
+//    if(menuItem.action == @selector(redo:))
+//    {
+//        return _undoManager.canRedo;
+//    }
+//
+//    if(menuItem.action == @selector(add:))
+//    {
+//        return [self _validateCanAddForSender:menuItem];
+//    }
+//
+//    BOOL extraCase = YES;
+//    if(menuItem.action == @selector(delete:))
+//    {
+//        extraCase = [self _validateCanDeleteForSender:menuItem];
+//    }
+//
+//    if(menuItem.action == @selector(cut:))
+//    {
+//        extraCase = [self _validateCanDeleteForSender:menuItem];
+//    }
+//    if(menuItem.action == @selector(paste:))
+//    {
+//        return [self _validateCanPasteForSender:menuItem];
+//    }
+    
+    return NO;
+}
 
 #pragma mark - private
-- (id)_verifyValue:(id)value ofType:(P_PlistTypeName)type error:(NSError **)error
+- (id)_fixedValue:(id)value ofType:(P_PlistTypeName)type error:(NSError **)error
 {
-    id n_value = nil;
+    id n_value = value;
     if ([type isEqualToString: Plist.Dictionary]) {
-        n_value = @{};
+        if (![n_value isKindOfClass:[NSDictionary class]]) {
+            n_value = @{};
+        }
     } else if ([type isEqualToString: Plist.Array]) {
-        n_value = @[];
+        if (![n_value isKindOfClass:[NSArray class]]) {
+            n_value = @[];
+        }
     } else if ([type isEqualToString: Plist.String]) {
-        n_value = [value description];
+        if ([n_value isKindOfClass:[NSNumber class]]) {
+            n_value = [value description];
+        } else if ([n_value isKindOfClass:[NSDate class]]) {
+            n_value = [value description];
+        } else if (![n_value isKindOfClass:[NSString class]]) {
+            n_value = @"";
+        }
     } else if ([type isEqualToString: Plist.Number]) {
-        // 准备对象
-        NSString * searchStr = [value description];
-        // 创建 NSRegularExpression 对象,匹配 正则表达式
-        NSString * regExpStr = @"^[0-9]*";
-        NSRegularExpression *regExp = [[NSRegularExpression alloc] initWithPattern:regExpStr
-                                                        options:NSRegularExpressionDotMatchesLineSeparators
-                                                                             error:nil];
-        NSRange range = [regExp rangeOfFirstMatchInString:searchStr options:NSMatchingAnchored range:NSMakeRange(0, searchStr.length)];
-        NSString *result_string = [searchStr substringWithRange:range];
-        static NSNumberFormatter* __numberFormatter;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            __numberFormatter = [NSNumberFormatter new];
-        });
-        n_value = [__numberFormatter numberFromString:result_string];
-        if (n_value == nil) {
+        if ([n_value isKindOfClass:[NSString class]]) {
+            // 准备对象
+            NSString * searchStr = [n_value description];
+            // 创建 NSRegularExpression 对象,匹配 正则表达式
+            NSString * regExpStr = @"^[0-9]*";
+            NSRegularExpression *regExp = [[NSRegularExpression alloc] initWithPattern:regExpStr
+                                                                               options:NSRegularExpressionDotMatchesLineSeparators
+                                                                                 error:nil];
+            NSRange range = [regExp rangeOfFirstMatchInString:searchStr options:NSMatchingAnchored range:NSMakeRange(0, searchStr.length)];
+            NSString *result_string = [searchStr substringWithRange:range];
+            static NSNumberFormatter* __numberFormatter;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                __numberFormatter = [NSNumberFormatter new];
+            });
+            n_value = [__numberFormatter numberFromString:result_string];
+            if (n_value == nil) {
+                n_value = @0;
+            }
+        } else if (![n_value isKindOfClass:[NSNumber class]]) {
             n_value = @0;
         }
     } else if ([type isEqualToString: Plist.Boolean]) {
-        n_value = @([[value description] boolValue]);
+        if ([n_value isKindOfClass:[NSString class]]) {
+            n_value = @([value boolValue]);
+        } else if (![n_value isKindOfClass:[NSNumber class]]) {
+            n_value = @NO;
+        }
     } else if ([type isEqualToString: Plist.Date]) {
-        n_value = [NSDate date];
+        if (![n_value isKindOfClass:[NSDate class]]) {
+            n_value = [NSDate date];
+        }
     } else if ([type isEqualToString: Plist.Data]) {
-        n_value = [NSData data];
+        if (![n_value isKindOfClass:[NSData class]]) {
+            n_value = [NSData data];
+        }
+        n_value = nil;
     } else {
         if (error) {
             *error = [NSError errorWithDomain:@"ValueError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"不匹配这种类型:%@", type]}];
@@ -329,21 +379,6 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
         NSLog(@"不匹配这种类型:%@", type);
     }
     return n_value;
-}
-
-- (id)_fixedValue:(id)value ofType:(P_PlistTypeName)type
-{
-    if ([type isEqualToString: Plist.Number]) {
-        return [self _verifyValue:value ofType:type error:nil];
-    } else if ([type isEqualToString: Plist.Data]) {
-#warning Data类型暂时禁止修改。未参透功能。
-        return nil;
-    }  else if ([type isEqualToString: Plist.Date]) {
-        if (![value isKindOfClass:[NSDate class]]) {
-            return nil;
-        }
-    }
-    return value;
 }
 
 #pragma mark - 更新值key、type、value
@@ -444,22 +479,6 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     /** didChangeNode */
     
     NSLog(@"%@", p);
-}
-
-
-#pragma mark - P_PropertyListOutlineView_MenuOperationDelegate
-- (void)menuOperationForCut
-{
-}
-
-- (void)menuOperationForDelete
-{
-    [self deleteEditing];
-}
-
-- (void)menuOperationForCopy
-{
-    
 }
 
 @end
