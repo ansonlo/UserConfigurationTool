@@ -12,6 +12,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSPasteboardName const NSPasteboardName_P_Data;
+
 @interface P_OutlineViewController : P_OperationViewController
 
 @property (nonatomic, strong) P_Data *root;

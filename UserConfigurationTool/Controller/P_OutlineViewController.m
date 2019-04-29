@@ -18,9 +18,9 @@
 #import "P_PropertyList2ButtonCellView.h"
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
+//#import "P_OutlineViewController+Edit.h"
 
 NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
-NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
 
 @interface P_OutlineViewController () <P_PropertyListCellViewDelegate, P_PropertyListOutlineView_MenuOperationDelegate>
 {
@@ -37,7 +37,7 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.outlineView.menuOperationDelegate = self;
+//    self.outlineView.menuOperationDelegate = self;
 
     _undoManager = [NSUndoManager new];
     
@@ -47,7 +47,8 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
     NSURL *configDefaultListURL = [[NSBundle mainBundle] URLForResource:@"DefaultConfig" withExtension:@"plist"];
     data = [NSData dataWithContentsOfURL:configDefaultListURL];
     NSDictionary *defaultPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
-    
+ 
+//    [self enableDragNDrop];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -304,10 +305,14 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
                                                                              error:nil];
         NSRange range = [regExp rangeOfFirstMatchInString:searchStr options:NSMatchingAnchored range:NSMakeRange(0, searchStr.length)];
         NSString *result_string = [searchStr substringWithRange:range];
-        if (result_string.length == 0) {
+        static NSNumberFormatter* __numberFormatter;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            __numberFormatter = [NSNumberFormatter new];
+        });
+        n_value = [__numberFormatter numberFromString:result_string];
+        if (n_value == nil) {
             n_value = @0;
-        } else {
-            n_value = result_string;
         }
     } else if ([type isEqualToString: Plist.Boolean]) {
         n_value = @([[value description] boolValue]);
@@ -439,90 +444,21 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
     NSLog(@"%@", p);
 }
 
-//阶段二之支持拖拽
-- (id<NSPasteboardWriting>)outlineView:(NSOutlineView *)outlineView pasteboardWriterForItem:(id)item{
-    if ([item isKindOfClass:[P_Data class]]){
-        NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:item];
-        NSPasteboardItem* pbItem = [[NSPasteboardItem alloc] init];
-        [pbItem setData:archivedata forType:NSPasteboardTypeP_Data];
-        return pbItem;
-    }
-    return nil;
-}
-
-//阶段二之判断是否为有效拖拽
-- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index{
-    bool canDrag = index>=0 && item!=nil;
-    if (!canDrag){
-        return NSDragOperationNone;
-    }
-    return NSDragOperationMove;
-}
-
-//阶段二之拖拽调整位置
-//- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id<NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)index{
-//
-//    NSPasteboard* pb = [info draggingPasteboard];
-//    NSString *name = [pb stringForType:NSPasteboardTypeString];
-//    NSTreeNode *sourceNode = nil;
-//
-//    if([(NSTreeNode*)item childNodes] != nil){
-//        for(id node in [item childNodes]){
-//            Playlist * playlist = [node representedObject];
-//            if([playlist isKindOfClass:[Playlist class]]){
-//                if([playlist.name isEqualToString:name]){
-//                    sourceNode = node;
-//                }
-//            }
-//        }
-//    }
-//    if(sourceNode == nil){
-//        return NO;
-//    }
-//
-//    NSUInteger indexs[] ={0,index};
-//    NSIndexPath* toIndexPath = [[NSIndexPath alloc] initWithIndexes:indexs length:2];
-//    [_treeController moveNode:sourceNode toIndexPath:toIndexPath];
-//
-//    return YES;
-//}
 
 #pragma mark - P_PropertyListOutlineView_MenuOperationDelegate
 - (void)menuOperationForCut
 {
-    NSInteger cutIndex = [self.outlineView selectedRow];
-    if (cutIndex > 0) {
-        P_Data *cutData = [self.outlineView itemAtRow:cutIndex];
-        NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
-        [_pasteboard clearContents];
-        NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:cutData];
-//        NSPasteboardItem *item = [[NSPasteboardItem alloc] init];
-//        [item setData:archivedata forType:NSPasteboardTypeP_Data];
-        [_pasteboard setData:archivedata forType:NSPasteboardTypeP_Data];
-        [self.outlineView beginUpdates];
-        [self.root removeChildDataAtIndex:cutIndex-1];
-        [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:cutIndex-1] inParent:self.root withAnimation:(NSTableViewAnimationSlideDown)];
-        [self.outlineView endUpdates];
-        
-    }
 }
 
 - (void)menuOperationForDelete
 {
-//    NSInteger cutIndex = [self.outlineView selectedRow];
-//    P_Data *cutData = [self.outlineView itemAtRow:cutIndex];
-//    if (cutData.operation == P_Data_Operation_Delete) {
-//        [self.root removeChildDataAtIndex:cutIndex-1];
-//        [self.outlineView reloadData];
-//    }
+//    [self deleteEditing];
 }
 
 - (void)menuOperationForCopy
 {
-    NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
-    for (NSPasteboardItem *pasteboardItem in _pasteboard.pasteboardItems) {
-        NSLog(@"pasteboardItem:%@", pasteboardItem);
-    }
+    
 }
+
 @end
 

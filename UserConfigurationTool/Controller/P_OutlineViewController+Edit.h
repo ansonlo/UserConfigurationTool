@@ -12,6 +12,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface P_OutlineViewController (Edit)
 
+-(void) enableDragNDrop;
+
+- (void)cutEditing;
+
+- (void)deleteEditing;
+
+- (BOOL)copyEditing;
+
 @end
 
 NS_ASSUME_NONNULL_END
