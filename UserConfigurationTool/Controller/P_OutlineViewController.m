@@ -20,8 +20,9 @@
 #import "P_PropertyList2ButtonCellView.h"
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
+#import "P_OutlineViewController+Edit.h"
 
-@interface P_OutlineViewController () <P_PropertyListCellViewDelegate>
+@interface P_OutlineViewController () <P_PropertyListCellViewDelegate, P_PropertyListOutlineView_MenuOperationDelegate>
 {
     NSUndoManager* _undoManager;
 }
