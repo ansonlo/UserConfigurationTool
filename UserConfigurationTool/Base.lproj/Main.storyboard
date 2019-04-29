@@ -678,7 +678,7 @@
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
+            <point key="canvasLocation" x="-6" y="-121"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -875,7 +875,7 @@
                                                                 <constraint firstItem="hjt-pY-XuY" firstAttribute="leading" secondItem="fo4-Ve-Klr" secondAttribute="trailing" constant="4" id="JHL-yU-4Q0"/>
                                                                 <constraint firstItem="hjt-pY-XuY" firstAttribute="centerY" secondItem="3ty-OT-mPX" secondAttribute="centerY" id="JzB-fF-wt6"/>
                                                                 <constraint firstAttribute="trailing" secondItem="3ty-OT-mPX" secondAttribute="trailing" constant="2" id="YAw-8V-4U6"/>
-                                                                <constraint firstAttribute="trailing" secondItem="fo4-Ve-Klr" secondAttribute="trailing" priority="999" constant="2" id="Zqw-cA-sAO"/>
+                                                                <constraint firstAttribute="trailing" secondItem="fo4-Ve-Klr" secondAttribute="trailing" priority="250" constant="2" id="Zqw-cA-sAO"/>
                                                                 <constraint firstItem="3ty-OT-mPX" firstAttribute="centerY" secondItem="Uum-ob-r42" secondAttribute="centerY" id="oT9-G7-fJO"/>
                                                                 <constraint firstItem="3ty-OT-mPX" firstAttribute="leading" secondItem="hjt-pY-XuY" secondAttribute="trailing" constant="2" id="yE1-yR-XSc"/>
                                                             </constraints>

@@ -8,6 +8,10 @@
 
 #import "P_PropertyListOutlineView.h"
 
+@interface P_PropertyListOutlineView ()
+
+@end
+
 @implementation P_PropertyListOutlineView
 
 - (void)awakeFromNib
@@ -60,7 +64,49 @@
     
 }
 
+#pragma mark - NSMenuItemValidation
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+    if(menuItem.action == @selector(cut:) && [self respondsToSelector:@selector(cut:)])
+    {
+        return YES;
+    } else if (menuItem.action == @selector(delete:) && [self respondsToSelector:@selector(delete:)]) {
+        return YES;
+    } else if (menuItem.action == @selector(paste:) && [self respondsToSelector:@selector(paste:)]) {
+        return YES;
+    } else if (menuItem.action == @selector(copy:) && [self respondsToSelector:@selector(copy:)]) {
+        return YES;
+    }
+    return NO;
+}
 
 
+- (void)cut:(id)sender
+{
+    if ([self.menuOperationDelegate respondsToSelector:@selector(menuOperationForCut)]) {
+        [self.menuOperationDelegate menuOperationForCut];
+    }
+}
+
+- (void)delete:(id)sender
+{
+    if ([self.menuOperationDelegate respondsToSelector:@selector(menuOperationForDelete)]) {
+        [self.menuOperationDelegate menuOperationForDelete];
+    }
+}
+
+- (void)paste:(id)sender
+{
+    if ([self.menuOperationDelegate respondsToSelector:@selector(menuOperationForPaste)]) {
+        [self.menuOperationDelegate menuOperationForPaste];
+    }
+}
+
+- (void)copy:(id)sender
+{
+    if ([self.menuOperationDelegate respondsToSelector:@selector(menuOperationForCopy)]) {
+        [self.menuOperationDelegate menuOperationForCopy];
+    }
+}
 
 @end

@@ -7,10 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "P_PropertyListOutlineView.h"
 
-@interface P_OperationViewController : NSViewController <NSOutlineViewDelegate,NSOutlineViewDataSource>
+@interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource>
 
-@property (weak) IBOutlet NSOutlineView *outlineView;
+@property (weak) IBOutlet P_PropertyListOutlineView *outlineView;
 
 @property (nonatomic, readonly) NSURL *plistUrl;
 

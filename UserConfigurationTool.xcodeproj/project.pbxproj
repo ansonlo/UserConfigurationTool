@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05A64D3A2275A60A00BEE20D /* P_OutlineViewController+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 05A64D392275A60A00BEE20D /* P_OutlineViewController+Edit.m */; };
 		C71439552269CD7F008D15C6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439542269CD7F008D15C6 /* AppDelegate.m */; };
 		C71439582269CD7F008D15C6 /* P_OperationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439572269CD7F008D15C6 /* P_OperationViewController.m */; };
 		C714395A2269CD80008D15C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C71439592269CD80008D15C6 /* Assets.xcassets */; };
@@ -26,6 +27,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05A64D382275A60A00BEE20D /* P_OutlineViewController+Edit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "P_OutlineViewController+Edit.h"; sourceTree = "<group>"; };
+		05A64D392275A60A00BEE20D /* P_OutlineViewController+Edit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "P_OutlineViewController+Edit.m"; sourceTree = "<group>"; };
 		C71439502269CD7F008D15C6 /* UserConfigurationTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UserConfigurationTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C71439532269CD7F008D15C6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C71439542269CD7F008D15C6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -115,6 +118,8 @@
 				C71439572269CD7F008D15C6 /* P_OperationViewController.m */,
 				C7143976226D64D4008D15C6 /* P_OutlineViewController.h */,
 				C7143977226D64D4008D15C6 /* P_OutlineViewController.m */,
+				05A64D382275A60A00BEE20D /* P_OutlineViewController+Edit.h */,
+				05A64D392275A60A00BEE20D /* P_OutlineViewController+Edit.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -272,6 +277,7 @@
 				C71439C0226F06EE008D15C6 /* P_PropertyListDatePicker.mm in Sources */,
 				C71439C3226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m in Sources */,
 				C71439552269CD7F008D15C6 /* AppDelegate.m in Sources */,
+				05A64D3A2275A60A00BEE20D /* P_OutlineViewController+Edit.m in Sources */,
 				C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

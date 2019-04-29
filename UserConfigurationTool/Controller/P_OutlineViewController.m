@@ -8,8 +8,6 @@
 
 #import "P_OutlineViewController.h"
 #import "P_TypeHeader.h"
-#import "P_Data.h"
-#import "P_Data+P_Exten.h"
 
 #import "NSView+P_Animation.h"
 
@@ -20,15 +18,15 @@
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
 
-@interface P_OutlineViewController () <P_PropertyListCellViewDelegate>
+NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
+NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
+
+@interface P_OutlineViewController () <P_PropertyListCellViewDelegate, P_PropertyListOutlineView_MenuOperationDelegate>
 {
     NSUndoManager* _undoManager;
 }
 
-@property (nonatomic, strong) P_Data *root;
-
 @property (nonatomic, strong) NSArray *designatedList;
-
 
 @end
 
@@ -38,6 +36,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.outlineView.menuOperationDelegate = self;
+
     _undoManager = [NSUndoManager new];
     
 }
@@ -288,41 +288,6 @@
     
     return nil;
 }
-#pragma mark - NSMenuItemValidation
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
-{
-//    if(menuItem.action == @selector(undo:))
-//    {
-//        return _undoManager.canUndo;
-//    }
-//
-//    if(menuItem.action == @selector(redo:))
-//    {
-//        return _undoManager.canRedo;
-//    }
-//
-//    if(menuItem.action == @selector(add:))
-//    {
-//        return [self _validateCanAddForSender:menuItem];
-//    }
-//
-//    BOOL extraCase = YES;
-//    if(menuItem.action == @selector(delete:))
-//    {
-//        extraCase = [self _validateCanDeleteForSender:menuItem];
-//    }
-//
-//    if(menuItem.action == @selector(cut:))
-//    {
-//        extraCase = [self _validateCanDeleteForSender:menuItem];
-//    }
-//    if(menuItem.action == @selector(paste:))
-//    {
-//        return [self _validateCanPasteForSender:menuItem];
-//    }
-    
-    return NO;
-}
 
 #pragma mark - private
 - (id)_verifyValue:(id)value ofType:(P_PlistTypeName)type error:(NSError **)error
@@ -471,5 +436,90 @@
     /** didChangeNode */
 }
 
+//阶段二之支持拖拽
+- (id<NSPasteboardWriting>)outlineView:(NSOutlineView *)outlineView pasteboardWriterForItem:(id)item{
+    if ([item isKindOfClass:[P_Data class]]){
+        NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:item];
+        NSPasteboardItem* pbItem = [[NSPasteboardItem alloc] init];
+        [pbItem setData:archivedata forType:NSPasteboardTypeP_Data];
+        return pbItem;
+    }
+    return nil;
+}
+
+//阶段二之判断是否为有效拖拽
+- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index{
+    bool canDrag = index>=0 && item!=nil;
+    if (!canDrag){
+        return NSDragOperationNone;
+    }
+    return NSDragOperationMove;
+}
+
+//阶段二之拖拽调整位置
+//- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id<NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)index{
+//
+//    NSPasteboard* pb = [info draggingPasteboard];
+//    NSString *name = [pb stringForType:NSPasteboardTypeString];
+//    NSTreeNode *sourceNode = nil;
+//
+//    if([(NSTreeNode*)item childNodes] != nil){
+//        for(id node in [item childNodes]){
+//            Playlist * playlist = [node representedObject];
+//            if([playlist isKindOfClass:[Playlist class]]){
+//                if([playlist.name isEqualToString:name]){
+//                    sourceNode = node;
+//                }
+//            }
+//        }
+//    }
+//    if(sourceNode == nil){
+//        return NO;
+//    }
+//
+//    NSUInteger indexs[] ={0,index};
+//    NSIndexPath* toIndexPath = [[NSIndexPath alloc] initWithIndexes:indexs length:2];
+//    [_treeController moveNode:sourceNode toIndexPath:toIndexPath];
+//
+//    return YES;
+//}
+
+#pragma mark - P_PropertyListOutlineView_MenuOperationDelegate
+- (void)menuOperationForCut
+{
+    NSInteger cutIndex = [self.outlineView selectedRow];
+    if (cutIndex > 0) {
+        P_Data *cutData = [self.outlineView itemAtRow:cutIndex];
+        NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
+        [_pasteboard clearContents];
+        NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:cutData];
+//        NSPasteboardItem *item = [[NSPasteboardItem alloc] init];
+//        [item setData:archivedata forType:NSPasteboardTypeP_Data];
+        [_pasteboard setData:archivedata forType:NSPasteboardTypeP_Data];
+        [self.outlineView beginUpdates];
+        [self.root removeChildDataAtIndex:cutIndex-1];
+        [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:cutIndex-1] inParent:self.root withAnimation:(NSTableViewAnimationSlideDown)];
+        [self.outlineView endUpdates];
+        
+    }
+}
+
+- (void)menuOperationForDelete
+{
+//    NSInteger cutIndex = [self.outlineView selectedRow];
+//    P_Data *cutData = [self.outlineView itemAtRow:cutIndex];
+//    if (cutData.operation == P_Data_Operation_Delete) {
+//        [self.root removeChildDataAtIndex:cutIndex-1];
+//        [self.outlineView reloadData];
+//    }
+}
+
+- (void)menuOperationForCopy
+{
+    NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
+    for (NSPasteboardItem *pasteboardItem in _pasteboard.pasteboardItems) {
+        NSLog(@"pasteboardItem:%@", pasteboardItem);
+    }
+}
 @end
 
