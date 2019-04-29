@@ -678,7 +678,7 @@
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6" y="-121"/>
+            <point key="canvasLocation" x="75" y="0.0"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -712,7 +712,7 @@
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="whW-ah-oIr">
                                 <rect key="frame" x="0.0" y="436" width="720" height="44"/>
                                 <subviews>
-                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="alq-ha-xSF">
+                                    <button toolTip="打开" translatesAutoresizingMaskIntoConstraints="NO" id="alq-ha-xSF">
                                         <rect key="frame" x="20" y="6" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="32" id="AYo-R6-Cwf"/>
@@ -726,7 +726,7 @@
                                             <action selector="openPlistFileAction:" target="XfG-lQ-9wD" id="gsO-I6-4EX"/>
                                         </connections>
                                     </button>
-                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="rBm-bc-8aN">
+                                    <button toolTip="重置" translatesAutoresizingMaskIntoConstraints="NO" id="rBm-bc-8aN">
                                         <rect key="frame" x="92" y="6" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="rBm-bc-8aN" secondAttribute="height" multiplier="1:1" id="UCc-bi-wlm"/>
@@ -740,7 +740,7 @@
                                             <action selector="resetAction:" target="XfG-lQ-9wD" id="TIF-ii-a4l"/>
                                         </connections>
                                     </button>
-                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="IiG-wE-b77">
+                                    <button toolTip="添加" translatesAutoresizingMaskIntoConstraints="NO" id="IiG-wE-b77">
                                         <rect key="frame" x="184" y="6" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="IiG-wE-b77" secondAttribute="height" multiplier="1:1" id="Uxb-oU-tn4"/>
@@ -754,7 +754,7 @@
                                             <action selector="addAction:" target="XfG-lQ-9wD" id="bBl-Ls-qdE"/>
                                         </connections>
                                     </button>
-                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="fom-b4-SMA">
+                                    <button toolTip="删除" translatesAutoresizingMaskIntoConstraints="NO" id="fom-b4-SMA">
                                         <rect key="frame" x="236" y="6" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="fom-b4-SMA" secondAttribute="height" multiplier="1:1" id="J7U-6E-kbz"/>
@@ -768,7 +768,7 @@
                                             <action selector="removeAction:" target="XfG-lQ-9wD" id="rTA-Kd-3Nh"/>
                                         </connections>
                                     </button>
-                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="3CL-dI-jFO">
+                                    <button toolTip="保存" translatesAutoresizingMaskIntoConstraints="NO" id="3CL-dI-jFO">
                                         <rect key="frame" x="668" y="6" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="3CL-dI-jFO" secondAttribute="height" multiplier="1:1" id="Bo6-yz-W31"/>
@@ -857,32 +857,37 @@
                                                                         <action selector="p_plusAction:" target="Uum-ob-r42" id="Anq-Vf-4ez"/>
                                                                     </connections>
                                                                 </button>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="fo4-Ve-Klr" userLabel="Key Title">
-                                                                    <rect key="frame" x="4" y="2" width="208" height="14"/>
-                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" title="Key" usesSingleLineMode="YES" id="PJx-Bq-GCH">
+                                                                <comboBox focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9X5-pM-AXl">
+                                                                    <rect key="frame" x="6" y="-2" width="235" height="19"/>
+                                                                    <comboBoxCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" usesSingleLineMode="YES" buttonBordered="NO" numberOfVisibleItems="10" id="Q61-mR-0kC">
                                                                         <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                    </textFieldCell>
-                                                                    <connections>
-                                                                        <outlet property="delegate" destination="Uum-ob-r42" id="E9S-hh-NzN"/>
-                                                                    </connections>
-                                                                </textField>
+                                                                        <objectValues>
+                                                                            <string>Item</string>
+                                                                            <string>Item</string>
+                                                                            <string>Item</string>
+                                                                            <string>Item</string>
+                                                                            <string>Item</string>
+                                                                        </objectValues>
+                                                                    </comboBoxCell>
+                                                                </comboBox>
                                                             </subviews>
                                                             <constraints>
-                                                                <constraint firstItem="fo4-Ve-Klr" firstAttribute="centerY" secondItem="Uum-ob-r42" secondAttribute="centerY" id="8ev-sc-fMt"/>
-                                                                <constraint firstItem="fo4-Ve-Klr" firstAttribute="leading" secondItem="Uum-ob-r42" secondAttribute="leading" constant="6" id="Cmx-DZ-MPJ"/>
-                                                                <constraint firstItem="hjt-pY-XuY" firstAttribute="leading" secondItem="fo4-Ve-Klr" secondAttribute="trailing" constant="4" id="JHL-yU-4Q0"/>
                                                                 <constraint firstItem="hjt-pY-XuY" firstAttribute="centerY" secondItem="3ty-OT-mPX" secondAttribute="centerY" id="JzB-fF-wt6"/>
+                                                                <constraint firstAttribute="trailing" secondItem="9X5-pM-AXl" secondAttribute="trailing" priority="750" constant="2" id="VP3-cg-BB9"/>
                                                                 <constraint firstAttribute="trailing" secondItem="3ty-OT-mPX" secondAttribute="trailing" constant="2" id="YAw-8V-4U6"/>
-                                                                <constraint firstAttribute="trailing" secondItem="fo4-Ve-Klr" secondAttribute="trailing" priority="250" constant="2" id="Zqw-cA-sAO"/>
+                                                                <constraint firstItem="9X5-pM-AXl" firstAttribute="centerY" secondItem="Uum-ob-r42" secondAttribute="centerY" id="bND-wq-t5b"/>
                                                                 <constraint firstItem="3ty-OT-mPX" firstAttribute="centerY" secondItem="Uum-ob-r42" secondAttribute="centerY" id="oT9-G7-fJO"/>
+                                                                <constraint firstItem="9X5-pM-AXl" firstAttribute="leading" secondItem="Uum-ob-r42" secondAttribute="leading" constant="6" id="w8b-eK-Alk"/>
                                                                 <constraint firstItem="3ty-OT-mPX" firstAttribute="leading" secondItem="hjt-pY-XuY" secondAttribute="trailing" constant="2" id="yE1-yR-XSc"/>
                                                             </constraints>
                                                             <connections>
+                                                                <outlet property="comboBox" destination="9X5-pM-AXl" id="Zil-Qn-aw4"/>
+                                                                <outlet property="comboBoxTrailing" destination="VP3-cg-BB9" id="kEU-kQ-BsG"/>
                                                                 <outlet property="minusButton" destination="3ty-OT-mPX" id="8kS-lX-HTY"/>
                                                                 <outlet property="plusButton" destination="hjt-pY-XuY" id="rYu-1S-Ohv"/>
-                                                                <outlet property="textField" destination="fo4-Ve-Klr" id="f1b-oK-sn9"/>
+                                                                <outlet property="textField" destination="9X5-pM-AXl" id="w1c-Nd-oZi"/>
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>

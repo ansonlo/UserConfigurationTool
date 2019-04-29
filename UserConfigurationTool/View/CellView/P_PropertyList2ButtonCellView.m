@@ -13,7 +13,9 @@
 
 @property (weak) IBOutlet NSButton *minusButton;
 @property (weak) IBOutlet NSButton *plusButton;
+@property (weak) IBOutlet NSComboBox *comboBox;
 
+@property (weak) IBOutlet NSLayoutConstraint *comboBoxTrailing;
 @end
 
 @implementation P_PropertyList2ButtonCellView
@@ -27,6 +29,8 @@
 
 - (void)p_setShowsControlButtons:(BOOL)showsControlButtons addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled
 {
+    self.comboBoxTrailing.constant = showsControlButtons ? self.frame.size.width-self.plusButton.frame.origin.x+2 : 2;
+    
     self.plusButton.hidden = self.minusButton.hidden = !showsControlButtons;
     
     self.plusButton.enabled = addButtonEnabled;

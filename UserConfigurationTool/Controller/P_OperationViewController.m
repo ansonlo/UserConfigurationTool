@@ -7,6 +7,7 @@
 //
 
 #import "P_OperationViewController.h"
+#import "P_TypeHeader.h"
 
 @interface P_OperationViewController ()
 
@@ -41,7 +42,7 @@
     [panel setAllowsMultipleSelection:NO];
     [panel setCanChooseDirectories:NO];
     [panel setCanChooseFiles:YES];
-    [panel setAllowedFileTypes:@[@"plist", @"mrlPlist"]];
+    [panel setAllowedFileTypes:[PlistGlobalConfig.allowedFileTypes componentsSeparatedByString:@","]];
     [panel setAllowsOtherFileTypes:NO];
     if ([panel runModal] == NSModalResponseOK)
     {
@@ -68,7 +69,7 @@
     } else {
         NSSavePanel *panel = [NSSavePanel savePanel];
         [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
-        [panel setNameFieldStringValue:@"Untitle.mrlPlist"];
+        [panel setNameFieldStringValue:[@"Untitle" stringByAppendingPathExtension:PlistGlobalConfig.encryptFileExtension]];
         [panel setMessage:@"Choose the path to save the mrlPlist"];
         [panel setAllowsOtherFileTypes:YES];
         [panel setAllowedFileTypes:@[@"mrlPlist"]];
@@ -93,9 +94,9 @@
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:@"提 示"];
     [alert setInformativeText:InformativeText];
-    [alert addButtonWithTitle:@"OK"];
+    [alert addButtonWithTitle:NSLocalizedString(@"OK", @"")];
     [alert setAlertStyle:NSAlertStyleWarning];
-    [alert runModal];
+    [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
 }
 
 #pragma mark - private

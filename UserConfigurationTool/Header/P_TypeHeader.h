@@ -11,6 +11,19 @@
 
 #import <Cocoa/Cocoa.h>
 
+struct PlistGlobalConfigType {
+    /** 允许解析的文件后缀 bmp,jpg,xxxx */
+    NSString *allowedFileTypes;
+    /** 加密文件后缀 */
+    NSString *encryptFileExtension;
+    /** 仅支持指定key的输入 */
+    BOOL onlySupportSpecifiedKey;
+    
+    NSString *requestedName;
+};
+
+static struct PlistGlobalConfigType PlistGlobalConfig = {@"plist,mrlPlist", @"mrlPlist", NO, @"【必填】"};
+
 typedef NSString *P_PlistColumnIdentifierName NS_EXTENSIBLE_STRING_ENUM;
 
 struct PlistColumnIdentifierType {
@@ -51,10 +64,10 @@ struct PlistCellType {
     P_PlistCellName ValueDateCell;
 };
 
-static struct PlistColumnIdentifierType PlistColumnIdentifier = {@"Key", @"Type", @"Value"};
-static struct PlistType Plist = {@"Dictionary", @"Array", @"Boolean", @"String", @"Number", @"Date", @"Data"};
-static struct PlistBooleanType PlistBoolean = {@"YES", @"NO"};
-static struct PlistCellType PlistCell = {@"P_KeyCell", @"P_TypeCell", @"P_ValueCell", @"P_ValueBoolCell", @"P_ValueDateCell"};
+static struct PlistColumnIdentifierType const PlistColumnIdentifier = {@"Key", @"Type", @"Value"};
+static struct PlistType const Plist = {@"Dictionary", @"Array", @"Boolean", @"String", @"Number", @"Date", @"Data"};
+static struct PlistBooleanType const PlistBoolean = {@"YES", @"NO"};
+static struct PlistCellType const PlistCell = {@"P_KeyCell", @"P_TypeCell", @"P_ValueCell", @"P_ValueBoolCell", @"P_ValueDateCell"};
 
 typedef NS_ENUM(NSUInteger, P_Data_EditableType) {
     /** 可编辑key */

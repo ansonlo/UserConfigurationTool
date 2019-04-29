@@ -8,6 +8,7 @@
 
 #import "P_Data.h"
 #import "P_TypeHeader.h"
+#import <AESCrypt/AESCrypt.h>
 
 @interface P_Data ()
 
@@ -15,8 +16,6 @@
 @property (nonatomic, strong) NSMutableArray <P_Data *>*m_childDatas;
 
 #pragma mark - extern
-/** 展开状态 */
-@property (nonatomic, assign) BOOL expandState;
 
 /** 编辑类型 */
 @property (nonatomic, assign) P_Data_EditableType editable;
@@ -31,8 +30,6 @@
 {
     self = [super init];
     if (self) {
-        
-        _expandState = NO;
         _editable = P_Data_Editable_All;
         _operation = P_Data_Operation_All;
     }
@@ -41,21 +38,20 @@
 
 + (instancetype)rootWithPlistUrl:(NSURL *)plistUrl
 {
-    id obj = [NSPropertyListSerialization propertyListWithData:[NSData dataWithContentsOfURL:plistUrl] options:0 format:nil error:NULL];
-    if ([obj isKindOfClass:[NSDictionary class]]) {
-        P_Data *p = [[[self class] alloc] initWithPlistKey:@"Root" value:obj];
-        p.expandState = YES;
+    NSData *data = [NSData dataWithContentsOfURL:plistUrl];
+    if ([plistUrl.lastPathComponent.pathExtension isEqualToString:PlistGlobalConfig.encryptFileExtension]) {
+        data = [AESCrypt encrypt]->decrypt(data);
+    }
+    id obj = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    P_Data *p = nil;
+    if ([obj isKindOfClass:[NSDictionary class]] || [obj isKindOfClass:[NSArray class]]) {
+        p = [[[self class] alloc] initWithPlistKey:@"Root" value:obj];
         p.editable ^= P_Data_Editable_Key;
-        return p;
-    } else if ([obj isKindOfClass:[NSArray class]]) {
-        P_Data *p = [[[self class] alloc] initWithPlistKey:@"Root" value:obj];
-        p.expandState = YES;
-        p.editable ^= P_Data_Editable_Key;
-        return p;
+        p.operation = P_Data_Operation_Insert;
     } else {
         NSLog(@"The plistUrl is not a plist file url.");
     }
-    return nil;
+    return p;
 }
 
 - (instancetype)initWithPlistKey:(NSString *)key value:(id)value
@@ -156,7 +152,7 @@
         return [self.value description];
     } else if ([self.type isEqualToString: Plist.Data]) {
         if ([self.value isKindOfClass:[NSData class]]) {
-            return @"<DATA开发>";
+            return [self.value description];
         }
     }
     return @"";
@@ -245,6 +241,21 @@
     return plist;
 }
 
+- (NSData *)data
+{
+    id plist = self.plist;
+    if (plist) {
+        NSData *data = [NSPropertyListSerialization dataWithPropertyList:plist
+                                                                  format:NSPropertyListBinaryFormat_v1_0
+                                                                 options:0
+                                                                   error:nil];
+        if (data) {
+            return [AESCrypt encrypt]->encrypt(data);
+        }
+    }
+    return nil;
+}
+
 #pragma mark - NSCopying
 - (id)copyWithZone:(nullable NSZone *)zone
 {
@@ -265,6 +276,59 @@
     }
     
     return p;
+}
+
+#pragma mark - NSSecureCoding
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    
+    if(self)
+    {
+        self.key = [aDecoder decodeObjectForKey:@"key"];
+        self.type = [aDecoder decodeObjectForKey:@"type"];
+        self.value = [aDecoder decodeObjectForKey:@"value"];
+        self.m_childDatas = [aDecoder decodeObjectForKey:@"children"];
+        
+        self.editable = [[aDecoder decodeObjectForKey:@"editable"] integerValue];
+        self.operation = [[aDecoder decodeObjectForKey:@"operation"] integerValue];
+        
+        [self.m_childDatas enumerateObjectsUsingBlock:^(P_Data * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            obj.parentData = self;
+        }];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:self.key forKey:@"key"];
+    [aCoder encodeObject:self.type forKey:@"type"];
+    [aCoder encodeObject:self.value forKey:@"value"];
+    [aCoder encodeObject:self.m_childDatas forKey:@"children"];
+    
+    [aCoder encodeObject:@(self.editable) forKey:@"editable"];
+    [aCoder encodeObject:@(self.operation) forKey:@"operation"];
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+#pragma mark - description
+- (NSString *)description
+{
+    NSMutableString* builder = [NSMutableString stringWithFormat:@"<%@ %p", self.className, self];
+    
+    [builder appendFormat:@" key: “%@”", self.key];
+    [builder appendFormat:@" type: “%@”", self.type];
+    [builder appendFormat:@" value: “%@”", self.valueDesc];
+    [builder appendString:@">"];
+    
+    return builder;
 }
 
 @end

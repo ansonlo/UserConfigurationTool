@@ -10,6 +10,7 @@
 #import "P_TypeHeader.h"
 
 #import "NSView+P_Animation.h"
+#import "NSString+P_16Data.h"
 
 #import "P_PropertyListRowView.h"
 #import "P_PropertyListBasicCellView.h"
@@ -40,6 +41,13 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
 
     _undoManager = [NSUndoManager new];
     
+    NSURL *configDescriptionListURL = [[NSBundle mainBundle] URLForResource:@"ConfigDescription" withExtension:@"plist"];
+    NSData *data = [NSData dataWithContentsOfURL:configDescriptionListURL];
+    NSDictionary *configPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    NSURL *configDefaultListURL = [[NSBundle mainBundle] URLForResource:@"DefaultConfig" withExtension:@"plist"];
+    data = [NSData dataWithContentsOfURL:configDefaultListURL];
+    NSDictionary *defaultPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -67,23 +75,14 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
 {
     P_Data *root = self.root;
     
-    id plist = root.plist;
-    if ([plist isKindOfClass:[NSDictionary class]]) {
-        BOOL success = [(NSDictionary *)plist writeToURL:plistUrl atomically:YES];
-        if (success) {
-            NSLog(@"save plist success!");
-        } else {
-            NSLog(@"save plist fail!");
-        }
-    } else if ([plist isKindOfClass:[NSArray class]]) {
-        BOOL success = [(NSArray *)plist writeToURL:plistUrl atomically:YES];
-        if (success) {
-            NSLog(@"save plist success!");
-        } else {
-            NSLog(@"save plist fail!");
-        }
+    NSData *data = root.data;
+    
+    BOOL success = [data writeToURL:plistUrl atomically:YES];
+    
+    if (success) {
+        [self p_showAlertViewWith:NSLocalizedString(@"save plist success!", @"")];
     } else {
-        NSLog(@"data convert to plist fail!");
+        [self p_showAlertViewWith:NSLocalizedString(@"save plist fail!", @"")];
     }
 }
 
@@ -255,11 +254,7 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
         {
             [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
             
-            NSAlert* alert = [NSAlert new];
-            alert.alertStyle = NSAlertStyleWarning;
-            alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), value];
-            [alert addButtonWithTitle:NSLocalizedString(@"OK", @"")];
-            [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
+            [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), value]];
             
         }
         return p.key;
@@ -344,6 +339,8 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
     return value;
 }
 
+#pragma mark - 更新值key、type、value
+
 - (void)_updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
 {
     P_Data *p = item;
@@ -370,6 +367,8 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
     }];
     
     /** didChangeNode */
+    
+    NSLog(@"%@", p);
 }
 
 - (void)_updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *)childDatas ofItem:(id)item
@@ -398,6 +397,8 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
     }];
     
     /** didChangeNode */
+    
+    NSLog(@"%@", p);
 }
 
 - (void)_updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
@@ -434,6 +435,8 @@ NSPasteboardType const NSPasteboardTypeP_Data = @"NSPasteboardTypeP_Data";
     }];
     
     /** didChangeNode */
+    
+    NSLog(@"%@", p);
 }
 
 //阶段二之支持拖拽
