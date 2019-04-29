@@ -253,14 +253,17 @@
     else if(column == 1)
     {
         NSError *err;
-        id p_value = [self _verifyValue:p.value ofType:value error:&err];
+        id p_value = [self _fixedValue:p.value ofType:value error:&err];
         if (err == nil) {
             [self _updateType:value value:p_value childDatas:nil ofItem:item];
+        } else {
+            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+            [self p_showAlertViewWith:err.localizedDescription];
         }
     }
     else if(column == 2)
     {
-        id new_value = [self _fixedValue:value ofType:p.type];
+        id new_value = [self _fixedValue:value ofType:p.type error:nil];
         if (new_value)
         {
             [self _updateValue:new_value ofItem:item withView:NO];
@@ -311,36 +314,63 @@
 }
 
 #pragma mark - private
-- (id)_verifyValue:(id)value ofType:(P_PlistTypeName)type error:(NSError **)error
+- (id)_fixedValue:(id)value ofType:(P_PlistTypeName)type error:(NSError **)error
 {
-    id n_value = nil;
+    id n_value = value;
     if ([type isEqualToString: Plist.Dictionary]) {
-        n_value = @{};
+        if (![n_value isKindOfClass:[NSDictionary class]]) {
+            n_value = @{};
+        }
     } else if ([type isEqualToString: Plist.Array]) {
-        n_value = @[];
+        if (![n_value isKindOfClass:[NSArray class]]) {
+            n_value = @[];
+        }
     } else if ([type isEqualToString: Plist.String]) {
-        n_value = [value description];
+        if ([n_value isKindOfClass:[NSNumber class]]) {
+            n_value = [value description];
+        } else if ([n_value isKindOfClass:[NSDate class]]) {
+            n_value = [value description];
+        } else if (![n_value isKindOfClass:[NSString class]]) {
+            n_value = @"";
+        }
     } else if ([type isEqualToString: Plist.Number]) {
-        // 准备对象
-        NSString * searchStr = [value description];
-        // 创建 NSRegularExpression 对象,匹配 正则表达式
-        NSString * regExpStr = @"^[0-9]*";
-        NSRegularExpression *regExp = [[NSRegularExpression alloc] initWithPattern:regExpStr
-                                                        options:NSRegularExpressionDotMatchesLineSeparators
-                                                                             error:nil];
-        NSRange range = [regExp rangeOfFirstMatchInString:searchStr options:NSMatchingAnchored range:NSMakeRange(0, searchStr.length)];
-        NSString *result_string = [searchStr substringWithRange:range];
-        if (result_string.length == 0) {
+        if ([n_value isKindOfClass:[NSString class]]) {
+            // 准备对象
+            NSString * searchStr = [n_value description];
+            // 创建 NSRegularExpression 对象,匹配 正则表达式
+            NSString * regExpStr = @"^[0-9]*";
+            NSRegularExpression *regExp = [[NSRegularExpression alloc] initWithPattern:regExpStr
+                                                                               options:NSRegularExpressionDotMatchesLineSeparators
+                                                                                 error:nil];
+            NSRange range = [regExp rangeOfFirstMatchInString:searchStr options:NSMatchingAnchored range:NSMakeRange(0, searchStr.length)];
+            NSString *result_string = [searchStr substringWithRange:range];
+            static NSNumberFormatter* __numberFormatter;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                __numberFormatter = [NSNumberFormatter new];
+            });
+            n_value = [__numberFormatter numberFromString:result_string];
+            if (n_value == nil) {
+                n_value = @0;
+            }
+        } else if (![n_value isKindOfClass:[NSNumber class]]) {
             n_value = @0;
-        } else {
-            n_value = result_string;
         }
     } else if ([type isEqualToString: Plist.Boolean]) {
-        n_value = @([[value description] boolValue]);
+        if ([n_value isKindOfClass:[NSString class]]) {
+            n_value = @([value boolValue]);
+        } else if (![n_value isKindOfClass:[NSNumber class]]) {
+            n_value = @NO;
+        }
     } else if ([type isEqualToString: Plist.Date]) {
-        n_value = [NSDate date];
+        if (![n_value isKindOfClass:[NSDate class]]) {
+            n_value = [NSDate date];
+        }
     } else if ([type isEqualToString: Plist.Data]) {
-        n_value = [NSData data];
+        if (![n_value isKindOfClass:[NSData class]]) {
+            n_value = [NSData data];
+        }
+        n_value = nil;
     } else {
         if (error) {
             *error = [NSError errorWithDomain:@"ValueError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"不匹配这种类型:%@", type]}];
@@ -348,21 +378,6 @@
         NSLog(@"不匹配这种类型:%@", type);
     }
     return n_value;
-}
-
-- (id)_fixedValue:(id)value ofType:(P_PlistTypeName)type
-{
-    if ([type isEqualToString: Plist.Number]) {
-        return [self _verifyValue:value ofType:type error:nil];
-    } else if ([type isEqualToString: Plist.Data]) {
-#warning Data类型暂时禁止修改。未参透功能。
-        return nil;
-    }  else if ([type isEqualToString: Plist.Date]) {
-        if (![value isKindOfClass:[NSDate class]]) {
-            return nil;
-        }
-    }
-    return value;
 }
 
 #pragma mark - 更新值key、type、value
