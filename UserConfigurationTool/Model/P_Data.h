@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) P_PlistTypeName type;
 @property (nonatomic, strong) id value;
 @property (nonatomic, readonly) NSString *valueDesc;
+@property (nonatomic, strong) NSString *keyDesc;
 
 /** 是否有子数据 */
 @property (nonatomic, readonly) BOOL hasChild;

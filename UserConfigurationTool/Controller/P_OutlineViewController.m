@@ -10,6 +10,7 @@
 #import "P_TypeHeader.h"
 #import "P_Data.h"
 #import "P_Data+P_Exten.h"
+#import "P_Config.h"
 
 #import "NSView+P_Animation.h"
 #import "NSString+P_16Data.h"
@@ -41,12 +42,8 @@
     
     _undoManager = [NSUndoManager new];
     
-    NSURL *configDescriptionListURL = [[NSBundle mainBundle] URLForResource:@"ConfigDescription" withExtension:@"plist"];
-    NSData *data = [NSData dataWithContentsOfURL:configDescriptionListURL];
-    NSDictionary *configPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
-    NSURL *configDefaultListURL = [[NSBundle mainBundle] URLForResource:@"DefaultConfig" withExtension:@"plist"];
-    data = [NSData dataWithContentsOfURL:configDefaultListURL];
-    NSDictionary *defaultPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    
+    NSLog(@"%@", [P_Config config]);
     
 }
 

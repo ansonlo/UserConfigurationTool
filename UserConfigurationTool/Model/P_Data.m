@@ -7,7 +7,6 @@
 //
 
 #import "P_Data.h"
-#import "P_TypeHeader.h"
 #import <AESCrypt/AESCrypt.h>
 
 @interface P_Data ()
@@ -289,6 +288,8 @@
         self.key = [aDecoder decodeObjectForKey:@"key"];
         self.type = [aDecoder decodeObjectForKey:@"type"];
         self.value = [aDecoder decodeObjectForKey:@"value"];
+        self.keyDesc = [aDecoder decodeObjectForKey:@"keyDesc"];
+        
         self.m_childDatas = [aDecoder decodeObjectForKey:@"children"];
         
         self.editable = [[aDecoder decodeObjectForKey:@"editable"] integerValue];
@@ -307,6 +308,8 @@
     [aCoder encodeObject:self.key forKey:@"key"];
     [aCoder encodeObject:self.type forKey:@"type"];
     [aCoder encodeObject:self.value forKey:@"value"];
+    [aCoder encodeObject:self.keyDesc forKey:@"keyDesc"];
+    
     [aCoder encodeObject:self.m_childDatas forKey:@"children"];
     
     [aCoder encodeObject:@(self.editable) forKey:@"editable"];

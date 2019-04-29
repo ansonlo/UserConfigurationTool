@@ -20,10 +20,8 @@
 		<string>指向VPN配置文件名称（vpn1.plist,vpn2.plist），关联配置文件读取信息，多个配置文件使用逗号(,)隔开</string>
 		<key>VPNDefaultFile</key>
 		<string>vpn2.plist，默认显示的配置文件，必须在VPNFile内包含， 否则默认为第一个文件</string>
-		<key>Server_Key</key>
+		<key>Server_Key(服务器属性，可与网络同步)</key>
 		<dict>
-			<key>描述</key>
-			<string>服务器属性，可与网络同步</string>
 			<key>HomeView_Subviews</key>
 			<string>主界面子视图的数量与顺序（默认：Recent,AddressBook,AppCenter,CorpCircle,CorpOA,MySetting,AppSample,OAMailCenter,ZhongHeCenter）</string>
 			<key>HomeView_ActivateTabId</key>
@@ -186,10 +184,8 @@
 			<key>MicroApp_BatchSet_NoNewTag_AfterDays</key>
 			<string> 默认值是 0 ；当默认值为0时，则不做更新保持现状,配置项值 大于0 并且 当前时间对比消息时间大于该配置项值;对工作助手类型微应用的消息列表数据，根据设置的定时天数，对其批量进行“已读”设置</string>
 		</dict>
-		<key>Custom_Key</key>
+		<key>Custom_Key(自定义属性)</key>
 		<dict>
-			<key>描述</key>
-			<string>自定义属性</string>
 			<key>WorkRemind_AssistantEnable</key>
 			<string>工作助手聚合同类型子消息体，type=Boolean 默认YES，仅适用于首次登陆</string>
 			<key>LaunchView_ImgId</key>
@@ -205,11 +201,8 @@
 			<key>UseSSLSocketConnect</key>
 			<string> “1” 就使用 listServer 获取到的json结果的 message 节点里的 sslSocketport 链接 , 否则使用 socketPort 链接。</string>
 		</dict>
-		<key>Private_Key</key>
-		<dict>
-			<key>描述</key>
-			<string>私有属性</string>
-		</dict>
+		<key>Private_Key(私有属性)</key>
+		<dict/>
 		<key>Theme(主题个性设计)</key>
 		<dict>
 			<key>ThemeClientId</key>
