@@ -7,7 +7,6 @@
 //
 
 #import "P_Data.h"
-#import "P_TypeHeader.h"
 #import <AESCrypt/AESCrypt.h>
 
 @interface P_Data ()
@@ -125,7 +124,24 @@
 
 - (id)value
 {
-    return _value == nil ? @"" : _value;
+    if (_value == nil) {
+        if ([self.type isEqualToString: Plist.Dictionary]) {
+            return @{};
+        } else if ([self.type isEqualToString: Plist.Array]) {
+            return @[];
+        } else if ([self.type isEqualToString: Plist.String]) {
+            return @"";
+        } else if ([self.type isEqualToString: Plist.Number]) {
+            return @(0);
+        } else if ([self.type isEqualToString: Plist.Boolean]) {
+            return @NO;
+        } else if ([self.type isEqualToString: Plist.Data]) {
+            return [NSData data];
+        } else if ([self.type isEqualToString: Plist.Date]) {
+            return [NSDate date];
+        }
+    }
+    return _value;
 }
 
 - (NSString *)valueDesc
@@ -286,15 +302,17 @@
     
     if(self)
     {
-        self.key = [aDecoder decodeObjectForKey:@"key"];
-        self.type = [aDecoder decodeObjectForKey:@"type"];
-        self.value = [aDecoder decodeObjectForKey:@"value"];
-        self.m_childDatas = [aDecoder decodeObjectForKey:@"children"];
+        _key = [aDecoder decodeObjectForKey:@"key"];
+        _type = [aDecoder decodeObjectForKey:@"type"];
+        _value = [aDecoder decodeObjectForKey:@"value"];
+        _keyDesc = [aDecoder decodeObjectForKey:@"keyDesc"];
         
-        self.editable = [[aDecoder decodeObjectForKey:@"editable"] integerValue];
-        self.operation = [[aDecoder decodeObjectForKey:@"operation"] integerValue];
+        _m_childDatas = [aDecoder decodeObjectForKey:@"children"];
         
-        [self.m_childDatas enumerateObjectsUsingBlock:^(P_Data * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        _editable = [[aDecoder decodeObjectForKey:@"editable"] integerValue];
+        _operation = [[aDecoder decodeObjectForKey:@"operation"] integerValue];
+        
+        [_m_childDatas enumerateObjectsUsingBlock:^(P_Data * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             obj.parentData = self;
         }];
     }
@@ -307,7 +325,9 @@
     [aCoder encodeObject:self.key forKey:@"key"];
     [aCoder encodeObject:self.type forKey:@"type"];
     [aCoder encodeObject:self.value forKey:@"value"];
-    [aCoder encodeObject:self.m_childDatas forKey:@"children"];
+    [aCoder encodeObject:self.keyDesc forKey:@"keyDesc"];
+    
+    [aCoder encodeObject:_m_childDatas forKey:@"children"];
     
     [aCoder encodeObject:@(self.editable) forKey:@"editable"];
     [aCoder encodeObject:@(self.operation) forKey:@"operation"];
@@ -316,6 +336,44 @@
 + (BOOL)supportsSecureCoding
 {
     return YES;
+}
+
+
+#pragma mark - isEqualToP_Data
+- (BOOL)isEqual:(id)object
+{
+    return [self isEqualToP_Data:object];
+}
+
+- (BOOL)isEqualToP_Data:(P_Data *)object
+{
+    if (!object) {
+        return NO;
+    }
+    
+    if (![object isKindOfClass:[P_Data class]]) {
+        return NO;
+    }
+    
+    if ([self isEqual:object]) {
+        return YES;
+    } else {
+        BOOL haveEqualKey = (!self.key && !object.key) || [self.key isEqualToString:object.key];
+        BOOL haveEqualType = (!self.type && !object.type) || [self.type isEqualToString:object.type];
+        BOOL haveEqualValue = (self.value == object.value) || ((!self.value && !object.value) || [self.value isEqual:object.value]);
+        
+        BOOL haveEqualLevel = self.level == object.level;
+        NSArray *my_childDatas = self.childDatas;
+        NSArray *obj_childDatas = object.childDatas;
+        BOOL haveEqualChildren = (my_childDatas == obj_childDatas) || ((!my_childDatas && !obj_childDatas) || [my_childDatas isEqual:obj_childDatas]);
+        
+        return haveEqualKey && haveEqualType &&haveEqualValue && haveEqualLevel && haveEqualChildren;
+    }
+}
+
+- (NSUInteger)hash
+{
+    return [self.key hash] ^ [self.type hash] ^ [self.value hash] ^ self.level ^ [_m_childDatas hash];
 }
 
 #pragma mark - description

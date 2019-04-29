@@ -29,6 +29,8 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 
 @property (nonatomic, strong) NSArray *designatedList;
 
+@property (nonatomic, strong) P_Data *root;
+
 @end
 
 @implementation P_OutlineViewController

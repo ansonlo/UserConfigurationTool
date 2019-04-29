@@ -859,18 +859,15 @@
                                                                 </button>
                                                                 <comboBox focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9X5-pM-AXl">
                                                                     <rect key="frame" x="6" y="-2" width="235" height="19"/>
-                                                                    <comboBoxCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" usesSingleLineMode="YES" buttonBordered="NO" numberOfVisibleItems="10" id="Q61-mR-0kC">
+                                                                    <comboBoxCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" refusesFirstResponder="YES" focusRingType="none" usesSingleLineMode="YES" buttonBordered="NO" usesDataSource="YES" numberOfVisibleItems="10" id="Q61-mR-0kC">
                                                                         <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                        <objectValues>
-                                                                            <string>Item</string>
-                                                                            <string>Item</string>
-                                                                            <string>Item</string>
-                                                                            <string>Item</string>
-                                                                            <string>Item</string>
-                                                                        </objectValues>
                                                                     </comboBoxCell>
+                                                                    <connections>
+                                                                        <outlet property="dataSource" destination="XfG-lQ-9wD" id="Don-2H-U60"/>
+                                                                        <outlet property="delegate" destination="XfG-lQ-9wD" id="44U-gK-QfZ"/>
+                                                                    </connections>
                                                                 </comboBox>
                                                             </subviews>
                                                             <constraints>
@@ -887,7 +884,7 @@
                                                                 <outlet property="comboBoxTrailing" destination="VP3-cg-BB9" id="kEU-kQ-BsG"/>
                                                                 <outlet property="minusButton" destination="3ty-OT-mPX" id="8kS-lX-HTY"/>
                                                                 <outlet property="plusButton" destination="hjt-pY-XuY" id="rYu-1S-Ohv"/>
-                                                                <outlet property="textField" destination="9X5-pM-AXl" id="w1c-Nd-oZi"/>
+                                                                <outlet property="textField" destination="9X5-pM-AXl" id="jM7-hj-E5z"/>
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
