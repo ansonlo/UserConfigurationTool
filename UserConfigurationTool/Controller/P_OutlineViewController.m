@@ -320,11 +320,11 @@
     id n_value = value;
     if ([type isEqualToString: Plist.Dictionary]) {
         if (![n_value isKindOfClass:[NSDictionary class]]) {
-            n_value = @{};
+            n_value = nil;
         }
     } else if ([type isEqualToString: Plist.Array]) {
         if (![n_value isKindOfClass:[NSArray class]]) {
-            n_value = @[];
+            n_value = nil;
         }
     } else if ([type isEqualToString: Plist.String]) {
         if ([n_value isKindOfClass:[NSNumber class]]) {

@@ -61,9 +61,11 @@
         _value = value;
         if ([value isKindOfClass:[NSDictionary class]]) {
             _type = Plist.Dictionary;
+            _value = nil;
             _m_childDatas = [self dealWithChildDatas:value];
         } else if ([value isKindOfClass:[NSArray class]]) {
             _type = Plist.Array;
+            _value = nil;
             _m_childDatas = [self dealWithChildDatas:value];
         } else if ([value isKindOfClass:[NSString class]]) {
             _type = Plist.String;
@@ -126,9 +128,9 @@
 {
     if (_value == nil) {
         if ([self.type isEqualToString: Plist.Dictionary]) {
-            return @{};
+            return nil;
         } else if ([self.type isEqualToString: Plist.Array]) {
-            return @[];
+            return nil;
         } else if ([self.type isEqualToString: Plist.String]) {
             return @"";
         } else if ([self.type isEqualToString: Plist.Number]) {
@@ -147,9 +149,9 @@
 - (NSString *)valueDesc
 {
     if ([self.type isEqualToString: Plist.Dictionary]) {
-        return [NSString stringWithFormat:@"(%lu items)",(unsigned long)[(NSDictionary *)self.value count]];
+        return [NSString stringWithFormat:@"(%lu items)",(unsigned long)[(NSDictionary *)_m_childDatas count]];
     } else if ([self.type isEqualToString: Plist.Array]) {
-        return [NSString stringWithFormat:@"(%lu items)",(unsigned long)[(NSArray *)self.value count]];
+        return [NSString stringWithFormat:@"(%lu items)",(unsigned long)[(NSArray *)_m_childDatas count]];
     } else if ([self.type isEqualToString: Plist.String]) {
         return self.value;
     } else if ([self.type isEqualToString: Plist.Number]) {
