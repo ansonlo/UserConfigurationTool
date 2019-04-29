@@ -46,6 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** key是否在同级中有相同的 */
 - (BOOL)containsChildrenWithKey:(NSString*)key;
+
+- (BOOL)isEqualToP_Data:(P_Data *)object;
 @end
 
 NS_ASSUME_NONNULL_END
