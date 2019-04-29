@@ -11,6 +11,7 @@
 
 @interface P_OutlineViewController ()
 
+@property (nonatomic, strong) NSString *pbTypeString;
 
 @end
 
@@ -18,6 +19,7 @@
 
 -(void) enableDragNDrop
 {
+    /** 剪切板类型标记 */
     /** 注册拖缀时间 */
     [self.outlineView registerForDraggedTypes:[NSArray arrayWithObject:[NSBundle mainBundle].bundleIdentifier]];
 }
@@ -71,7 +73,6 @@
     NSPasteboardItem *pbitem = [[NSPasteboardItem alloc] init];
     [pbitem setData:archivedata forType:[NSBundle mainBundle].bundleIdentifier];
     [_pasteboard writeObjects:@[pbitem]];
-    
     [self.outlineView beginUpdates];
     [cutItem.parentData removeChildDataAtIndex:cutIndex-1];
     [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:cutIndex-1] inParent:cutItem.parentData withAnimation:NSTableViewAnimationSlideDown];
@@ -83,11 +84,13 @@
 {
     NSInteger operationIndex = [self.outlineView selectedRow];
     P_Data *operationItem = [self.outlineView itemAtRow:operationIndex];
+    P_Data *operationParentData = operationItem.parentData;
     if (operationItem.operation & P_Data_Operation_Delete) {
         [self.outlineView beginUpdates];
-        NSInteger atParentDataIndex = [operationItem.childDatas indexOfObject:operationItem];
-        [operationItem.parentData removeChildDataAtIndex:atParentDataIndex];
-        [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:atParentDataIndex] inParent:operationItem.parentData withAnimation:NSTableViewAnimationEffectNone];
+        NSInteger atParentDataIndex = [operationParentData.childDatas indexOfObject:operationItem];
+        [operationParentData removeChildDataAtIndex:atParentDataIndex];
+        [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:atParentDataIndex] inParent:operationParentData withAnimation:NSTableViewAnimationEffectNone];
+//        [self.outlineView reloadItem:operationParentData];
         [self.outlineView endUpdates];
     }
 }

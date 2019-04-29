@@ -18,7 +18,7 @@
 #import "P_PropertyList2ButtonCellView.h"
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
-//#import "P_OutlineViewController+Edit.h"
+#import "P_OutlineViewController+Edit.h"
 
 NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 
@@ -39,7 +39,7 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-//    self.outlineView.menuOperationDelegate = self;
+    self.outlineView.menuOperationDelegate = self;
 
     _undoManager = [NSUndoManager new];
     
@@ -50,7 +50,7 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     data = [NSData dataWithContentsOfURL:configDefaultListURL];
     NSDictionary *defaultPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
  
-//    [self enableDragNDrop];
+    [self enableDragNDrop];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -454,7 +454,7 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 
 - (void)menuOperationForDelete
 {
-//    [self deleteEditing];
+    [self deleteEditing];
 }
 
 - (void)menuOperationForCopy
