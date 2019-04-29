@@ -355,7 +355,7 @@
         return NO;
     }
     
-    if ([self isEqual:object]) {
+    if (self == object) {
         return YES;
     } else {
         BOOL haveEqualKey = (!self.key && !object.key) || [self.key isEqualToString:object.key];
