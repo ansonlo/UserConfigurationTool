@@ -64,6 +64,43 @@
         } else if ([n_value isKindOfClass:[NSData class]]) {
             _type = Plist.Data;
         }
+        
+        /** 排序 */
+        if ([_key isEqualToString:@"Root"]) {
+            /** 特别排序 */
+            NSMutableArray *new_childDatas = [NSMutableArray arrayWithObjects:@NO,@NO,@NO,@NO,@NO,@NO,@NO,@NO,@NO,@NO,@NO,nil];
+            for (P_Config *c in _m_childDatas) {
+                if ([c.key isEqualToString:@"host"]) {
+                    [new_childDatas replaceObjectAtIndex:0 withObject:c];
+                } else if ([c.key isEqualToString:@"port"]) {
+                    [new_childDatas replaceObjectAtIndex:1 withObject:c];
+                } else if ([c.key isEqualToString:@"webPort"]) {
+                    [new_childDatas replaceObjectAtIndex:2 withObject:c];
+                } else if ([c.key isEqualToString:@"appInHost"]) {
+                    [new_childDatas replaceObjectAtIndex:3 withObject:c];
+                } else if ([c.key isEqualToString:@"VPNFile"]) {
+                    [new_childDatas replaceObjectAtIndex:4 withObject:c];
+                } else if ([c.key isEqualToString:@"VPNDefaultFile"]) {
+                    [new_childDatas replaceObjectAtIndex:5 withObject:c];
+                } else if ([c.key isEqualToString:@"Server_Key"]) {
+                    [new_childDatas replaceObjectAtIndex:6 withObject:c];
+                } else if ([c.key isEqualToString:@"Custom_Key"]) {
+                    [new_childDatas replaceObjectAtIndex:7 withObject:c];
+                } else if ([c.key isEqualToString:@"Private_Key"]) {
+                    [new_childDatas replaceObjectAtIndex:8 withObject:c];
+                } else if ([c.key isEqualToString:@"Theme"]) {
+                    [new_childDatas replaceObjectAtIndex:9 withObject:c];
+                } else if ([c.key isEqualToString:@"Vendors_Key"]) {
+                    [new_childDatas replaceObjectAtIndex:10 withObject:c];
+                }
+            }
+            [new_childDatas removeObject:@NO];
+            _m_childDatas = new_childDatas;
+            
+        } else {
+            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"key" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+            [_m_childDatas sortUsingDescriptors:@[sortDescriptor]];
+        }
     }
     return self;
 }
@@ -82,10 +119,6 @@
         for (NSString *key in plistData) {
             
             d_key = key;
-            if ([key isEqualToString:@"AddBook_UpMenu"]) {
-                
-            }
-            
             value = desc = plistData[key];
             
             if ([desc isKindOfClass:[NSDictionary class]] || [desc isKindOfClass:[NSArray class]]) {
@@ -149,9 +182,33 @@
     p.keyDesc = self.keyDesc;
     
     p.editable = P_Data_Editable_Value;
-    p.operation = P_Data_Operation_All;
+    p.operation = P_Data_Operation_Insert;
     
     return p;
+}
+
+- (P_Config *)configAtKey:(NSString *)key
+{
+    if (key) {
+        if ([self.type isEqualToString:Plist.Dictionary] && [self.key isEqualToString:key]) {
+            return self;
+        } else {
+            for (P_Config *c in self.m_childDatas) {
+                return [c configAtKey:key];
+            }
+        }
+    }
+    return nil;
+}
+
+- (P_Config *)completedKey:(NSString *)key
+{
+    for (P_Config *c in self.m_childDatas) {
+        if ([c.key isEqualToString:key]) {
+            return c;
+        }
+    }
+    return nil;
 }
 
 - (NSString *)description

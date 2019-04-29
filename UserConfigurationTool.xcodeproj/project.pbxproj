@@ -28,6 +28,7 @@
 		C7BD9A24227597D800CA3351 /* ConfigDescription.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7BD9A22227597D800CA3351 /* ConfigDescription.plist */; };
 		C7BD9A25227597D800CA3351 /* DefaultConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7BD9A23227597D800CA3351 /* DefaultConfig.plist */; };
 		C7BD9A282275A9D000CA3351 /* P_Config.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD9A272275A9D000CA3351 /* P_Config.m */; };
+		C7BD9A2B2276A07E00CA3351 /* P_OutlineViewController+ComboBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD9A2A2276A07E00CA3351 /* P_OutlineViewController+ComboBox.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +73,8 @@
 		C7BD9A23227597D800CA3351 /* DefaultConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultConfig.plist; sourceTree = "<group>"; };
 		C7BD9A262275A9D000CA3351 /* P_Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_Config.h; sourceTree = "<group>"; };
 		C7BD9A272275A9D000CA3351 /* P_Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_Config.m; sourceTree = "<group>"; };
+		C7BD9A292276A07E00CA3351 /* P_OutlineViewController+ComboBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "P_OutlineViewController+ComboBox.h"; sourceTree = "<group>"; };
+		C7BD9A2A2276A07E00CA3351 /* P_OutlineViewController+ComboBox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "P_OutlineViewController+ComboBox.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +133,8 @@
 				C71439572269CD7F008D15C6 /* P_OperationViewController.m */,
 				C7143976226D64D4008D15C6 /* P_OutlineViewController.h */,
 				C7143977226D64D4008D15C6 /* P_OutlineViewController.m */,
+				C7BD9A292276A07E00CA3351 /* P_OutlineViewController+ComboBox.h */,
+				C7BD9A2A2276A07E00CA3351 /* P_OutlineViewController+ComboBox.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -305,6 +310,7 @@
 				C71439B2226EF75A008D15C6 /* P_PropertyListRowView.m in Sources */,
 				C71439BC226F0540008D15C6 /* P_PropertyListDatePickerCellView.m in Sources */,
 				C71439B5226EF92E008D15C6 /* P_PropertyList2ButtonCellView.m in Sources */,
+				C7BD9A2B2276A07E00CA3351 /* P_OutlineViewController+ComboBox.m in Sources */,
 				C7BD99BA226FF78500CA3351 /* NSView+P_Animation.m in Sources */,
 				C71439B9226EFCAE008D15C6 /* P_PropertyListPopUpButtonCellView.m in Sources */,
 				C7BD9A282275A9D000CA3351 /* P_Config.m in Sources */,

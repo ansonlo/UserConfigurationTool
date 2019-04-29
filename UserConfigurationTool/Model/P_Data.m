@@ -124,7 +124,24 @@
 
 - (id)value
 {
-    return _value == nil ? @"" : _value;
+    if (_value == nil) {
+        if ([self.type isEqualToString: Plist.Dictionary]) {
+            return @{};
+        } else if ([self.type isEqualToString: Plist.Array]) {
+            return @[];
+        } else if ([self.type isEqualToString: Plist.String]) {
+            return @"";
+        } else if ([self.type isEqualToString: Plist.Number]) {
+            return @(0);
+        } else if ([self.type isEqualToString: Plist.Boolean]) {
+            return @NO;
+        } else if ([self.type isEqualToString: Plist.Data]) {
+            return [NSData data];
+        } else if ([self.type isEqualToString: Plist.Date]) {
+            return [NSDate date];
+        }
+    }
+    return _value;
 }
 
 - (NSString *)valueDesc

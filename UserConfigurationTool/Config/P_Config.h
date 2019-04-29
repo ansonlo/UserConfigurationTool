@@ -26,6 +26,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)config;
 
+/** 匹配 类型是Dictionary并且key一致的对象 */
+- (P_Config *)configAtKey:(NSString *)key;
+
+/** 匹配下级key的对象 */
+- (P_Config *)completedKey:(NSString *)key;
+
 @end
 
 NS_ASSUME_NONNULL_END

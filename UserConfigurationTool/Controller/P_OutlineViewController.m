@@ -10,7 +10,6 @@
 #import "P_TypeHeader.h"
 #import "P_Data.h"
 #import "P_Data+P_Exten.h"
-#import "P_Config.h"
 
 #import "NSView+P_Animation.h"
 #import "NSString+P_16Data.h"
@@ -29,8 +28,6 @@
 
 @property (nonatomic, strong) P_Data *root;
 
-@property (nonatomic, strong) NSArray *designatedList;
-
 
 @end
 
@@ -41,10 +38,7 @@
     // Do any additional setup after loading the view.
     
     _undoManager = [NSUndoManager new];
-    
-    
-    NSLog(@"%@", [P_Config config]);
-    
+
 }
 
 - (void)setRepresentedObject:(id)representedObject {
