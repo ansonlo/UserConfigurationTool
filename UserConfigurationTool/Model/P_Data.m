@@ -300,7 +300,7 @@
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-    self = [super init];
+    self = [self init];
     
     if(self)
     {
