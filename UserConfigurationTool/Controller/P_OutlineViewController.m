@@ -20,12 +20,8 @@
 #import "P_PropertyList2ButtonCellView.h"
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
-#import "P_OutlineViewController+Edit.h"
 
-
-NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
-
-@interface P_OutlineViewController () <P_PropertyListCellViewDelegate, P_PropertyListOutlineView_MenuOperationDelegate>
+@interface P_OutlineViewController () <P_PropertyListCellViewDelegate>
 {
     NSUndoManager* _undoManager;
 }
@@ -39,9 +35,8 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
-    self.outlineView.menuOperationDelegate = self;
-    [self enableDragNDrop];
     _undoManager = [NSUndoManager new];
 
 }
@@ -230,6 +225,45 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
     [outlineView scrollRowToVisible:selectionRow];
 }
+
+//阶段二之支持拖拽
+- (id<NSPasteboardWriting>)outlineView:(NSOutlineView *)outlineView pasteboardWriterForItem:(id)item{
+    if ([item isKindOfClass:[P_Data class]]){
+        P_Data *a_P_Data = (P_Data *)item;
+        if (a_P_Data.operation == P_Data_Operation_Move) {
+        }
+        NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:item];
+        NSPasteboardItem* pbItem = [[NSPasteboardItem alloc] init];
+        [pbItem setData:archivedata forType:[NSBundle mainBundle].bundleIdentifier];
+        return pbItem;
+    }
+    return nil;
+}
+
+
+//阶段二之判断是否为有效拖拽
+- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index{
+    NSLog(@"validateDrop:%@", NSStringFromPoint(info.draggingLocation));
+    NSDragOperation sourceDragMask = [info draggingSourceOperationMask];
+    NSPasteboard *pasteboard = info.draggingPasteboard;
+    if ([[pasteboard types] containsObject:[NSBundle mainBundle].bundleIdentifier]) {
+        if (sourceDragMask & NSDragOperationMove) {
+            return NSDragOperationMove;
+        }
+    }
+    return NSDragOperationNone;
+}
+
+//阶段二之拖拽调整位置
+- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id<NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)index{
+    NSLog(@"acceptDrop:%@", NSStringFromPoint(info.draggingLocation));
+    NSPasteboard* pb = [info draggingPasteboard];
+    [self.outlineView beginUpdates];
+    //    [self.outlineView moveItemAtIndex:1 inParent:item toIndex:index inParent:item];
+    [self.outlineView endUpdates];
+    return YES;
+}
+
 
 #pragma mark - P_PropertyListCellViewDelegate
 - (id)p_propertyListCellDidEndEditing:(P_PropertyListBasicCellView *)cellView value:(id)value
@@ -485,25 +519,5 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     NSLog(@"%@", p);
 }
 
-#pragma mark - P_PropertyListOutlineView_MenuOperationDelegate
-- (void)menuOperationForCut
-{
-    [self cutEditing];
-}
-
-- (void)menuOperationForDelete
-{
-    [self deleteEditing];
-}
-
-- (void)menuOperationForCopy
-{
-    [self copyEditing];
-}
-
-- (void)menuOperationForPaste
-{
-    [self pasteEditing];
-}
 @end
 

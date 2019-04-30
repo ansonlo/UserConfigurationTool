@@ -7,8 +7,14 @@
 //
 
 #import "P_PropertyListOutlineView.h"
+#import "P_Data.h"
+
+NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 
 @interface P_PropertyListOutlineView ()
+
+@property (nonatomic, strong) NSPasteboard *pasteboard;
+@property (nonatomic, copy) NSString *pasteboardType;
 
 @end
 
@@ -42,6 +48,10 @@
 
 - (void)customInit
 {
+    [self registerForDraggedTypes:[NSArray arrayWithObject:[NSBundle mainBundle].bundleIdentifier]];
+    _pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
+    _pasteboardType = [NSBundle mainBundle].bundleIdentifier;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popUpButtonWillPopUpNotification:) name:NSPopUpButtonWillPopUpNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(comboBoxWillPopUpNotification:) name:NSComboBoxWillPopUpNotification object:nil];
 }
@@ -73,16 +83,20 @@
 #pragma mark - NSMenuItemValidation
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
-    if(menuItem.action == @selector(cut:) && [self respondsToSelector:@selector(cut:)])
-    {
-        return YES;
-    } else if (menuItem.action == @selector(delete:) && [self respondsToSelector:@selector(delete:)]) {
-        return YES;
-    } else if (menuItem.action == @selector(paste:) && [self respondsToSelector:@selector(paste:)]) {
-        return YES;
-    } else if (menuItem.action == @selector(copy:) && [self respondsToSelector:@selector(copy:)]) {
-        return YES;
+    NSInteger selectRow = [self selectedRow];
+    if (selectRow>0) {
+        if(menuItem.action == @selector(cut:) && [self respondsToSelector:@selector(cut:)])
+        {
+            return YES;
+        } else if (menuItem.action == @selector(delete:) && [self respondsToSelector:@selector(delete:)]) {
+            return YES;
+        } else if (menuItem.action == @selector(paste:) && [self respondsToSelector:@selector(paste:)]) {
+            return YES;
+        } else if (menuItem.action == @selector(copy:) && [self respondsToSelector:@selector(copy:)]) {
+            return YES;
+        }
     }
+
     return NO;
 }
 
@@ -96,32 +110,79 @@
     }
 }
 
+
+/** 剪切 */
 - (void)cut:(id)sender
 {
-    if ([self.menuOperationDelegate respondsToSelector:@selector(menuOperationForCut)]) {
-        [self.menuOperationDelegate menuOperationForCut];
+    NSInteger cutIndex = [self selectedRow];
+    P_Data *cutItem = [self itemAtRow:cutIndex];
+    P_Data *cutItemParentData = cutItem.parentData;
+    [_pasteboard clearContents];
+    NSError *error = nil;
+    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:cutItem requiringSecureCoding:NO error:&error];
+    if (error) {
+        NSLog(@"cut failure %@", error.localizedDescription);
+        return;
     }
+    [_pasteboard setData:archivedata forType:_pasteboardType];
+    [self beginUpdates];
+    NSInteger index = [cutItemParentData.childDatas indexOfObject:cutItem];
+    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:cutItemParentData withAnimation:NSTableViewAnimationSlideDown];
+    [cutItemParentData removeChildDataAtIndex:index];
+    [self endUpdates];
 }
 
+/** 删除 */
 - (void)delete:(id)sender
 {
-    if ([self.menuOperationDelegate respondsToSelector:@selector(menuOperationForDelete)]) {
-        [self.menuOperationDelegate menuOperationForDelete];
-    }
+    NSInteger operationIndex = [self selectedRow];
+    P_Data *operationItem = [self itemAtRow:operationIndex];
+    P_Data *operationParentData = operationItem.parentData;
+    [self beginUpdates];
+    NSInteger atParentDataIndex = [operationParentData.childDatas indexOfObject:operationItem];
+    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:atParentDataIndex] inParent:operationParentData withAnimation:NSTableViewAnimationEffectNone];
+    [operationParentData removeChildDataAtIndex:atParentDataIndex];
+    [self endUpdates];
 }
 
 - (void)paste:(id)sender
 {
-    if ([self.menuOperationDelegate respondsToSelector:@selector(menuOperationForPaste)]) {
-        [self.menuOperationDelegate menuOperationForPaste];
+    if ([_pasteboard canReadItemWithDataConformingToTypes:@[_pasteboardType]]) {
+        NSInteger selectIndex = [self selectedRow];
+        if (selectIndex > 0) {
+            P_Data *selectP = [self itemAtRow:selectIndex];
+            P_Data *selectParentData = selectP.parentData;
+            
+            NSData *archivedata = [_pasteboard dataForType:_pasteboardType];
+            NSError *error = nil;
+            P_Data *p = [NSKeyedUnarchiver unarchivedObjectOfClass:[P_Data class] fromData:archivedata error:&error];
+            if (error) {
+                NSLog(@"cut failure %@", error.localizedDescription);
+                return;
+            }
+            if ([selectParentData containsChildrenWithKey:p.key]) {
+                NSLog(@"%@", p);
+            }
+        }
     }
 }
 
+/** 拷贝 */
 - (void)copy:(id)sender
 {
-    if ([self.menuOperationDelegate respondsToSelector:@selector(menuOperationForCopy)]) {
-        [self.menuOperationDelegate menuOperationForCopy];
+    NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
+    [_pasteboard clearContents];
+    
+    NSInteger operationIndex = [self selectedRow];
+    P_Data *operationItem = [self itemAtRow:operationIndex];
+    NSError *error = nil;
+    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:operationItem requiringSecureCoding:NO error:&error];
+    if (error) {
+        NSLog(@"cut failure %@", error.localizedDescription);
+        return;
     }
+    [_pasteboard setData:archivedata forType:_pasteboardType];
 }
+
 
 @end

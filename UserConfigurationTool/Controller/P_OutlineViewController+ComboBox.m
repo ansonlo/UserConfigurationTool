@@ -86,6 +86,22 @@ static NSString *P_OutlineView_configKey;
 {
     NSComboBox *comboBox = obj.object;
     NSLog(@"%@", [self.config completedKey:comboBox.stringValue].data);
+    NSInteger row = [self.outlineView rowForView:comboBox];
+    P_Data *p = [self.outlineView itemAtRow:row];
+
+}
+
+- (void)replaceObjectAtIndex:(NSUInteger)index withObject:(P_Data *)anObject withView:(BOOL)withView
+{
+    P_Data *p = [self.outlineView itemAtRow:index];
+    
+    NSString *oldKey = p.key;
+    p.key = anObject.key;
+    p.keyDesc = anObject.keyDesc;
+    
+    if (withView) {
+        
+    }
     
 }
 @end
