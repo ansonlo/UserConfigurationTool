@@ -90,6 +90,14 @@ static NSString *P_OutlineView_configKey;
 
 #pragma mark NSTextFieldDelegate
 
+- (void)controlTextDidBeginEditing:(NSNotification *)obj
+{
+    NSComboBox *comboBox = obj.object;
+    if (self.config == nil) {
+        [comboBox reloadData];
+    }
+}
+
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
     NSComboBox *comboBox = obj.object;
