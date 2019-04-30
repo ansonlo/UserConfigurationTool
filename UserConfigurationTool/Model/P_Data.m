@@ -233,7 +233,7 @@
 
 - (BOOL)containsChildrenWithKey:(NSString*)key
 {
-    return [self.parentData.m_childDatas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@ && self != %@", key, self]].count > 0;
+    return [self.parentData.m_childDatas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@", key]].count > 0;
 }
 
 #pragma mark - conver to plist
