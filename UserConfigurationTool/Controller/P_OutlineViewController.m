@@ -421,6 +421,35 @@
 
 #pragma mark - 更新值key、type、value
 
+- (void)updateObjectWithIndex:(NSInteger)index withObject:(P_Data *)anObject
+{
+    P_Data *p = [self.outlineView itemAtRow:index];
+    
+    /** 更新key */
+    NSUInteger keyColumn = 0;
+    P_PropertyListBasicCellView *cellView = [self.outlineView viewAtColumn:keyColumn row:index makeIfNecessary:NO];
+    [cellView p_setControlWithString:anObject.key toolTip:anObject.keyDesc];
+    
+    /** 更新value */
+    NSUInteger valueColumn = 2;
+    P_PropertyListBasicCellView *cell = [self.outlineView viewAtColumn:valueColumn row:index makeIfNecessary:NO];
+    if ([p.type isEqualToString: Plist.Boolean]) {
+        [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[anObject.value boolValue]];
+    } else if ([p.type isEqualToString: Plist.Date]) {
+        [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:anObject.value];
+    } else {
+        [cell p_setControlWithString:anObject.valueDesc];
+    }
+
+    /** 更新type */
+    [self.outlineView reloadItem:anObject reloadChildren:YES];
+
+    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
+        [target updateObjectWithIndex:[self.outlineView rowForItem:anObject] withObject:p];
+    }];
+
+}
+
 - (void)_updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
 {
     P_Data *p = item;

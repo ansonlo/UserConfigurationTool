@@ -93,9 +93,8 @@ static NSString *P_OutlineView_configKey;
     NSComboBox *comboBox = obj.object;
     
     NSInteger row = [self.outlineView rowForView:comboBox];
-    P_Data *p = [self.outlineView itemAtRow:row];
-    
+//    P_Data *p = [self.outlineView itemAtRow:row];
     NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
-    
+    [self updateObjectWithIndex:row withObject:[self.config completedKey:comboBox.stringValue].data];
 }
 @end

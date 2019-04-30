@@ -119,7 +119,7 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     P_Data *cutItemParentData = cutItem.parentData;
     [_pasteboard clearContents];
     NSError *error = nil;
-    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:cutItem requiringSecureCoding:NO error:&error];
+    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:cutItem requiringSecureCoding:YES error:&error];
     if (error) {
         NSLog(@"cut failure %@", error.localizedDescription);
         return;
@@ -157,12 +157,17 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
             NSError *error = nil;
             P_Data *p = [NSKeyedUnarchiver unarchivedObjectOfClass:[P_Data class] fromData:archivedata error:&error];
             if (error) {
-                NSLog(@"cut failure %@", error.localizedDescription);
+                NSLog(@"paste failure %@", error.localizedDescription);
                 return;
             }
-            if ([selectParentData containsChildrenWithKey:p.key]) {
-                NSLog(@"%@", p);
+            if ([selectP.type isEqualToString:@"Dictionary"]) {
+                NSLog(@"%@", selectP);
+            } else if ([selectP.type isEqualToString:@"Array"]) {
+                NSLog(@"%@", selectP);
             }
+            
+        } else {
+            
         }
     }
 }
@@ -176,9 +181,9 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     NSInteger operationIndex = [self selectedRow];
     P_Data *operationItem = [self itemAtRow:operationIndex];
     NSError *error = nil;
-    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:operationItem requiringSecureCoding:NO error:&error];
+    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:operationItem requiringSecureCoding:YES error:&error];
     if (error) {
-        NSLog(@"cut failure %@", error.localizedDescription);
+        NSLog(@"copy failure %@", error.localizedDescription);
         return;
     }
     [_pasteboard setData:archivedata forType:_pasteboardType];
