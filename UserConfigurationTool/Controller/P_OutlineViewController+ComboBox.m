@@ -85,7 +85,7 @@ static NSString *P_OutlineView_configKey;
     NSComboBox *comboBox = notification.object;
     NSLog(@"config:%@", [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data);
     NSInteger row = [self.outlineView rowForView:comboBox];
-    [self updateObjectWithIndex:row withObject:[self.config completedKey:comboBox.stringValue].data];
+    [self updateObjectWithIndex:row withObject:[self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data];
 }
 
 #pragma mark NSTextFieldDelegate
