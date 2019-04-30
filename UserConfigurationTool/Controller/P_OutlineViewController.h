@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) P_Data *root;
 
-- (void)updateObjectWithIndex:(NSInteger)index withObject:(P_Data *)anObject;
+- (void)_updateItem:(id)newItem ofItem:(id)item withView:(BOOL)withView;
 
 @end
 

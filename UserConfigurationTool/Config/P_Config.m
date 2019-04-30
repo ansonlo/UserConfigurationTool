@@ -181,8 +181,8 @@
     p.value = self.value;
     p.keyDesc = self.keyDesc;
     
-    p.editable = P_Data_Editable_Value;
-    p.operation = P_Data_Operation_Insert;
+    p.editable = P_Data_Editable_Key | P_Data_Editable_Value;
+    p.operation = P_Data_Operation_Insert | P_Data_Operation_Delete;
     
     return p;
 }

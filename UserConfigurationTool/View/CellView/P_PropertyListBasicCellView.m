@@ -14,6 +14,22 @@
 
 @implementation P_PropertyListBasicCellView
 
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    
+    //点击的时候不显示蓝色外框
+    self.textField.focusRingType = NSFocusRingTypeNone;
+    //自动换行
+    [[self.textField cell] setLineBreakMode:NSLineBreakByCharWrapping];
+    //最大行数
+    self.textField.maximumNumberOfLines = 1;
+    //设置是否启用单行模式
+    [self.textField cell].usesSingleLineMode = NO;
+    //设置超出行数是否隐藏
+//    [self.textField cell].truncatesLastVisibleLine = YES;
+}
+
 - (void)p_setControlWithString:(NSString *)str
 {
     self.textField.stringValue = str;

@@ -11,6 +11,8 @@
 #import "P_Data.h"
 #import "P_Config.h"
 
+#import "NSView+P_Animation.h"
+
 #import <objc/runtime.h>
 
 static NSString *P_OutlineView_root_configKey;
@@ -83,9 +85,12 @@ static NSString *P_OutlineView_configKey;
 - (void)comboBoxSelectionDidChange:(NSNotification *)notification
 {
     NSComboBox *comboBox = notification.object;
-    NSLog(@"config:%@", [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data);
-    NSInteger row = [self.outlineView rowForView:comboBox];
-    [self updateObjectWithIndex:row withObject:[self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data];
+    if (comboBox.indexOfSelectedItem > -1) {
+        
+        NSLog(@"config:%@", [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data);
+        
+        [self comboBoxDidEndEditing:comboBox config:[self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem]];
+    }
 }
 
 #pragma mark NSTextFieldDelegate
@@ -93,18 +98,48 @@ static NSString *P_OutlineView_configKey;
 - (void)controlTextDidBeginEditing:(NSNotification *)obj
 {
     NSComboBox *comboBox = obj.object;
-    if (self.config == nil) {
-        [comboBox reloadData];
+    if (self.config == nil || comboBox.numberOfItems == 0) {
+        [comboBox noteNumberOfItemsChanged];
     }
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
     NSComboBox *comboBox = obj.object;
-    
-    NSInteger row = [self.outlineView rowForView:comboBox];
-//    P_Data *p = [self.outlineView itemAtRow:row];
     NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
-    [self updateObjectWithIndex:row withObject:[self.config completedKey:comboBox.stringValue].data];
+    [self comboBoxDidEndEditing:comboBox config:[self.config completedKey:comboBox.stringValue]];
 }
+
+#pragma mark - 处理数据
+- (void)comboBoxDidEndEditing:(NSComboBox *)comboBox config:(P_Config *)config
+{
+    NSInteger row = [self.outlineView rowForView:comboBox];
+    NSUInteger column = [self.outlineView columnForView:comboBox];
+    
+    P_Data *p = [self.outlineView itemAtRow:row];
+    P_Data *new_p = config.data;
+    if (new_p == nil) {
+        new_p = [[P_Data alloc] init];
+        new_p.key = comboBox.stringValue;
+        new_p.type = p.type;
+    }
+    NSString *key = new_p.key;
+    
+    if([p containsChildrenAndWithOutSelfWithKey:key] == NO)
+    {
+        [self _updateItem:new_p ofItem:p withView:YES];
+    }
+    else
+    {
+        [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+        
+        [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), key]];
+        if (comboBox.indexOfSelectedItem > -1) {
+            [comboBox deselectItemAtIndex:comboBox.indexOfSelectedItem];
+        }
+        comboBox.stringValue = p.key;
+    }
+    
+}
+
 @end

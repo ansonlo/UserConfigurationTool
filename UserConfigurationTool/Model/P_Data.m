@@ -25,6 +25,8 @@
 
 @implementation P_Data
 
+@synthesize value = _value;
+
 - (instancetype)init
 {
     self = [super init];
@@ -115,11 +117,37 @@
     return childDatas;
 }
 
+#pragma mark - setter
+- (void)setType:(P_PlistTypeName)type
+{
+    if (_type != type) {
+        _type = type;
+        if (!([type isEqualToString:Plist.Dictionary] || [type isEqualToString:Plist.Array])) {
+            /** 仅一层就够了 */
+            for (P_Data *p in _m_childDatas) {
+                p.parentData = nil;
+            }
+            _m_childDatas = nil;
+        }
+        /** 模拟触发setter */
+        _value = [self _fixedValue:_value];
+    }
+}
+
+- (void)setValue:(id)value
+{
+    if (_value != value) {
+        _value = [self _fixedValue:value];
+    }
+}
+
 #pragma mark - getter
 - (NSMutableArray<P_Data *> *)m_childDatas
 {
     if (_m_childDatas == nil) {
-        _m_childDatas = [NSMutableArray arrayWithCapacity:1];
+        if ([self.type isEqualToString:Plist.Dictionary] || [self.type isEqualToString:Plist.Array]) {
+            _m_childDatas = [NSMutableArray arrayWithCapacity:1];
+        }
     }
     return _m_childDatas;
 }
@@ -176,6 +204,14 @@
     return @"";
 }
 
+- (NSString *)keyDesc
+{
+    if (_keyDesc == nil) {
+        return self.key;
+    }
+    return _keyDesc;
+}
+
 - (BOOL)hasChild
 {
     return _m_childDatas.count > 0;
@@ -203,7 +239,7 @@
 - (void)setChildDatas:(NSArray<P_Data *> *)childDatas
 {
     if (childDatas) {
-        [_m_childDatas setArray:childDatas];
+        [self.m_childDatas setArray:childDatas];
     } else {
         _m_childDatas = nil;
     }
@@ -230,10 +266,20 @@
     [_m_childDatas removeObjectAtIndex:idx];
     p.parentData = nil;
 }
+- (void)removeChildData:(P_Data *)data
+{
+    [_m_childDatas removeObject:data];
+    data.parentData = nil;
+}
 
 - (BOOL)containsChildrenWithKey:(NSString*)key
 {
     return [self.parentData.m_childDatas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@", key]].count > 0;
+}
+
+- (BOOL)containsChildrenAndWithOutSelfWithKey:(NSString*)key
+{
+    return [self.parentData.m_childDatas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@ && self != %@", key, self]].count > 0;
 }
 
 #pragma mark - conver to plist
@@ -324,10 +370,10 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-    [aCoder encodeObject:self.key forKey:@"key"];
-    [aCoder encodeObject:self.type forKey:@"type"];
-    [aCoder encodeObject:self.value forKey:@"value"];
-    [aCoder encodeObject:self.keyDesc forKey:@"keyDesc"];
+    [aCoder encodeObject:_key forKey:@"key"];
+    [aCoder encodeObject:_type forKey:@"type"];
+    [aCoder encodeObject:_value forKey:@"value"];
+    [aCoder encodeObject:_keyDesc forKey:@"keyDesc"];
     
     [aCoder encodeObject:_m_childDatas forKey:@"children"];
     
@@ -390,5 +436,70 @@
     
     return builder;
 }
+
+#pragma mark - private
+
+- (id)_fixedValue:(id)value
+{
+    id n_value = value;
+    if ([self.type isEqualToString: Plist.Dictionary]) {
+        if (![n_value isKindOfClass:[NSDictionary class]]) {
+            n_value = nil;
+        }
+    } else if ([self.type isEqualToString: Plist.Array]) {
+        if (![n_value isKindOfClass:[NSArray class]]) {
+            n_value = nil;
+        }
+    } else if ([self.type isEqualToString: Plist.String]) {
+        if ([n_value isKindOfClass:[NSNumber class]]) {
+            n_value = [value description];
+        } else if ([n_value isKindOfClass:[NSDate class]]) {
+            n_value = [value description];
+        } else if (![n_value isKindOfClass:[NSString class]]) {
+            n_value = @"";
+        }
+    } else if ([self.type isEqualToString: Plist.Number]) {
+        if ([n_value isKindOfClass:[NSString class]]) {
+            // 准备对象
+            NSString * searchStr = [n_value description];
+            // 创建 NSRegularExpression 对象,匹配 正则表达式
+            NSString * regExpStr = @"^[0-9]*";
+            NSRegularExpression *regExp = [[NSRegularExpression alloc] initWithPattern:regExpStr
+                                                                               options:NSRegularExpressionDotMatchesLineSeparators
+                                                                                 error:nil];
+            NSRange range = [regExp rangeOfFirstMatchInString:searchStr options:NSMatchingAnchored range:NSMakeRange(0, searchStr.length)];
+            NSString *result_string = [searchStr substringWithRange:range];
+            static NSNumberFormatter* __numberFormatter;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                __numberFormatter = [NSNumberFormatter new];
+            });
+            n_value = [__numberFormatter numberFromString:result_string];
+            if (n_value == nil) {
+                n_value = @0;
+            }
+        } else if (![n_value isKindOfClass:[NSNumber class]]) {
+            n_value = @0;
+        }
+    } else if ([self.type isEqualToString: Plist.Boolean]) {
+        if ([n_value isKindOfClass:[NSString class]]) {
+            n_value = @([value boolValue]);
+        } else if (![n_value isKindOfClass:[NSNumber class]]) {
+            n_value = @NO;
+        }
+    } else if ([self.type isEqualToString: Plist.Date]) {
+        if (![n_value isKindOfClass:[NSDate class]]) {
+            n_value = [NSDate date];
+        }
+    } else if ([self.type isEqualToString: Plist.Data]) {
+        if (![n_value isKindOfClass:[NSData class]]) {
+            n_value = [NSData data];
+        }
+        n_value = nil;
+    }
+    return n_value;
+}
+
+
 
 @end
