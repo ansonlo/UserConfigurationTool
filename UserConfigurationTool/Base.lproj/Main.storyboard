@@ -797,7 +797,7 @@
                                     <constraint firstItem="fom-b4-SMA" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="xfa-TR-8zO"/>
                                 </constraints>
                             </customView>
-                            <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gz0-Cc-DAE">
+                            <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gz0-Cc-DAE">
                                 <rect key="frame" x="0.0" y="0.0" width="720" height="436"/>
                                 <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="JNl-bk-FaF">
                                     <rect key="frame" x="0.0" y="0.0" width="720" height="436"/>
@@ -806,9 +806,9 @@
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="JEg-JM-MTD" viewBased="YES" indentationPerLevel="16" outlineTableColumn="23s-c7-gay" id="kM5-ov-lof" customClass="P_PropertyListOutlineView">
                                             <rect key="frame" x="0.0" y="0.0" width="720" height="411"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <size key="intercellSpacing" width="3" height="2"/>
+                                            <size key="intercellSpacing" width="2" height="3"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <tableViewGridLines key="gridStyleMask" vertical="YES" dashed="YES"/>
+                                            <tableViewGridLines key="gridStyleMask" vertical="YES" horizontal="YES"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
                                                 <tableColumn identifier="Key" width="240" minWidth="40" maxWidth="1000" id="23s-c7-gay">
@@ -903,7 +903,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="P_TypeCell" id="3Z7-No-DHz" customClass="P_PropertyListPopUpButtonCellView">
-                                                            <rect key="frame" x="244" y="1" width="100" height="17"/>
+                                                            <rect key="frame" x="243" y="1" width="100" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="NZO-uY-h39" userLabel="Type Button">
@@ -983,7 +983,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="P_ValueCell" id="lkU-Zo-Cxp" customClass="P_PropertyListBasicCellView">
-                                                            <rect key="frame" x="347" y="1" width="371" height="17"/>
+                                                            <rect key="frame" x="345" y="1" width="371" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="q6w-JX-BqY" userLabel="Value Title">
@@ -1008,7 +1008,7 @@
                                                             </connections>
                                                         </tableCellView>
                                                         <tableCellView identifier="P_ValueBoolCell" id="hCu-tD-J1u" customClass="P_PropertyListPopUpButtonCellView">
-                                                            <rect key="frame" x="347" y="20" width="371" height="17"/>
+                                                            <rect key="frame" x="345" y="21" width="371" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="SMu-y4-COc" userLabel="Type Button">
@@ -1043,7 +1043,7 @@
                                                             </connections>
                                                         </tableCellView>
                                                         <tableCellView identifier="P_ValueDateCell" id="LJh-B1-fvH" customClass="P_PropertyListDatePickerCellView">
-                                                            <rect key="frame" x="347" y="39" width="371" height="17"/>
+                                                            <rect key="frame" x="345" y="41" width="371" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <customView placeholderIntrinsicWidth="279" placeholderIntrinsicHeight="17" translatesAutoresizingMaskIntoConstraints="NO" id="LDV-wA-aya" customClass="P_PropertyListDatePicker">
