@@ -74,10 +74,16 @@ static NSString *P_OutlineView_configKey;
     [comboBox abortEditing];
 }
 
+- (void)comboBoxWillDismiss:(NSNotification *)notification
+{
+    NSComboBox *comboBox = notification.object;
+    [comboBox abortEditing];
+}
+
 - (void)comboBoxSelectionDidChange:(NSNotification *)notification
 {
     NSComboBox *comboBox = notification.object;
-    NSLog(@"%@", [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data);
+    NSLog(@"config:%@", [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data);
 }
 
 #pragma mark NSTextFieldDelegate
@@ -85,7 +91,11 @@ static NSString *P_OutlineView_configKey;
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
     NSComboBox *comboBox = obj.object;
-    NSLog(@"%@", [self.config completedKey:comboBox.stringValue].data);
+    
+    NSInteger row = [self.outlineView rowForView:comboBox];
+    P_Data *p = [self.outlineView itemAtRow:row];
+    
+    NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
     
 }
 @end

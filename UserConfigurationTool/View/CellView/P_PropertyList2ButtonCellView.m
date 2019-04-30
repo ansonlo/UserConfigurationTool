@@ -13,7 +13,6 @@
 
 @property (weak) IBOutlet NSButton *minusButton;
 @property (weak) IBOutlet NSButton *plusButton;
-@property (weak) IBOutlet NSComboBox *comboBox;
 
 @property (weak) IBOutlet NSLayoutConstraint *comboBoxTrailing;
 @end

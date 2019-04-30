@@ -859,7 +859,7 @@
                                                                 </button>
                                                                 <comboBox focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9X5-pM-AXl">
                                                                     <rect key="frame" x="6" y="-2" width="235" height="19"/>
-                                                                    <comboBoxCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" refusesFirstResponder="YES" focusRingType="none" usesSingleLineMode="YES" buttonBordered="NO" usesDataSource="YES" numberOfVisibleItems="10" id="Q61-mR-0kC">
+                                                                    <comboBoxCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" usesSingleLineMode="YES" buttonBordered="NO" usesDataSource="YES" numberOfVisibleItems="10" id="Q61-mR-0kC">
                                                                         <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -880,7 +880,6 @@
                                                                 <constraint firstItem="3ty-OT-mPX" firstAttribute="leading" secondItem="hjt-pY-XuY" secondAttribute="trailing" constant="2" id="yE1-yR-XSc"/>
                                                             </constraints>
                                                             <connections>
-                                                                <outlet property="comboBox" destination="9X5-pM-AXl" id="Zil-Qn-aw4"/>
                                                                 <outlet property="comboBoxTrailing" destination="VP3-cg-BB9" id="kEU-kQ-BsG"/>
                                                                 <outlet property="minusButton" destination="3ty-OT-mPX" id="8kS-lX-HTY"/>
                                                                 <outlet property="plusButton" destination="hjt-pY-XuY" id="rYu-1S-Ohv"/>
