@@ -423,29 +423,40 @@
 
 - (void)updateObjectWithIndex:(NSInteger)index withObject:(P_Data *)anObject
 {
+    if (anObject == nil) {
+        return;
+    }
     P_Data *p = [self.outlineView itemAtRow:index];
+    
+    P_Data *oldObj = [p copy];
+    
+    p.key = anObject.key;
+    p.value = anObject.value;
+    p.keyDesc = anObject.keyDesc;
+    p.type = anObject.type;
+    p.childDatas = anObject.childDatas;
     
     /** 更新key */
     NSUInteger keyColumn = 0;
     P_PropertyListBasicCellView *cellView = [self.outlineView viewAtColumn:keyColumn row:index makeIfNecessary:NO];
-    [cellView p_setControlWithString:anObject.key toolTip:anObject.keyDesc];
+    [cellView p_setControlWithString:p.key toolTip:p.keyDesc];
     
     /** 更新value */
     NSUInteger valueColumn = 2;
     P_PropertyListBasicCellView *cell = [self.outlineView viewAtColumn:valueColumn row:index makeIfNecessary:NO];
     if ([p.type isEqualToString: Plist.Boolean]) {
-        [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[anObject.value boolValue]];
+        [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[p.value boolValue]];
     } else if ([p.type isEqualToString: Plist.Date]) {
-        [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:anObject.value];
+        [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:p.value];
     } else {
-        [cell p_setControlWithString:anObject.valueDesc];
+        [cell p_setControlWithString:p.valueDesc];
     }
 
     /** 更新type */
-    [self.outlineView reloadItem:anObject reloadChildren:YES];
+    [self.outlineView reloadItem:p reloadChildren:YES];
 
     [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target updateObjectWithIndex:[self.outlineView rowForItem:anObject] withObject:p];
+        [target updateObjectWithIndex:[self.outlineView rowForItem:p] withObject:oldObj];
     }];
 
 }
