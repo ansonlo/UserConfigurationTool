@@ -9,16 +9,28 @@
 #import "P_PropertyList2ButtonCellView.h"
 #import "P_Data+P_Exten.h"
 
-@interface P_PropertyList2ButtonCellView ()
+@interface P_PropertyList2ButtonCellView () 
 
 @property (weak) IBOutlet NSButton *minusButton;
 @property (weak) IBOutlet NSButton *plusButton;
-@property (weak) IBOutlet NSComboBox *comboBox;
 
 @property (weak) IBOutlet NSLayoutConstraint *comboBoxTrailing;
 @end
 
 @implementation P_PropertyList2ButtonCellView
+
+@dynamic delegate;
+
+- (void)setDelegate:(id<P_PropertyList2ButtonCellViewDelegate>)delegate
+{
+    super.delegate = delegate;
+}
+
+- (id<P_PropertyList2ButtonCellViewDelegate>)delegate
+{
+    id curDelegate = super.delegate;
+    return curDelegate;
+}
 
 - (void)prepareForReuse
 {
@@ -38,11 +50,15 @@
 }
 
 - (IBAction)p_plusAction:(id)sender {
-    
+    if ([self.delegate respondsToSelector:@selector(p_propertyList2ButtonCellPlusAction:)]) {
+        [self.delegate p_propertyList2ButtonCellPlusAction:self];
+    }
 }
 
 - (IBAction)p_minusAction:(id)sender {
-    
+    if ([self.delegate respondsToSelector:@selector(p_propertyList2ButtonCellMinusAction:)]) {
+        [self.delegate p_propertyList2ButtonCellMinusAction:self];
+    }
 }
 
 
