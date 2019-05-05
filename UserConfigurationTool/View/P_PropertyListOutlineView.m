@@ -14,13 +14,12 @@
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
 
-NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
+static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfigurationTool";
 
 @interface P_PropertyListOutlineView ()
 {
     NSUndoManager* _undoManager;
 }
-@property (nonatomic, strong) NSPasteboard *pasteboard;
 @property (nonatomic, copy) NSString *pasteboardType;
 
 @end
@@ -57,7 +56,6 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 - (void)customInit
 {
     [self registerForDraggedTypes:[NSArray arrayWithObject:[NSBundle mainBundle].bundleIdentifier]];
-    _pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
     _pasteboardType = [NSBundle mainBundle].bundleIdentifier;
     
     _undoManager = [NSUndoManager new];
@@ -105,26 +103,6 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     
 }
 
-#pragma mark - NSMenuItemValidation
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
-{
-    NSInteger selectRow = [self selectedRow];
-    if (selectRow>0) {
-        if(menuItem.action == @selector(cut:) && [self respondsToSelector:@selector(cut:)])
-        {
-            return YES;
-        } else if (menuItem.action == @selector(delete:) && [self respondsToSelector:@selector(delete:)]) {
-            return YES;
-        } else if (menuItem.action == @selector(paste:) && [self respondsToSelector:@selector(paste:)]) {
-            return YES;
-        } else if (menuItem.action == @selector(copy:) && [self respondsToSelector:@selector(copy:)]) {
-            return YES;
-        }
-    }
-
-    return NO;
-}
-
 #pragma mark - NSComboBoxWillPopUpNotification
 - (void)comboBoxWillPopUpNotification:(NSNotification *)notify
 {
@@ -135,85 +113,199 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     }
 }
 
-
-/** 剪切 */
-- (void)cut:(id)sender
+#pragma mark - NSMenuItemValidation
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
-    NSInteger cutIndex = [self selectedRow];
-    P_Data *cutItem = [self itemAtRow:cutIndex];
-    P_Data *cutItemParentData = cutItem.parentData;
-    [_pasteboard clearContents];
-    NSError *error = nil;
-    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:cutItem requiringSecureCoding:YES error:&error];
-    if (error) {
-        NSLog(@"cut failure %@", error.localizedDescription);
-        return;
+    if(menuItem.action == @selector(undo:))
+    {
+        return _undoManager.canUndo;
     }
-    [_pasteboard setData:archivedata forType:_pasteboardType];
-    [self beginUpdates];
-    NSInteger index = [cutItemParentData.childDatas indexOfObject:cutItem];
-    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:cutItemParentData withAnimation:NSTableViewAnimationSlideDown];
-    [cutItemParentData removeChildDataAtIndex:index];
-    [self endUpdates];
+    
+    if(menuItem.action == @selector(redo:))
+    {
+        return _undoManager.canRedo;
+    }
+    
+    BOOL extraCase = YES;
+    if(menuItem.action == @selector(add:))
+    {
+        extraCase = [self canAdd:menuItem];
+    }
+    
+    else if(menuItem.action == @selector(delete:))
+    {
+        extraCase = [self canDelete:menuItem];
+    }
+    
+    else if(menuItem.action == @selector(cut:))
+    {
+        extraCase = [self canCut:menuItem];
+    }
+    
+    else if(menuItem.action == @selector(copy:))
+    {
+        extraCase = [self canCopy:menuItem];
+    }
+    
+    else if(menuItem.action == @selector(paste:))
+    {
+        extraCase = [self canPaste:menuItem];
+    }
+    
+    return extraCase && (menuItem.action && [self respondsToSelector:menuItem.action] && [self selectedRow] != -1);
+}
+
+#pragma mark - can do sth
+- (BOOL)canAdd:(NSMenuItem *)menuItem
+{
+    return YES;
+}
+- (BOOL)canDelete:(NSMenuItem *)menuItem
+{
+    return YES;
+}
+- (BOOL)canCut:(NSMenuItem *)menuItem
+{
+    return YES;
+}
+- (BOOL)canCopy:(NSMenuItem *)menuItem
+{
+    return YES;
+}
+- (BOOL)canPaste:(NSMenuItem *)menuItem
+{
+    return YES;
+}
+
+#pragma mark - doing sth / menu action
+
+- (void)undo:(id)sender
+{
+    [_undoManager undo];
+}
+
+- (void)redo:(id)sender
+{
+    [_undoManager redo];
+}
+
+- (void)add:(id)sender
+{
+    P_Data *p = [[P_Data alloc] init];
+    [self insertItem:p];
+#warning 激活key的输入框
 }
 
 /** 删除 */
 - (void)delete:(id)sender
 {
-    NSInteger operationIndex = [self selectedRow];
-    P_Data *operationItem = [self itemAtRow:operationIndex];
-    P_Data *operationParentData = operationItem.parentData;
-    [self beginUpdates];
-    NSInteger atParentDataIndex = [operationParentData.childDatas indexOfObject:operationItem];
-    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:atParentDataIndex] inParent:operationParentData withAnimation:NSTableViewAnimationEffectNone];
-    [operationParentData removeChildDataAtIndex:atParentDataIndex];
-    [self endUpdates];
+    NSInteger selectedRow = self.selectedRow;
+    [self deleteItem:[self itemAtRow:selectedRow]];
 }
 
-- (void)paste:(id)sender
+/** 剪切 */
+- (void)cut:(id)sender
 {
-    if ([_pasteboard canReadItemWithDataConformingToTypes:@[_pasteboardType]]) {
-        NSInteger selectIndex = [self selectedRow];
-        if (selectIndex > 0) {
-            P_Data *selectP = [self itemAtRow:selectIndex];
-            P_Data *selectParentData = selectP.parentData;
-            
-            NSData *archivedata = [_pasteboard dataForType:_pasteboardType];
-            NSError *error = nil;
-            P_Data *p = [NSKeyedUnarchiver unarchivedObjectOfClass:[P_Data class] fromData:archivedata error:&error];
-            if (error) {
-                NSLog(@"paste failure %@", error.localizedDescription);
-                return;
-            }
-            if ([selectP.type isEqualToString:@"Dictionary"]) {
-                NSLog(@"%@", selectP);
-            } else if ([selectP.type isEqualToString:@"Array"]) {
-                NSLog(@"%@", selectP);
-            }
-            
-        } else {
-            
-        }
-    }
+    [self copy:sender];
+    [self delete:sender];
 }
 
 /** 拷贝 */
 - (void)copy:(id)sender
 {
-    NSPasteboard *_pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
-    [_pasteboard clearContents];
+    [NSPasteboard.generalPasteboard clearContents];
     
     NSInteger operationIndex = [self selectedRow];
-    P_Data *operationItem = [self itemAtRow:operationIndex];
-    NSError *error = nil;
-    NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:operationItem requiringSecureCoding:YES error:&error];
-    if (error) {
-        NSLog(@"copy failure %@", error.localizedDescription);
-        return;
-    }
-    [_pasteboard setData:archivedata forType:_pasteboardType];
+    P_Data *p = [self itemAtRow:operationIndex];
+    [NSPasteboard.generalPasteboard setData:[NSKeyedArchiver archivedDataWithRootObject:p] forType:P_PropertyListPasteboardType];
 }
 
+- (void)paste:(id)sender
+{
+    P_Data *p = [NSKeyedUnarchiver unarchiveObjectWithData:[NSPasteboard.generalPasteboard dataForType:P_PropertyListPasteboardType]];
+#warning key 的复用判断
+    [self insertItem:p];
+}
+
+#pragma mark - 插入值key、type、value
+- (void)insertItem:(id)newItem
+{
+    P_Data *new_p = newItem;
+    P_Data *parent_p = nil;
+    
+    /** willChangeNode */
+    
+    [self beginUpdates];
+    
+    NSUInteger insertionRow;
+    P_Data *p = [self itemAtRow:self.selectedRow];
+    
+    if([self isItemExpanded:p])
+    {
+        parent_p = p;
+        insertionRow = 0;
+    }
+    else
+    {
+        parent_p = p.parentData;
+        insertionRow = [parent_p.childDatas indexOfObject:p] + 1;
+    }
+    [parent_p insertChildData:new_p atIndex:insertionRow];
+    
+    [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:insertionRow] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
+    
+    
+    [self endUpdates];
+    
+    NSInteger insertedRow = [self rowForItem:newItem];
+    
+    [self selectRowIndexes:[NSIndexSet indexSetWithIndex:insertedRow] byExtendingSelection:NO];
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView* _Nonnull target) {
+        [target deleteItem:newItem];
+    }];
+    
+    /** didChangeNode */
+    
+    NSLog(@"%@", newItem);
+}
+
+#pragma mark - 删除值key、type、value
+- (void)deleteItem:(id)item
+{
+    P_Data *p = item;
+    
+    /** willChangeNode */
+    
+    [self beginUpdates];
+    
+    NSInteger selectedRow = [self rowForItem:item];
+    
+    P_Data *parent_p = p.parentData.level > 0 ? p.parentData : nil;
+    
+    NSUInteger deletionIndex = [parent_p.childDatas indexOfObject:p];
+    [parent_p removeChildDataAtIndex:deletionIndex];
+    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:deletionIndex] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
+    
+    [self endUpdates];
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView* _Nonnull target) {
+        [target insertItem:item];
+    }];
+    
+    if(selectedRow != -1)
+    {
+        if(selectedRow > 0)
+        {
+            selectedRow -= 1;
+        }
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedRow] byExtendingSelection:NO];
+    }
+    
+    /** didChangeNode */
+    
+    NSLog(@"%@", item);
+}
 
 #pragma mark - 更新值key、type、value
 

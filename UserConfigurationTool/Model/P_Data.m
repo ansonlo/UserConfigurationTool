@@ -31,6 +31,7 @@
 {
     self = [super init];
     if (self) {
+        _type = Plist.String;
         _editable = P_Data_Editable_All;
         _operation = P_Data_Operation_All;
     }
