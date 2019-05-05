@@ -26,6 +26,7 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     
     self.enclosingScrollView.wantsLayer = YES;
     self.enclosingScrollView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
+    self.usesAlternatingRowBackgroundColors = YES;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -54,10 +55,25 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popUpButtonWillPopUpNotification:) name:NSPopUpButtonWillPopUpNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(comboBoxWillPopUpNotification:) name:NSComboBoxWillPopUpNotification object:nil];
+    
 }
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)mouseDown:(NSEvent *)event
+{
+    if (event.clickCount > 1) {
+        NSInteger row = self.selectedRow;
+        NSInteger column = [self columnAtPoint:event.locationInWindow];
+        NSTableCellView *cellView = [self viewAtColumn:column row:row makeIfNecessary:NO];
+        if ([cellView.textField acceptsFirstResponder]) {
+            [cellView.textField becomeFirstResponder];
+        }
+    } else {
+        [super mouseDown:event];
+    }
 }
 
 

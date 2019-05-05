@@ -31,6 +31,7 @@
     self.canDrawSubviewsIntoLayer = YES;
     self.layer.borderWidth = 2.0;
     self.layer.borderColor = NSColor.clearColor.CGColor;
+    self.emphasized = YES;
 }
 
 - (void)ensureTrackingArea
@@ -62,6 +63,7 @@
 
 - (void)mouseEntered:(NSEvent *)event
 {
+    [super mouseEntered:event];
     _mouseIn = YES;
     
     [self p_updateEditButtons];
@@ -69,6 +71,7 @@
 
 - (void)mouseExited:(NSEvent *)event
 {
+    [super mouseExited:event];
     _mouseIn = NO;
     
     [self p_updateEditButtons];
