@@ -316,7 +316,7 @@
 {
     P_Data *new_p = newItem;
     P_Data *p = item;
-    if([p isEqualToP_Data:new_p])
+    if([p.key isEqualToString:new_p.key])
     {
         return;
     }
@@ -413,7 +413,7 @@
 - (void)_updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
 {
     P_Data *p = item;
-    if (p.value == value) {
+    if ([p.valueDesc isEqual: value]) {
         return;
     }
     
