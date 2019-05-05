@@ -9,10 +9,17 @@
 #import "P_PropertyListOutlineView.h"
 #import "P_Data.h"
 
+#import "P_PropertyListBasicCellView.h"
+#import "P_PropertyList2ButtonCellView.h"
+#import "P_PropertyListPopUpButtonCellView.h"
+#import "P_PropertyListDatePickerCellView.h"
+
 NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 
 @interface P_PropertyListOutlineView ()
-
+{
+    NSUndoManager* _undoManager;
+}
 @property (nonatomic, strong) NSPasteboard *pasteboard;
 @property (nonatomic, copy) NSString *pasteboardType;
 
@@ -52,6 +59,8 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     [self registerForDraggedTypes:[NSArray arrayWithObject:[NSBundle mainBundle].bundleIdentifier]];
     _pasteboard = [NSPasteboard pasteboardWithName:NSPasteboardName_P_Data];
     _pasteboardType = [NSBundle mainBundle].bundleIdentifier;
+    
+    _undoManager = [NSUndoManager new];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popUpButtonWillPopUpNotification:) name:NSPopUpButtonWillPopUpNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(comboBoxWillPopUpNotification:) name:NSComboBoxWillPopUpNotification object:nil];
@@ -205,5 +214,143 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     [_pasteboard setData:archivedata forType:_pasteboardType];
 }
 
+
+#pragma mark - 更新值key、type、value
+
+- (void)updateItem:(id)newItem ofItem:(id)item
+{
+    P_Data *new_p = newItem;
+    P_Data *p = item;
+    if([p.key isEqualToString:new_p.key])
+    {
+        return;
+    }
+    
+    /** willChangeNode */
+    
+    
+    [self beginUpdates];
+    
+    P_Data *parentData = p.parentData;
+    NSInteger index = [parentData.childDatas indexOfObject:p];
+    [parentData removeChildDataAtIndex:index];
+    [parentData insertChildData:new_p atIndex:index];
+    
+    NSPoint point = self.enclosingScrollView.documentVisibleRect.origin;
+    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
+    [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
+    [self endUpdates];
+    
+    NSInteger selectionRow = [self rowForItem:new_p];
+    [self selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
+    [self scrollPoint:point];
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView * _Nonnull target) {
+        [target updateItem:item ofItem:newItem];
+    }];
+    
+    /** didChangeNode */
+    
+    NSLog(@"%@", new_p);
+}
+
+- (void)updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
+{
+    P_Data *p = item;
+    if([p.key isEqualToString:key])
+    {
+        return;
+    }
+    /** willChangeNode */
+    
+    NSString* oldKey = p.key;
+    p.key = key;
+    
+    
+    if (withView) {
+        NSUInteger row = [self rowForItem:item];
+        NSUInteger column = 0;
+        
+        P_PropertyListBasicCellView *cellView = [self viewAtColumn:column row:row makeIfNecessary:NO];
+        [cellView p_setControlWithString:key];
+    }
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView * _Nonnull target) {
+        [target updateKey:oldKey ofItem:item withView:YES];
+    }];
+    
+    /** didChangeNode */
+    
+    NSLog(@"%@", p);
+}
+
+- (void)updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *_Nullable)childDatas ofItem:(id)item
+{
+    P_Data *p = item;
+    if([p.type isEqualToString:type])
+    {
+        return;
+    }
+    
+    /** willChangeNode */
+    
+    P_PlistTypeName oldType = p.type;
+    id oldValue = p.value;
+    NSArray <P_Data *> *oldChildDatas = p.childDatas;
+    
+    p.type = type;
+    p.value = value;
+    p.childDatas = childDatas;
+    
+    NSPoint point = self.enclosingScrollView.documentVisibleRect.origin;
+    [self reloadItem:p reloadChildren:YES];
+    [self scrollPoint:point];
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView * _Nonnull target) {
+        [target updateType:oldType value:oldValue childDatas:oldChildDatas ofItem:item];
+    }];
+    
+    /** didChangeNode */
+    
+    NSLog(@"%@", p);
+}
+
+- (void)updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
+{
+    P_Data *p = item;
+    if ([p.valueDesc isEqual: value]) {
+        return;
+    }
+    
+    /** willChangeNode */
+    
+    id oldValue = p.value;
+    p.value = value;
+    
+    
+    if(withView)
+    {
+        NSUInteger row = [self rowForItem:item];
+        NSUInteger column = 2;
+        
+        P_PropertyListBasicCellView *cell = [self viewAtColumn:column row:row makeIfNecessary:NO];
+        
+        if ([p.type isEqualToString: Plist.Boolean]) {
+            [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[p.value boolValue]];
+        } else if ([p.type isEqualToString: Plist.Date]) {
+            [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:p.value];
+        } else {
+            [cell p_setControlWithString:p.valueDesc];
+        }
+    }
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView * _Nonnull target) {
+        [target updateValue:oldValue ofItem:item withView:YES];
+    }];
+    
+    /** didChangeNode */
+    
+    NSLog(@"%@", p);
+}
 
 @end

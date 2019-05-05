@@ -128,22 +128,25 @@ static NSString *P_OutlineView_configKey;
     
     P_Data *p = [self.outlineView itemAtRow:row];
     P_Data *new_p = config.data;
+    
     if (new_p == nil) {
+        /** 创建全新对象，避免需要更新权限问题，直接更新对象 */
         new_p = [[P_Data alloc] init];
         new_p.key = comboBox.stringValue;
         new_p.type = p.type;
+        new_p.value = p.value;
+        new_p.childDatas = p.childDatas;
     }
-    NSString *key = new_p.key;
     
-    if([p containsChildrenAndWithOutSelfWithKey:key] == NO)
+    if([p containsChildrenAndWithOutSelfWithKey:new_p.key] == NO)
     {
-        [self _updateItem:new_p ofItem:p];
+        [self.outlineView updateItem:new_p ofItem:p];
     }
     else
     {
         [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
         
-        [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), key]];
+        [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), new_p.key]];
         if (comboBox.indexOfSelectedItem > -1) {
             [comboBox deselectItemAtIndex:comboBox.indexOfSelectedItem];
         }

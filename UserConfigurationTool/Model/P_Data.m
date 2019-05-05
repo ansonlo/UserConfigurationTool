@@ -240,6 +240,9 @@
 {
     if (childDatas) {
         [self.m_childDatas setArray:childDatas];
+        for (P_Data *subData in _m_childDatas) {
+            subData.parentData = self;
+        }
     } else {
         _m_childDatas = nil;
     }

@@ -23,7 +23,7 @@
 
 @interface P_OutlineViewController () <P_PropertyListCellViewDelegate>
 {
-    NSUndoManager* _undoManager;
+    
 }
 
 @property (nonatomic, strong) P_Data *root;
@@ -37,7 +37,7 @@
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.
-    _undoManager = [NSUndoManager new];
+    
 
 }
 
@@ -278,7 +278,7 @@
     {
         if([item containsChildrenAndWithOutSelfWithKey:value] == NO)
         {
-            [self _updateKey:value ofItem:item withView:NO];
+            [self.outlineView updateKey:value ofItem:item withView:NO];
         }
         else
         {
@@ -291,14 +291,14 @@
     }
     else if(column == 1)
     {
-        [self _updateType:value value:p.value childDatas:nil ofItem:item];
+        [self.outlineView updateType:value value:p.value childDatas:nil ofItem:item];
     }
     else if(column == 2)
     {
 #warning 验证NSData的正确性
         if (1==1)
         {
-            [self _updateValue:value ofItem:item withView:NO];
+            [self.outlineView updateValue:value ofItem:item withView:NO];
         } else {
             [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
             // Your entry is not valid.  Do you want to keep editing and fix the error or cancel editing?
@@ -308,144 +308,6 @@
     }
     
     return nil;
-}
-
-#pragma mark - 更新值key、type、value
-
-- (void)_updateItem:(id)newItem ofItem:(id)item
-{
-    P_Data *new_p = newItem;
-    P_Data *p = item;
-    if([p.key isEqualToString:new_p.key])
-    {
-        return;
-    }
-    
-    /** willChangeNode */
-    
-    
-    [self.outlineView beginUpdates];
-    
-    P_Data *parentData = p.parentData;
-    NSInteger index = [parentData.childDatas indexOfObject:p];
-    [parentData removeChildDataAtIndex:index];
-    [parentData insertChildData:new_p atIndex:index];
-    
-    NSPoint point = self.outlineView.enclosingScrollView.documentVisibleRect.origin;
-    [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
-    [self.outlineView insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
-    [self.outlineView endUpdates];
-    
-    NSInteger selectionRow = [self.outlineView rowForItem:new_p];
-    [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
-    [self.outlineView scrollPoint:point];
-
-    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target _updateItem:item ofItem:newItem];
-    }];
-
-    /** didChangeNode */
-    
-    NSLog(@"%@", new_p);
-}
-
-- (void)_updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
-{
-    P_Data *p = item;
-    if([p.key isEqualToString:key])
-    {
-        return;
-    }
-    /** willChangeNode */
-    
-    NSString* oldKey = p.key;
-    p.key = key;
-    
-    
-    if (withView) {
-        NSUInteger row = [self.outlineView rowForItem:item];
-        NSUInteger column = 0;
-        
-        P_PropertyListBasicCellView *cellView = [self.outlineView viewAtColumn:column row:row makeIfNecessary:NO];
-        [cellView p_setControlWithString:key];
-    }
-    
-    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target _updateKey:oldKey ofItem:item withView:YES];
-    }];
-    
-    /** didChangeNode */
-    
-    NSLog(@"%@", p);
-}
-
-- (void)_updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *)childDatas ofItem:(id)item
-{
-    P_Data *p = item;
-    if([p.type isEqualToString:type])
-    {
-        return;
-    }
-    
-    /** willChangeNode */
-    
-    P_PlistTypeName oldType = p.type;
-    id oldValue = p.value;
-    NSArray <P_Data *> *oldChildDatas = p.childDatas;
-    
-    p.type = type;
-    p.value = value;
-    p.childDatas = childDatas;
-    
-    NSPoint point = self.outlineView.enclosingScrollView.documentVisibleRect.origin;
-    [self.outlineView reloadItem:p reloadChildren:YES];
-    [self.outlineView scrollPoint:point];
-    
-    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target _updateType:oldType value:oldValue childDatas:oldChildDatas ofItem:item];
-    }];
-    
-    /** didChangeNode */
-    
-    NSLog(@"%@", p);
-}
-
-- (void)_updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
-{
-    P_Data *p = item;
-    if ([p.valueDesc isEqual: value]) {
-        return;
-    }
-    
-    /** willChangeNode */
-    
-    id oldValue = p.value;
-    p.value = value;
-    
-    
-    if(withView)
-    {
-        NSUInteger row = [self.outlineView rowForItem:item];
-        NSUInteger column = 2;
-        
-        P_PropertyListBasicCellView *cell = [self.outlineView viewAtColumn:column row:row makeIfNecessary:NO];
-        
-        if ([p.type isEqualToString: Plist.Boolean]) {
-            [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[p.value boolValue]];
-        } else if ([p.type isEqualToString: Plist.Date]) {
-            [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:p.value];
-        } else {
-            [cell p_setControlWithString:p.valueDesc];
-        }
-    }
-    
-    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target _updateValue:oldValue ofItem:item withView:YES];
-    }];
-    
-    /** didChangeNode */
-    
-    NSLog(@"%@", p);
 }
 
 @end

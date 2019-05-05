@@ -16,8 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) P_Data *root;
 
-- (void)_updateItem:(id)newItem ofItem:(id)item;
-
 @end
 
 NS_ASSUME_NONNULL_END
