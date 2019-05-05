@@ -74,12 +74,20 @@ static NSString *P_OutlineView_configKey;
 {
     NSComboBox *comboBox = notification.object;
     [comboBox abortEditing];
+    NSInteger selectionRow = [self.outlineView rowForView:comboBox];
+    NSTableRowView *rowView = [self.outlineView rowViewAtRow:selectionRow makeIfNecessary:NO];
+    rowView.emphasized = YES;
+    [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
 }
 
 - (void)comboBoxWillDismiss:(NSNotification *)notification
 {
     NSComboBox *comboBox = notification.object;
     [comboBox abortEditing];
+    NSInteger selectionRow = [self.outlineView rowForView:comboBox];
+    NSTableRowView *rowView = [self.outlineView rowViewAtRow:selectionRow makeIfNecessary:NO];
+    rowView.emphasized = YES;
+    [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
 }
 
 - (void)comboBoxSelectionDidChange:(NSNotification *)notification
@@ -108,6 +116,8 @@ static NSString *P_OutlineView_configKey;
     NSComboBox *comboBox = obj.object;
     NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
     [self comboBoxDidEndEditing:comboBox config:[self.config completedKey:comboBox.stringValue]];
+    self.config = nil;
+    [comboBox abortEditing];
 }
 
 #pragma mark - 处理数据
@@ -127,7 +137,7 @@ static NSString *P_OutlineView_configKey;
     
     if([p containsChildrenAndWithOutSelfWithKey:key] == NO)
     {
-        [self _updateItem:new_p ofItem:p withView:YES];
+        [self _updateItem:new_p ofItem:p];
     }
     else
     {

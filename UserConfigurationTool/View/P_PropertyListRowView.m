@@ -106,4 +106,20 @@
     }
 }
 
+//直接改变点击背景色的方法
+//- (void)drawSelectionInRect:(NSRect)dirtyRect
+//{
+//    if (self.selectionHighlightStyle != NSTableViewSelectionHighlightStyleNone) {
+//        
+//        NSRect selectionRect = NSInsetRect(self.bounds, 1, 1);
+//        
+//        [[NSColor colorWithWhite:0.9 alpha:1] setStroke];  //设置边框颜色
+//        [[NSColor redColor] setFill];  //设置填充背景颜色
+//        
+//        NSBezierPath *path = [NSBezierPath bezierPathWithRect:selectionRect];
+//        [path fill];
+//        [path stroke];
+//    }
+//}
+
 @end

@@ -296,7 +296,7 @@
     else if(column == 2)
     {
 #warning 验证NSData的正确性
-        if (YES)
+        if (1==1)
         {
             [self _updateValue:value ofItem:item withView:NO];
         } else {
@@ -312,7 +312,7 @@
 
 #pragma mark - 更新值key、type、value
 
-- (void)_updateItem:(id)newItem ofItem:(id)item withView:(BOOL)withView
+- (void)_updateItem:(id)newItem ofItem:(id)item
 {
     P_Data *new_p = newItem;
     P_Data *p = item;
@@ -321,31 +321,27 @@
         return;
     }
     
-    if (withView) {
-        [self.outlineView beginUpdates];
-    }
-    
     /** willChangeNode */
+    
+    
+    [self.outlineView beginUpdates];
+    
     P_Data *parentData = p.parentData;
     NSInteger index = [parentData.childDatas indexOfObject:p];
     [parentData removeChildDataAtIndex:index];
     [parentData insertChildData:new_p atIndex:index];
     
-    if (withView) {
-        [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
-        [self.outlineView insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
-        
-        [self.outlineView reloadItem:new_p reloadChildren:YES];
-        
-        [self.outlineView endUpdates];
-        
-        NSInteger selectionRow = [self.outlineView rowForItem:new_p];
-        [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
-        [self.outlineView scrollRowToVisible:selectionRow];
-    }
+    NSPoint point = self.outlineView.enclosingScrollView.documentVisibleRect.origin;
+    [self.outlineView removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
+    [self.outlineView insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
+    [self.outlineView endUpdates];
+    
+    NSInteger selectionRow = [self.outlineView rowForItem:new_p];
+    [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
+    [self.outlineView scrollPoint:point];
 
     [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target _updateItem:item ofItem:newItem withView:YES];
+        [target _updateItem:item ofItem:newItem];
     }];
 
     /** didChangeNode */
@@ -401,8 +397,9 @@
     p.value = value;
     p.childDatas = childDatas;
     
+    NSPoint point = self.outlineView.enclosingScrollView.documentVisibleRect.origin;
     [self.outlineView reloadItem:p reloadChildren:YES];
-    [self.outlineView scrollRowToVisible:[self.outlineView rowForItem:item]];
+    [self.outlineView scrollPoint:point];
     
     [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
         [target _updateType:oldType value:oldValue childDatas:oldChildDatas ofItem:item];
