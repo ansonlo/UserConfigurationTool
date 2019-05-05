@@ -38,14 +38,19 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithPlistKey:(NSString *)key value:(id)value;
 
 @property (nullable, readonly, weak) P_Data *parentData;
+
 // sorts the entire subtree
 - (void)sortWithSortDescriptors:(NSArray<NSSortDescriptor *> *)sortDescriptors recursively:(BOOL)recursively;
 
+// insert or remove
 - (void)insertChildData:(P_Data *)data atIndex:(NSUInteger)idx;
 - (void)removeChildDataAtIndex:(NSUInteger)idx;
+- (void)removeChildData:(P_Data *)data;
 
 /** key是否在同级中有相同的 */
 - (BOOL)containsChildrenWithKey:(NSString*)key;
+/** key是否在同级中有相同的并且排除自身 */
+- (BOOL)containsChildrenAndWithOutSelfWithKey:(NSString*)key;
 
 - (BOOL)isEqualToP_Data:(P_Data *)object;
 @end

@@ -23,7 +23,7 @@
 
 @interface P_OutlineViewController () <P_PropertyListCellViewDelegate>
 {
-    NSUndoManager* _undoManager;
+    
 }
 
 @property (nonatomic, strong) P_Data *root;
@@ -37,7 +37,7 @@
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.
-    _undoManager = [NSUndoManager new];
+    
 
 }
 
@@ -190,7 +190,7 @@
     NSString *identifier =[tableColumn identifier];
     if ([identifier isEqualToString:PlistColumnIdentifier.Key])
     {
-        [cell p_setControlWithString:p.key];
+        [cell p_setControlWithString:p.key toolTip:p.keyDesc];
     }
     else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
     {
@@ -276,9 +276,9 @@
     
     if(column == 0)
     {
-        if([item containsChildrenWithKey:value] == NO)
+        if([item containsChildrenAndWithOutSelfWithKey:value] == NO)
         {
-            [self _updateKey:value ofItem:item withView:NO];
+            [self.outlineView updateKey:value ofItem:item withView:NO];
         }
         else
         {
@@ -291,21 +291,14 @@
     }
     else if(column == 1)
     {
-        NSError *err;
-        id p_value = [self _fixedValue:p.value ofType:value error:&err];
-        if (err == nil) {
-            [self _updateType:value value:p_value childDatas:nil ofItem:item];
-        } else {
-            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
-            [self p_showAlertViewWith:err.localizedDescription];
-        }
+        [self.outlineView updateType:value value:p.value childDatas:nil ofItem:item];
     }
     else if(column == 2)
     {
-        id new_value = [self _fixedValue:value ofType:p.type error:nil];
-        if (new_value)
+#warning 验证NSData的正确性
+        if (1==1)
         {
-            [self _updateValue:new_value ofItem:item withView:NO];
+            [self.outlineView updateValue:value ofItem:item withView:NO];
         } else {
             [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
             // Your entry is not valid.  Do you want to keep editing and fix the error or cancel editing?
@@ -315,248 +308,6 @@
     }
     
     return nil;
-}
-#pragma mark - NSMenuItemValidation
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
-{
-//    if(menuItem.action == @selector(undo:))
-//    {
-//        return _undoManager.canUndo;
-//    }
-//
-//    if(menuItem.action == @selector(redo:))
-//    {
-//        return _undoManager.canRedo;
-//    }
-//
-//    if(menuItem.action == @selector(add:))
-//    {
-//        return [self _validateCanAddForSender:menuItem];
-//    }
-//
-//    BOOL extraCase = YES;
-//    if(menuItem.action == @selector(delete:))
-//    {
-//        extraCase = [self _validateCanDeleteForSender:menuItem];
-//    }
-//
-//    if(menuItem.action == @selector(cut:))
-//    {
-//        extraCase = [self _validateCanDeleteForSender:menuItem];
-//    }
-//    if(menuItem.action == @selector(paste:))
-//    {
-//        return [self _validateCanPasteForSender:menuItem];
-//    }
-    
-    return NO;
-}
-
-#pragma mark - private
-- (id)_fixedValue:(id)value ofType:(P_PlistTypeName)type error:(NSError **)error
-{
-    id n_value = value;
-    if ([type isEqualToString: Plist.Dictionary]) {
-        if (![n_value isKindOfClass:[NSDictionary class]]) {
-            n_value = nil;
-        }
-    } else if ([type isEqualToString: Plist.Array]) {
-        if (![n_value isKindOfClass:[NSArray class]]) {
-            n_value = nil;
-        }
-    } else if ([type isEqualToString: Plist.String]) {
-        if ([n_value isKindOfClass:[NSNumber class]]) {
-            n_value = [value description];
-        } else if ([n_value isKindOfClass:[NSDate class]]) {
-            n_value = [value description];
-        } else if (![n_value isKindOfClass:[NSString class]]) {
-            n_value = @"";
-        }
-    } else if ([type isEqualToString: Plist.Number]) {
-        if ([n_value isKindOfClass:[NSString class]]) {
-            // 准备对象
-            NSString * searchStr = [n_value description];
-            // 创建 NSRegularExpression 对象,匹配 正则表达式
-            NSString * regExpStr = @"^[0-9]*";
-            NSRegularExpression *regExp = [[NSRegularExpression alloc] initWithPattern:regExpStr
-                                                                               options:NSRegularExpressionDotMatchesLineSeparators
-                                                                                 error:nil];
-            NSRange range = [regExp rangeOfFirstMatchInString:searchStr options:NSMatchingAnchored range:NSMakeRange(0, searchStr.length)];
-            NSString *result_string = [searchStr substringWithRange:range];
-            static NSNumberFormatter* __numberFormatter;
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
-                __numberFormatter = [NSNumberFormatter new];
-            });
-            n_value = [__numberFormatter numberFromString:result_string];
-            if (n_value == nil) {
-                n_value = @0;
-            }
-        } else if (![n_value isKindOfClass:[NSNumber class]]) {
-            n_value = @0;
-        }
-    } else if ([type isEqualToString: Plist.Boolean]) {
-        if ([n_value isKindOfClass:[NSString class]]) {
-            n_value = @([value boolValue]);
-        } else if (![n_value isKindOfClass:[NSNumber class]]) {
-            n_value = @NO;
-        }
-    } else if ([type isEqualToString: Plist.Date]) {
-        if (![n_value isKindOfClass:[NSDate class]]) {
-            n_value = [NSDate date];
-        }
-    } else if ([type isEqualToString: Plist.Data]) {
-        if (![n_value isKindOfClass:[NSData class]]) {
-            n_value = [NSData data];
-        }
-        n_value = nil;
-    } else {
-        if (error) {
-            *error = [NSError errorWithDomain:@"ValueError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"不匹配这种类型:%@", type]}];
-        }
-        NSLog(@"不匹配这种类型:%@", type);
-    }
-    return n_value;
-}
-
-#pragma mark - 更新值key、type、value
-
-- (void)updateObjectWithIndex:(NSInteger)index withObject:(P_Data *)anObject
-{
-    if (anObject == nil) {
-        return;
-    }
-    P_Data *p = [self.outlineView itemAtRow:index];
-    
-    P_Data *oldObj = [p copy];
-    
-    p.key = anObject.key;
-    p.value = anObject.value;
-    p.keyDesc = anObject.keyDesc;
-    p.type = anObject.type;
-    p.childDatas = anObject.childDatas;
-    
-    /** 更新key */
-    NSUInteger keyColumn = 0;
-    P_PropertyListBasicCellView *cellView = [self.outlineView viewAtColumn:keyColumn row:index makeIfNecessary:NO];
-    [cellView p_setControlWithString:p.key toolTip:p.keyDesc];
-    
-    /** 更新value */
-    NSUInteger valueColumn = 2;
-    P_PropertyListBasicCellView *cell = [self.outlineView viewAtColumn:valueColumn row:index makeIfNecessary:NO];
-    if ([p.type isEqualToString: Plist.Boolean]) {
-        [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[p.value boolValue]];
-    } else if ([p.type isEqualToString: Plist.Date]) {
-        [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:p.value];
-    } else {
-        [cell p_setControlWithString:p.valueDesc];
-    }
-
-    /** 更新type */
-    [self.outlineView reloadItem:p reloadChildren:YES];
-
-    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target updateObjectWithIndex:[self.outlineView rowForItem:p] withObject:oldObj];
-    }];
-
-}
-
-- (void)_updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
-{
-    P_Data *p = item;
-    if([p.key isEqualToString:key])
-    {
-        return;
-    }
-    /** willChangeNode */
-    
-    NSString* oldKey = p.key;
-    p.key = key;
-    
-    
-    if (withView) {
-        NSUInteger row = [self.outlineView rowForItem:item];
-        NSUInteger column = 0;
-        
-        P_PropertyListBasicCellView *cellView = [self.outlineView viewAtColumn:column row:row makeIfNecessary:NO];
-        [cellView p_setControlWithString:key];
-    }
-    
-    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target _updateKey:oldKey ofItem:item withView:YES];
-    }];
-    
-    /** didChangeNode */
-    
-    NSLog(@"%@", p);
-}
-
-- (void)_updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *)childDatas ofItem:(id)item
-{
-    P_Data *p = item;
-    if([p.type isEqualToString:type])
-    {
-        return;
-    }
-    
-    /** willChangeNode */
-    
-    P_PlistTypeName oldType = p.type;
-    id oldValue = p.value;
-    NSArray <P_Data *> *oldChildDatas = p.childDatas;
-    
-    p.type = type;
-    p.value = value;
-    p.childDatas = childDatas;
-    
-    [self.outlineView reloadItem:p reloadChildren:YES];
-    [self.outlineView scrollRowToVisible:[self.outlineView rowForItem:item]];
-    
-    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target _updateType:oldType value:oldValue childDatas:oldChildDatas ofItem:item];
-    }];
-    
-    /** didChangeNode */
-    
-    NSLog(@"%@", p);
-}
-
-- (void)_updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
-{
-    P_Data *p = item;
-    if (p.value == value) {
-        return;
-    }
-    
-    /** willChangeNode */
-    
-    id oldValue = p.value;
-    p.value = value;
-    
-    
-    if(withView)
-    {
-        NSUInteger row = [self.outlineView rowForItem:item];
-        NSUInteger column = 2;
-        
-        P_PropertyListBasicCellView *cell = [self.outlineView viewAtColumn:column row:row makeIfNecessary:NO];
-        
-        if ([p.type isEqualToString: Plist.Boolean]) {
-            [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[p.value boolValue]];
-        } else if ([p.type isEqualToString: Plist.Date]) {
-            [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:p.value];
-        } else {
-            [cell p_setControlWithString:p.valueDesc];
-        }
-    }
-    
-    [_undoManager registerUndoWithTarget:self handler:^(P_OutlineViewController * _Nonnull target) {
-        [target _updateValue:oldValue ofItem:item withView:YES];
-    }];
-    
-    /** didChangeNode */
-    
-    NSLog(@"%@", p);
 }
 
 @end

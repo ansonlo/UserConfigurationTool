@@ -16,8 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) P_Data *root;
 
-- (void)updateObjectWithIndex:(NSInteger)index withObject:(P_Data *)anObject;
-
 @end
 
 NS_ASSUME_NONNULL_END

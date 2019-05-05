@@ -36,12 +36,12 @@
 {
     [super prepareForReuse];
     
-    self.plusButton.hidden = self.minusButton.hidden = YES;
+//    self.plusButton.hidden = self.minusButton.hidden = YES;
 }
 
 - (void)p_setShowsControlButtons:(BOOL)showsControlButtons addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled
 {
-    self.comboBoxTrailing.constant = showsControlButtons ? self.frame.size.width-self.plusButton.frame.origin.x+2 : 2;
+    self.comboBoxTrailing.constant = showsControlButtons ? self.frame.size.width-self.plusButton.frame.origin.x : 2;
     
     self.plusButton.hidden = self.minusButton.hidden = !showsControlButtons;
     
