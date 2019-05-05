@@ -14,6 +14,7 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
 @interface P_PropertyListOutlineView ()
 
 @property (nonatomic, strong) NSPasteboard *pasteboard;
+
 @property (nonatomic, copy) NSString *pasteboardType;
 
 @end
@@ -125,11 +126,13 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
         return;
     }
     [_pasteboard setData:archivedata forType:_pasteboardType];
-    [self beginUpdates];
     NSInteger index = [cutItemParentData.childDatas indexOfObject:cutItem];
-    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:cutItemParentData withAnimation:NSTableViewAnimationSlideDown];
     [cutItemParentData removeChildDataAtIndex:index];
-    [self endUpdates];
+    if (cutItemParentData.parentData) {
+        [self reloadItem:cutItemParentData.parentData reloadChildren:YES];
+    } else {
+        [self reloadItem:cutItemParentData reloadChildren:YES];
+    }
 }
 
 /** 删除 */
@@ -138,11 +141,12 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
     NSInteger operationIndex = [self selectedRow];
     P_Data *operationItem = [self itemAtRow:operationIndex];
     P_Data *operationParentData = operationItem.parentData;
-    [self beginUpdates];
-    NSInteger atParentDataIndex = [operationParentData.childDatas indexOfObject:operationItem];
-    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:atParentDataIndex] inParent:operationParentData withAnimation:NSTableViewAnimationEffectNone];
-    [operationParentData removeChildDataAtIndex:atParentDataIndex];
-    [self endUpdates];
+    [operationParentData removeChildDataAtIndex:[operationParentData.childDatas indexOfObject:operationItem]];
+    if (operationParentData.parentData) {
+        [self reloadItem:operationParentData.parentData reloadChildren:YES];
+    } else {
+        [self reloadItem:operationParentData reloadChildren:YES];
+    }
 }
 
 - (void)paste:(id)sender
@@ -155,17 +159,64 @@ NSPasteboardName const NSPasteboardName_P_Data = @"NSPasteboardName_P_Data";
             
             NSData *archivedata = [_pasteboard dataForType:_pasteboardType];
             NSError *error = nil;
-            P_Data *p = [NSKeyedUnarchiver unarchivedObjectOfClass:[P_Data class] fromData:archivedata error:&error];
+            NSSet *set = [NSSet setWithArray:@[[P_Data class], [NSDictionary class], [NSArray class], [NSDate class]]];
+            P_Data *p = [NSKeyedUnarchiver unarchivedObjectOfClasses:set fromData:archivedata error:&error];
             if (error) {
                 NSLog(@"paste failure %@", error.localizedDescription);
                 return;
             }
-            if ([selectP.type isEqualToString:@"Dictionary"]) {
-                NSLog(@"%@", selectP);
-            } else if ([selectP.type isEqualToString:@"Array"]) {
-                NSLog(@"%@", selectP);
-            }
             
+            NSString *(^_getKey)(P_Data *aData, NSString *key) = ^(P_Data *aData, NSString *key){
+                NSInteger i = 2;
+                NSString *str = key;
+                while (i>0) {
+                    if (![selectP.type isEqualToString:@"Array"]) {
+                        if ([aData containsChildrenWithKey:str]) {
+                            /** 存在相同的key，需要自增1 */
+                            str = [key stringByAppendingString:[NSString stringWithFormat:@" - %ld", (long)i]];
+                        } else {
+                            i = -1;
+                        }
+                        i ++;
+                    } else {
+                        i = -1;
+                    }
+                }
+                return str;
+            };
+            /** 是否展开子菜单 */
+            if ([self isItemExpanded:selectP]) {
+                if ([selectP.type isEqualToString:@"Dictionary"]) {
+                    p.key = _getKey([selectP childDatas].firstObject, p.key);
+                    [selectP insertChildData:p atIndex:[selectP childDatas].count];
+                } else if ([selectP.type isEqualToString:@"Array"]) {
+                    [selectP insertChildData:p atIndex:[[selectP childDatas] count]];
+                    for (NSInteger i = 0; i < selectP.childDatas.count; i ++) {
+                        P_Data *obj = [selectP.childDatas objectAtIndex:i];
+                        obj.key = [NSString stringWithFormat:@"Item %ld", (long)i];
+                    }
+                }
+            } else {
+                if ([selectParentData.type isEqualToString:@"Array"]) {
+                    [selectParentData insertChildData:p atIndex:[[selectParentData childDatas] indexOfObject:selectP]];
+                    for (NSInteger i = 0; i < selectParentData.childDatas.count; i ++) {
+                        P_Data *obj = [selectParentData.childDatas objectAtIndex:i];
+                        obj.key = [NSString stringWithFormat:@"Item %ld", (long)i];
+                    }
+                } else {
+                    p.key = _getKey(selectP, p.key);
+                    if (selectParentData.level > 0) {
+                        [selectParentData insertChildData:p atIndex:selectParentData.childDatas.count];
+                    } else {
+                        [selectParentData insertChildData:p atIndex:selectIndex];
+                    }
+                }
+            }
+            if (selectParentData.parentData) {
+                [self reloadItem:selectParentData.parentData reloadChildren:YES];
+            } else {
+                [self reloadItem:selectParentData reloadChildren:YES];
+            }
         } else {
             
         }

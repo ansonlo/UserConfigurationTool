@@ -10,14 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/** 剪切板 */
-extern NSPasteboardName const NSPasteboardName_P_Data;
-
 @protocol P_PropertyListOutlineView_MenuOperationDelegate;
 
 @interface P_PropertyListOutlineView : NSOutlineView
 
-@property (nonatomic, weak) id<P_PropertyListOutlineView_MenuOperationDelegate>menuOperationDelegate;
+@property (nonatomic, readonly) NSPasteboard *pasteboard;
 
 @end
 
