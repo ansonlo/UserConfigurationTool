@@ -33,7 +33,6 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     self.enclosingScrollView.wantsLayer = YES;
     self.enclosingScrollView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
-    self.usesAlternatingRowBackgroundColors = YES;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder

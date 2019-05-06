@@ -229,13 +229,12 @@
 //阶段二之支持拖拽
 - (id<NSPasteboardWriting>)outlineView:(NSOutlineView *)outlineView pasteboardWriterForItem:(id)item{
     if ([item isKindOfClass:[P_Data class]]){
-        P_Data *a_P_Data = (P_Data *)item;
-        if (a_P_Data.operation == P_Data_Operation_Move) {
+        P_Data *p = (P_Data *)item;
+        if (p.operation & P_Data_Operation_Move) {
+            NSPasteboardItem *pbItem = [[NSPasteboardItem alloc] init];
+            [pbItem setString:[NSString stringWithFormat:@"%ld", self.outlineView.selectedRow] forType:[NSBundle mainBundle].bundleIdentifier];
+            return pbItem;
         }
-        NSData *archivedata = [NSKeyedArchiver archivedDataWithRootObject:item];
-        NSPasteboardItem* pbItem = [[NSPasteboardItem alloc] init];
-        [pbItem setData:archivedata forType:[NSBundle mainBundle].bundleIdentifier];
-        return pbItem;
     }
     return nil;
 }
@@ -243,7 +242,6 @@
 
 //阶段二之判断是否为有效拖拽
 - (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index{
-    NSLog(@"validateDrop:%@", NSStringFromPoint(info.draggingLocation));
     NSDragOperation sourceDragMask = [info draggingSourceOperationMask];
     NSPasteboard *pasteboard = info.draggingPasteboard;
     if ([[pasteboard types] containsObject:[NSBundle mainBundle].bundleIdentifier]) {
@@ -256,11 +254,20 @@
 
 //阶段二之拖拽调整位置
 - (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id<NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)index{
-    NSLog(@"acceptDrop:%@", NSStringFromPoint(info.draggingLocation));
-    NSPasteboard* pb = [info draggingPasteboard];
-    [self.outlineView beginUpdates];
-    //    [self.outlineView moveItemAtIndex:1 inParent:item toIndex:index inParent:item];
-    [self.outlineView endUpdates];
+    NSPasteboard *pasteboard = [info draggingPasteboard];
+    NSPasteboardItem *pbItem = pasteboard.pasteboardItems.firstObject;
+    NSString *selectedRowStr = [pbItem stringForType:[NSBundle mainBundle].bundleIdentifier];
+    if (selectedRowStr) {
+        NSInteger selectedRow = selectedRowStr.integerValue;
+        NSLog(@"%ld", selectedRow);
+        P_Data *p = [self.outlineView itemAtRow:selectedRow];
+        
+        NSLog(@"%p", p );
+        
+//        [self.outlineView beginUpdates];
+//        [self.outlineView moveItemAtIndex:<#(NSInteger)#> inParent:<#(nullable id)#> toIndex:<#(NSInteger)#> inParent:<#(nullable id)#>]
+//        [self.outlineView endUpdates];
+    }
     return YES;
 }
 

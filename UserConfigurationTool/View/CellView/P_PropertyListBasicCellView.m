@@ -28,6 +28,7 @@
     [self.textField cell].usesSingleLineMode = NO;
     //设置超出行数是否隐藏
 //    [self.textField cell].truncatesLastVisibleLine = YES;
+    self.textField.focusRingType = NSFocusRingTypeDefault;
 }
 
 - (void)p_setControlWithString:(NSString *)str
