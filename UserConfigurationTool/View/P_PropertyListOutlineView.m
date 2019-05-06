@@ -8,6 +8,7 @@
 
 #import "P_PropertyListOutlineView.h"
 #import "P_Data.h"
+#import "P_Data+P_Exten.h"
 
 #import "P_PropertyListBasicCellView.h"
 #import "P_PropertyList2ButtonCellView.h"
@@ -126,7 +127,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
         return [self canRedo:menuItem];
     }
     
-    BOOL extraCase = YES;
+    BOOL extraCase = NO;
     if(menuItem.action == @selector(add:))
     {
         extraCase = [self canAdd:menuItem];
@@ -152,6 +153,11 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
         extraCase = [self canPaste:menuItem];
     }
     
+    else if(menuItem.action == @selector(menuDidSelecter:))
+    {
+        extraCase = YES;
+    }
+    
     return extraCase && (menuItem.action && [self respondsToSelector:menuItem.action] && [self selectedRow] != -1);
 }
 
@@ -168,15 +174,25 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 
 - (BOOL)canAdd:(NSMenuItem *)menuItem
 {
-    return YES;
+    NSInteger selectedRow = self.selectedRow;
+    if (selectedRow != -1) {
+        P_Data *p = [self itemAtRow:selectedRow];
+        return p.operation & P_Data_Operation_Insert;
+    }
+    return NO;
 }
 - (BOOL)canDelete:(NSMenuItem *)menuItem
 {
-    return YES;
+    NSInteger selectedRow = self.selectedRow;
+    if (selectedRow != -1) {
+        P_Data *p = [self itemAtRow:selectedRow];
+        return p.operation & P_Data_Operation_Delete;
+    }
+    return NO;
 }
 - (BOOL)canCut:(NSMenuItem *)menuItem
 {
-    return YES;
+    return [self canCopy:menuItem] && [self canDelete:menuItem];
 }
 - (BOOL)canCopy:(NSMenuItem *)menuItem
 {
@@ -199,41 +215,49 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [_undoManager redo];
 }
 
-- (void)add:(id)sender
+- (IBAction)add:(id)sender
 {
     P_Data *p = [[P_Data alloc] init];
     [self insertItem:p ofItem:[self itemAtRow:self.selectedRow]];
 }
 
 /** 删除 */
-- (void)delete:(id)sender
+- (IBAction)delete:(id)sender
 {
     NSInteger selectedRow = self.selectedRow;
-    [self deleteItem:[self itemAtRow:selectedRow]];
+    P_Data *p = [self itemAtRow:selectedRow];
+    [self deleteItem:p];
 }
 
 /** 剪切 */
-- (void)cut:(id)sender
+- (IBAction)cut:(id)sender
 {
     [self copy:sender];
     [self delete:sender];
 }
 
 /** 拷贝 */
-- (void)copy:(id)sender
+- (IBAction)copy:(id)sender
 {
     [NSPasteboard.generalPasteboard clearContents];
     
-    NSInteger operationIndex = [self selectedRow];
-    P_Data *p = [self itemAtRow:operationIndex];
+    NSInteger selectedRow = [self selectedRow];
+    P_Data *p = [self itemAtRow:selectedRow];
     [NSPasteboard.generalPasteboard setData:[NSKeyedArchiver archivedDataWithRootObject:p] forType:P_PropertyListPasteboardType];
 }
 
-- (void)paste:(id)sender
+- (IBAction)paste:(id)sender
 {
     P_Data *p = [NSKeyedUnarchiver unarchiveObjectWithData:[NSPasteboard.generalPasteboard dataForType:P_PropertyListPasteboardType]];
 
     [self insertItem:p ofItem:[self itemAtRow:self.selectedRow]];
+}
+
+- (IBAction)menuDidSelecter:(NSMenuItem *)sender
+{
+    NSInteger selectedRow = [self selectedRow];
+    P_Data *p = [self itemAtRow:selectedRow];
+    [self updateType:sender.title value:p.value childDatas:nil ofItem:p];
 }
 
 #pragma mark - 插入值key、type、value
@@ -318,6 +342,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 #pragma mark - 删除值key、type、value
 - (void)deleteItem:(id)item
 {
+    /** 关闭输入框 */
+    [self.window endEditingFor:self];
+    
     P_Data *p = item;
     
     /** willChangeNode */

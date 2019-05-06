@@ -1068,6 +1068,7 @@
                                             <connections>
                                                 <outlet property="dataSource" destination="XfG-lQ-9wD" id="8UW-Lm-D0w"/>
                                                 <outlet property="delegate" destination="XfG-lQ-9wD" id="z1U-qq-1dX"/>
+                                                <outlet property="menu" destination="uOl-QW-3fO" id="W9D-wQ-BGK"/>
                                             </connections>
                                         </outlineView>
                                     </subviews>
@@ -1102,8 +1103,85 @@
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu id="uOl-QW-3fO">
+                    <items>
+                        <menuItem title="Cut" id="lJ0-pv-5JW">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="cut:" target="kM5-ov-lof" id="ZTL-Hx-eYM"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Copy" id="fyY-PO-TfD">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="copy:" target="kM5-ov-lof" id="Me8-Aw-qYM"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Paste" id="XcX-HM-2lB">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="paste:" target="kM5-ov-lof" id="Lo1-MV-BkZ"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" id="IUs-KS-I7Z"/>
+                        <menuItem title="Value Type" id="3pz-5a-YN1">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <menu key="submenu" title="Value Type" id="2Cp-HB-aXl">
+                                <items>
+                                    <menuItem title="Array" id="vbI-v8-RSU">
+                                        <connections>
+                                            <action selector="menuDidSelecter:" target="kM5-ov-lof" id="06T-lk-MwC"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Dictionary" id="GAS-f3-pea">
+                                        <connections>
+                                            <action selector="menuDidSelecter:" target="kM5-ov-lof" id="NC5-2f-oJP"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem isSeparatorItem="YES" id="ETK-ow-XzC"/>
+                                    <menuItem title="Boolean" id="0cd-c6-Zbn">
+                                        <connections>
+                                            <action selector="menuDidSelecter:" target="kM5-ov-lof" id="rcn-p7-LU0"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Data" id="kVJ-du-Wq1">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="menuDidSelecter:" target="kM5-ov-lof" id="DbE-yB-J5j"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Date" id="ZSk-nr-3KD">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="menuDidSelecter:" target="kM5-ov-lof" id="TLo-zX-jU7"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Number" id="JEa-VN-WLk">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="menuDidSelecter:" target="kM5-ov-lof" id="KzD-TU-MLz"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="String" id="WH3-ie-EUA">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="menuDidSelecter:" target="kM5-ov-lof" id="5Qs-Wc-VOG"/>
+                                        </connections>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" id="k9n-t3-6D9"/>
+                        <menuItem title="Add Item" id="OK6-P9-fjT">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="add:" target="kM5-ov-lof" id="CsO-gx-135"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                </menu>
             </objects>
-            <point key="canvasLocation" x="75" y="953"/>
+            <point key="canvasLocation" x="75" y="1074"/>
         </scene>
     </scenes>
     <resources>
