@@ -14,8 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol P_PropertyList2ButtonCellViewDelegate <P_PropertyListCellViewDelegate>
 
 @optional
-- (id)p_propertyList2ButtonCellPlusAction:(P_PropertyList2ButtonCellView *)cellView;
-- (id)p_propertyList2ButtonCellMinusAction:(P_PropertyList2ButtonCellView *)cellView;
+- (void)p_propertyList2ButtonCellPlusAction:(P_PropertyList2ButtonCellView *)cellView;
+- (void)p_propertyList2ButtonCellMinusAction:(P_PropertyList2ButtonCellView *)cellView;
 
 @end
 

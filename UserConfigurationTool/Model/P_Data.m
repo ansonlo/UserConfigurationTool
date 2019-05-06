@@ -31,6 +31,7 @@
 {
     self = [super init];
     if (self) {
+        _key = @"";
         _type = Plist.String;
         _editable = P_Data_Editable_All;
         _operation = P_Data_Operation_All;
@@ -106,9 +107,8 @@
         childDatas = [NSMutableArray arrayWithCapacity:1];
         NSArray *plistData = (NSArray *)contents;
         for (NSInteger i=0; i<plistData.count; i++) {
-            NSString *key = [NSString stringWithFormat:@"Item %lu", (unsigned long)i];
             id value = plistData[i];
-            P_Data *p = [[[self class] alloc] initWithPlistKey:key value:value];
+            P_Data *p = [[[self class] alloc] initWithPlistKey:@"" value:value];
             if (p) {
                 p.parentData = self;
                 [childDatas addObject:p];
@@ -151,6 +151,14 @@
         }
     }
     return _m_childDatas;
+}
+
+- (NSString *)key
+{
+    if ([self.parentData.type isEqualToString:Plist.Array]) {
+        return [NSString stringWithFormat:@"Item %lu", (unsigned long)[self.parentData.m_childDatas indexOfObject:self]];
+    }
+    return _key;
 }
 
 - (id)value
@@ -392,10 +400,6 @@
 
 
 #pragma mark - isEqualToP_Data
-- (BOOL)isEqual:(id)object
-{
-    return [self isEqualToP_Data:object];
-}
 
 - (BOOL)isEqualToP_Data:(P_Data *)object
 {

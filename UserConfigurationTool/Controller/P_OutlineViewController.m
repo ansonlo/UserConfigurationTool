@@ -21,7 +21,7 @@
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
 
-@interface P_OutlineViewController () <P_PropertyListCellViewDelegate>
+@interface P_OutlineViewController () <P_PropertyList2ButtonCellViewDelegate>
 {
     
 }
@@ -308,6 +308,24 @@
     }
     
     return nil;
+}
+
+#pragma mark - P_PropertyList2ButtonCellViewDelegate
+- (void)p_propertyList2ButtonCellPlusAction:(P_PropertyList2ButtonCellView *)cellView
+{
+    NSUInteger row = [self.outlineView rowForView:cellView];
+    
+    id item = [self.outlineView itemAtRow:row];
+    
+    [self.outlineView insertItem:[[P_Data alloc] init] ofItem:item];
+}
+- (void)p_propertyList2ButtonCellMinusAction:(P_PropertyList2ButtonCellView *)cellView
+{
+    NSUInteger row = [self.outlineView rowForView:cellView];
+    
+    id item = [self.outlineView itemAtRow:row];
+    
+    [self.outlineView deleteItem:item];
 }
 
 @end

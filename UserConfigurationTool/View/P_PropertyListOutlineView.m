@@ -118,12 +118,12 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 {
     if(menuItem.action == @selector(undo:))
     {
-        return _undoManager.canUndo;
+        return [self canUndo:menuItem];
     }
     
     if(menuItem.action == @selector(redo:))
     {
-        return _undoManager.canRedo;
+        return [self canRedo:menuItem];
     }
     
     BOOL extraCase = YES;
@@ -156,6 +156,16 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 }
 
 #pragma mark - can do sth
+- (BOOL)canUndo:(NSMenuItem *)menuItem
+{
+    return _undoManager.canUndo;
+}
+
+- (BOOL)canRedo:(NSMenuItem *)menuItem
+{
+    return _undoManager.canRedo;
+}
+
 - (BOOL)canAdd:(NSMenuItem *)menuItem
 {
     return YES;
@@ -174,7 +184,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 }
 - (BOOL)canPaste:(NSMenuItem *)menuItem
 {
-    return YES;
+    return [NSPasteboard.generalPasteboard canReadItemWithDataConformingToTypes:@[P_PropertyListPasteboardType]];
 }
 
 #pragma mark - doing sth / menu action
@@ -192,8 +202,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)add:(id)sender
 {
     P_Data *p = [[P_Data alloc] init];
-    [self insertItem:p];
-#warning 激活key的输入框
+    [self insertItem:p ofItem:[self itemAtRow:self.selectedRow]];
 }
 
 /** 删除 */
@@ -223,12 +232,12 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)paste:(id)sender
 {
     P_Data *p = [NSKeyedUnarchiver unarchiveObjectWithData:[NSPasteboard.generalPasteboard dataForType:P_PropertyListPasteboardType]];
-#warning key 的复用判断
-    [self insertItem:p];
+
+    [self insertItem:p ofItem:[self itemAtRow:self.selectedRow]];
 }
 
 #pragma mark - 插入值key、type、value
-- (void)insertItem:(id)newItem
+- (void)insertItem:(id)newItem ofItem:(id)item
 {
     P_Data *new_p = newItem;
     P_Data *parent_p = nil;
@@ -237,37 +246,73 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     [self beginUpdates];
     
-    NSUInteger insertionRow;
-    P_Data *p = [self itemAtRow:self.selectedRow];
+    NSInteger index;
+    P_Data *p = item;
     
     if([self isItemExpanded:p])
     {
         parent_p = p;
-        insertionRow = 0;
+        index = 0;
     }
     else
     {
         parent_p = p.parentData;
-        insertionRow = [parent_p.childDatas indexOfObject:p] + 1;
+        index = [parent_p.childDatas indexOfObject:p] + 1;
     }
-    [parent_p insertChildData:new_p atIndex:insertionRow];
     
-    [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:insertionRow] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
+    if (parent_p.type == Plist.Dictionary) {
+        //key 的复用判断
+        
+        P_Data *tmpP = parent_p.childDatas.firstObject;
+        
+        NSUInteger count = 2;
+        NSString* originalKey = new_p.key;
+        
+        while([tmpP containsChildrenWithKey:new_p.key])
+        {
+            new_p.key = [NSString stringWithFormat:@"%@ - %lu", originalKey, count];
+            count += 1;
+        }
+    }
     
+    
+    [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
+    [parent_p insertChildData:new_p atIndex:index];
+    
+    if (parent_p) {
+        [self reloadItem:parent_p];
+    }
+    
+    if(parent_p.type == Plist.Array)
+    {
+        /** key 重新排序 */
+        NSArray <P_Data *> *children = parent_p.childDatas;
+        [[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, children.count - index)] enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+            [self reloadItem:children[idx]];
+        }];
+    }
     
     [self endUpdates];
     
-    NSInteger insertedRow = [self rowForItem:newItem];
+    NSInteger insertedRow = [self rowForItem:new_p];
     
     [self selectRowIndexes:[NSIndexSet indexSetWithIndex:insertedRow] byExtendingSelection:NO];
     
     [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView* _Nonnull target) {
-        [target deleteItem:newItem];
+        [target deleteItem:new_p];
     }];
+    
+    // 激活key的输入框
+    if (new_p.key.length == 0) {
+        
+        NSTableCellView *cellView = [self viewAtColumn:0 row:insertedRow makeIfNecessary:NO];
+//        [cellView.textField performClick:cellView.textField];
+        [cellView.textField becomeFirstResponder];
+    }
     
     /** didChangeNode */
     
-    NSLog(@"%@", newItem);
+    NSLog(@"insert %@", new_p);
 }
 
 #pragma mark - 删除值key、type、value
@@ -281,30 +326,39 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     NSInteger selectedRow = [self rowForItem:item];
     
-    P_Data *parent_p = p.parentData.level > 0 ? p.parentData : nil;
+    P_Data *parent_p = p.level > 0 ? p.parentData : nil;
     
-    NSUInteger deletionIndex = [parent_p.childDatas indexOfObject:p];
-    [parent_p removeChildDataAtIndex:deletionIndex];
-    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:deletionIndex] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
+    NSInteger index = [parent_p.childDatas indexOfObject:p];
+    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
+    [parent_p removeChildDataAtIndex:index];
+    
+    if (parent_p) {
+        [self reloadItem:parent_p];
+    }
+    
+    if(parent_p.type == Plist.Array)
+    {
+        /** key 重新排序 */
+        NSArray <P_Data *> *children = parent_p.childDatas;
+        [[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, children.count - index)] enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+            [self reloadItem:children[idx]];
+        }];
+    }
     
     [self endUpdates];
     
     [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView* _Nonnull target) {
-        [target insertItem:item];
+        [target insertItem:item ofItem:[self itemAtRow:selectedRow-1]];
     }];
     
     if(selectedRow != -1)
     {
-        if(selectedRow > 0)
-        {
-            selectedRow -= 1;
-        }
         [self selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedRow] byExtendingSelection:NO];
     }
     
     /** didChangeNode */
     
-    NSLog(@"%@", item);
+    NSLog(@"delete %@", item);
 }
 
 #pragma mark - 更新值key、type、value
@@ -323,14 +377,19 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     [self beginUpdates];
     
-    P_Data *parentData = p.parentData;
-    NSInteger index = [parentData.childDatas indexOfObject:p];
-    [parentData removeChildDataAtIndex:index];
-    [parentData insertChildData:new_p atIndex:index];
-    
     NSPoint point = self.enclosingScrollView.documentVisibleRect.origin;
-    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
-    [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parentData withAnimation:NSTableViewAnimationEffectNone];
+    P_Data *parent_p = p.parentData;
+    NSInteger index = [parent_p.childDatas indexOfObject:p];
+    
+    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
+    [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
+    [parent_p removeChildDataAtIndex:index];
+    [parent_p insertChildData:new_p atIndex:index];
+    
+    if (parent_p) {
+        [self reloadItem:parent_p];
+    }
+    
     [self endUpdates];
     
     NSInteger selectionRow = [self rowForItem:new_p];
@@ -343,7 +402,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     /** didChangeNode */
     
-    NSLog(@"%@", new_p);
+    NSLog(@"update %@", new_p);
 }
 
 - (void)updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
@@ -373,7 +432,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     /** didChangeNode */
     
-    NSLog(@"%@", p);
+    NSLog(@"update %@", p);
 }
 
 - (void)updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *_Nullable)childDatas ofItem:(id)item
@@ -404,7 +463,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     /** didChangeNode */
     
-    NSLog(@"%@", p);
+    NSLog(@"update %@", p);
 }
 
 - (void)updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
@@ -442,7 +501,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     /** didChangeNode */
     
-    NSLog(@"%@", p);
+    NSLog(@"update %@", p);
 }
 
 @end

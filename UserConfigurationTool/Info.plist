@@ -41,7 +41,12 @@
 	<key>bb - 5</key>
 	<true/>
 	<key>bb - 6</key>
-	<true/>
+	<array>
+		<string>0</string>
+		<string>1</string>
+		<string>2</string>
+		<string>3</string>
+	</array>
 	<key>nnn</key>
 	<integer>122131</integer>
 	<key>ccc</key>

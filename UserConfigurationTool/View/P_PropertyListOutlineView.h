@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface P_PropertyListOutlineView : NSOutlineView
 
+#pragma mark - 插入值key、type、value
+- (void)insertItem:(id)newItem ofItem:(id)item;
+#pragma mark - 删除值key、type、value
+- (void)deleteItem:(id)item;
 #pragma mark - 更新值key、type、value
 - (void)updateItem:(id)newItem ofItem:(id)item;
 - (void)updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView;
