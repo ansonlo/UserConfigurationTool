@@ -245,6 +245,19 @@
 {
     self.dragItems = draggedItems;
     [session.draggingPasteboard setData:[NSData data] forType:self.outlineView.pasteboardType];
+    
+    /** 组合拖动图像的组件 */
+    [session enumerateDraggingItemsWithOptions:NSDraggingItemEnumerationConcurrent
+                                       forView:outlineView
+                                       classes:[NSArray arrayWithObject:[NSPasteboardItem class]]
+                                 searchOptions:@{}
+                                    usingBlock:^(NSDraggingItem * _Nonnull draggingItem, NSInteger idx, BOOL * _Nonnull stop) {
+                                        id item = [draggedItems objectAtIndex:idx];
+                                        NSInteger row = [outlineView rowForItem:item];
+                                        NSTableCellView *cellView = [outlineView viewAtColumn:0 row:row makeIfNecessary:NO];
+                                        draggingItem.imageComponentsProvider = ^NSArray*(void) { return cellView.draggingImageComponents;};
+                                    }];
+    
 }
 
 //阶段二之判断是否为有效拖拽

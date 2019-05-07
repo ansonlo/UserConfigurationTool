@@ -31,6 +31,21 @@
     self.textField.focusRingType = NSFocusRingTypeDefault;
 }
 
+#pragma mark - overwrite
+- (NSArray<NSDraggingImageComponent *> *)draggingImageComponents
+{
+    NSArray<NSDraggingImageComponent *> *s_draggingImageComponents = [super draggingImageComponents];
+    NSDraggingImageComponent *imageComponent = [NSDraggingImageComponent draggingImageComponentWithKey:NSDraggingImageComponentLabelKey];
+    imageComponent.contents = self.textField.stringValue;
+    imageComponent.frame = self.textField.frame;
+    
+    if (s_draggingImageComponents) {
+        return [s_draggingImageComponents arrayByAddingObjectsFromArray:@[imageComponent]];
+    } else {
+        return @[imageComponent];
+    }
+}
+
 - (void)p_setControlWithString:(NSString *)str
 {
     self.textField.stringValue = str;

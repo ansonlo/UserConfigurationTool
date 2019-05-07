@@ -39,6 +39,25 @@
 //    self.plusButton.hidden = self.minusButton.hidden = YES;
 }
 
+#pragma mark - overwrite
+- (NSArray<NSDraggingImageComponent *> *)draggingImageComponents
+{
+    NSArray<NSDraggingImageComponent *> *s_draggingImageComponents = [super draggingImageComponents];
+    NSDraggingImageComponent *imageComponent1 = [NSDraggingImageComponent draggingImageComponentWithKey:NSDraggingImageComponentIconKey];
+    imageComponent1.contents = self.minusButton.image;
+    imageComponent1.frame = self.minusButton.frame;
+    
+    NSDraggingImageComponent *imageComponent2 = [NSDraggingImageComponent draggingImageComponentWithKey:NSDraggingImageComponentIconKey];
+    imageComponent2.contents = self.plusButton.image;
+    imageComponent2.frame = self.plusButton.frame;
+    
+    if (s_draggingImageComponents) {
+        return [s_draggingImageComponents arrayByAddingObjectsFromArray:@[imageComponent1, imageComponent2]];
+    } else {
+        return @[imageComponent1, imageComponent2];
+    }
+}
+
 - (void)p_setShowsControlButtons:(BOOL)showsControlButtons addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled
 {
     self.comboBoxTrailing.constant = showsControlButtons ? self.frame.size.width-self.plusButton.frame.origin.x : 2;
