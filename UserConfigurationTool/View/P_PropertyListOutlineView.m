@@ -21,7 +21,6 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 {
     NSUndoManager* _undoManager;
 }
-@property (nonatomic, copy) NSString *pasteboardType;
 
 @end
 
@@ -55,14 +54,17 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 
 - (void)customInit
 {
-    [self registerForDraggedTypes:[NSArray arrayWithObject:[NSBundle mainBundle].bundleIdentifier]];
-    _pasteboardType = [NSBundle mainBundle].bundleIdentifier;
     
     _undoManager = [NSUndoManager new];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popUpButtonWillPopUpNotification:) name:NSPopUpButtonWillPopUpNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(comboBoxWillPopUpNotification:) name:NSComboBoxWillPopUpNotification object:nil];
     
+}
+
+- (NSPasteboardType)pasteboardType
+{
+    return [NSBundle mainBundle].bundleIdentifier;
 }
 
 - (void)dealloc{

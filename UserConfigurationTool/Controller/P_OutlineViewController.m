@@ -28,6 +28,7 @@
 
 @property (nonatomic, strong) P_Data *root;
 
+@property (nonatomic, strong) NSArray *dragItems;
 
 @end
 
@@ -37,8 +38,8 @@
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.
-    
-
+    /** outlineView注册操作类型 */
+    [self.outlineView registerForDraggedTypes:[NSArray arrayWithObjects:self.outlineView.pasteboardType, nil]];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -239,14 +240,23 @@
     return nil;
 }
 
+/** 开始拖缀 */
+- (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint forItems:(NSArray *)draggedItems NS_AVAILABLE_MAC(10_7)
+{
+    self.dragItems = draggedItems;
+    [session.draggingPasteboard setData:[NSData data] forType:self.outlineView.pasteboardType];
+}
 
 //阶段二之判断是否为有效拖拽
 - (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index{
     NSDragOperation sourceDragMask = [info draggingSourceOperationMask];
     NSPasteboard *pasteboard = info.draggingPasteboard;
-    if ([[pasteboard types] containsObject:[NSBundle mainBundle].bundleIdentifier]) {
-        if (sourceDragMask & NSDragOperationMove) {
-            return NSDragOperationMove;
+    /** 只支持同级拖动 */
+    if (index >= 0) {
+        if ([[pasteboard types] containsObject:[NSBundle mainBundle].bundleIdentifier]) {
+            if (sourceDragMask & NSDragOperationMove) {
+                return NSDragOperationGeneric;
+            }
         }
     }
     return NSDragOperationNone;
@@ -269,6 +279,12 @@
 //        [self.outlineView endUpdates];
     }
     return YES;
+}
+
+/** 拖缀结束 */
+- (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation NS_AVAILABLE_MAC(10_7)
+{
+    self.dragItems = nil;
 }
 
 

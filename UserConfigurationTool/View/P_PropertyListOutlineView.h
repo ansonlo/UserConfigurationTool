@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface P_PropertyListOutlineView : NSOutlineView
 
+@property (nonatomic, readonly) NSPasteboardType pasteboardType;
+
 #pragma mark - 插入值key、type、value
 - (void)insertItem:(id)newItem ofItem:(id)item;
 #pragma mark - 删除值key、type、value
