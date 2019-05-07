@@ -750,7 +750,7 @@ CA
                                             <constraint firstAttribute="width" secondItem="IiG-wE-b77" secondAttribute="height" multiplier="1:1" id="Uxb-oU-tn4"/>
                                             <constraint firstAttribute="width" constant="32" id="qnR-eA-Miu"/>
                                         </constraints>
-                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="add" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="bgk-la-ehn">
+                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="add" imagePosition="only" alignment="center" enabled="NO" imageScaling="proportionallyUpOrDown" inset="2" id="bgk-la-ehn">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -764,7 +764,7 @@ CA
                                             <constraint firstAttribute="width" secondItem="fom-b4-SMA" secondAttribute="height" multiplier="1:1" id="J7U-6E-kbz"/>
                                             <constraint firstAttribute="width" constant="32" id="aCy-6I-VZs"/>
                                         </constraints>
-                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="remove" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="sjj-fn-eeK">
+                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="remove" imagePosition="only" alignment="center" enabled="NO" imageScaling="proportionallyUpOrDown" inset="2" id="sjj-fn-eeK">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -1102,7 +1102,9 @@ CA
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="minusButton" destination="fom-b4-SMA" id="WWD-a7-dPq"/>
                         <outlet property="outlineView" destination="kM5-ov-lof" id="iPR-4Y-dYg"/>
+                        <outlet property="plusButton" destination="IiG-wE-b77" id="smc-40-Fmo"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

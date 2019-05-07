@@ -8,11 +8,16 @@
 
 #import "P_OperationViewController.h"
 #import "P_TypeHeader.h"
+#import "P_Data.h"
+#import "P_Data+P_Exten.h"
 
 @interface P_OperationViewController ()
 
 @property (nonatomic, strong) NSURL *plistUrl;
 @property (nonatomic, assign) BOOL hasSaveUrl;
+
+@property (weak) IBOutlet NSButton *plusButton;
+@property (weak) IBOutlet NSButton *minusButton;
 
 @end
 
@@ -55,13 +60,16 @@
 }
 
 - (IBAction)resetAction:(id)sender {
-    
+    if (_plistUrl) {
+        [self __loadPlistData:_plistUrl];
+    }
 }
 - (IBAction)addAction:(id)sender {
-    
+    P_Data *p = [[P_Data alloc] init];
+    [self.outlineView insertItem:p ofItem:[self.outlineView itemAtRow:self.outlineView.selectedRow]];
 }
 - (IBAction)removeAction:(id)sender {
-    
+    [self.outlineView deleteItem:[self.outlineView itemAtRow:self.outlineView.selectedRow]];
 }
 - (IBAction)createPlistAction:(id)sender {
     if (_hasSaveUrl) {
@@ -123,6 +131,21 @@
 - (void)__savePlistData:(NSURL *)plistUrl
 {
     NSLog(@"subClass to overwrite the method.");
+}
+
+#pragma mark - NSOutlineViewDataSource
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(nullable id)item
+{
+    return 0;
+}
+
+#pragma mark - NSOutlineViewDelegate
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
+{
+    P_Data *p = item;
+    self.plusButton.enabled = p.operation & P_Data_Operation_Insert;
+    self.minusButton.enabled = p.operation & P_Data_Operation_Delete;
+    return YES;
 }
 
 @end
