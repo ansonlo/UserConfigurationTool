@@ -209,6 +209,8 @@
     }
 }
 
+#pragma mark - sort
+
 - (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray<NSSortDescriptor *> *)oldDescriptors;
 {
     //Make the outline view as the first responder to prevent issues with currently edited text fields.
@@ -226,6 +228,8 @@
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
     [outlineView scrollRowToVisible:selectionRow];
 }
+
+#pragma mark - drag & drop
 
 //阶段二之支持拖拽
 - (id<NSPasteboardWriting>)outlineView:(NSOutlineView *)outlineView pasteboardWriterForItem:(id)item{

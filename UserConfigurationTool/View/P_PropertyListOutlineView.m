@@ -261,6 +261,62 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [self updateType:sender.title value:p.value childDatas:nil ofItem:p];
 }
 
+#pragma mark - 移动
+- (void)moveItem:(id)item toIndex:(NSUInteger)toIndex inParent:(id)parent
+{
+    P_Data *p = item;
+    P_Data *parentItem = parent;
+    
+    /** willChangeNode */
+    
+    [self beginUpdates];
+    
+    P_Data *parent_p = p.level > 0 ? p.parentData : nil;
+    
+    NSInteger index = [parent_p.childDatas indexOfObject:p];
+    [self moveItemAtIndex:index inParent:parent_p toIndex:toIndex inParent:parent];
+    [parent_p removeChildDataAtIndex:index];
+    [parentItem insertChildData:p atIndex:toIndex];
+    
+    void (^handleParentItem)(P_Data *, NSInteger) = ^(P_Data *b_parentItem, NSInteger b_idx){
+        if (b_parentItem) {
+            [self reloadItem:b_parentItem];
+        }
+        
+        if(b_parentItem.type == Plist.Array)
+        {
+            /** key 重新排序 */
+            NSArray <P_Data *> *children = b_parentItem.childDatas;
+            [[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(b_idx, children.count - b_idx)] enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+                [self reloadItem:children[idx]];
+            }];
+        }
+    };
+    
+    if (parentItem == parent_p) {
+        handleParentItem(parentItem, MIN(index, toIndex));
+    } else {
+        handleParentItem(parent_p, index);
+        handleParentItem(parentItem, toIndex);
+    }
+    
+    [self endUpdates];
+    
+    [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView* _Nonnull target) {
+        [target moveItem:item toIndex:index inParent:parent_p];
+    }];
+    
+    NSInteger selectedRow = [self rowForItem:item];
+    if(selectedRow != -1)
+    {
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedRow] byExtendingSelection:NO];
+    }
+    
+    /** didChangeNode */
+    
+    NSLog(@"move %@", item);
+}
+
 #pragma mark - 插入值key、type、value
 - (void)insertItem:(id)newItem ofItem:(id)item
 {

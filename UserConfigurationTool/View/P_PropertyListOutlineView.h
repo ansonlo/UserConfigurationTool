@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) NSPasteboardType pasteboardType;
 
+#pragma mark - 移动
+- (void)moveItem:(id)item toIndex:(NSUInteger)toIndex inParent:(id)parent;
 #pragma mark - 插入值key、type、value
 - (void)insertItem:(id)newItem ofItem:(id)item;
 #pragma mark - 删除值key、type、value
