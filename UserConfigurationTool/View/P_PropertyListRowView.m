@@ -31,7 +31,6 @@
     self.canDrawSubviewsIntoLayer = YES;
     self.layer.borderWidth = 2.0;
     self.layer.borderColor = NSColor.clearColor.CGColor;
-    self.emphasized = YES;
 }
 
 - (void)ensureTrackingArea
@@ -77,10 +76,21 @@
     [self p_updateEditButtons];
 }
 
+- (void)setEmphasized:(BOOL)emphasized
+{
+    /** 禁止已选中时，被取消标志 */
+    if (self.isSelected && emphasized == NO) {
+        return;
+    }
+    [super setEmphasized:emphasized];
+}
+
 - (void)setSelected:(BOOL)selected
 {
     [super setSelected:selected];
-    
+    if (selected) {
+        [self setEmphasized:YES];
+    }
     [self p_updateEditButtons];
     
     if (self.numberOfColumns > 1) {
@@ -110,19 +120,19 @@
 }
 
 //直接改变点击背景色的方法
-//- (void)drawSelectionInRect:(NSRect)dirtyRect
-//{
-//    if (self.selectionHighlightStyle != NSTableViewSelectionHighlightStyleNone) {
-//        
-//        NSRect selectionRect = NSInsetRect(self.bounds, 1, 1);
-//        
-//        [[NSColor colorWithWhite:0.9 alpha:1] setStroke];  //设置边框颜色
-//        [[NSColor redColor] setFill];  //设置填充背景颜色
-//        
-//        NSBezierPath *path = [NSBezierPath bezierPathWithRect:selectionRect];
-//        [path fill];
-//        [path stroke];
-//    }
-//}
+- (void)drawSelectionInRect:(NSRect)dirtyRect
+{
+    if (self.selectionHighlightStyle != NSTableViewSelectionHighlightStyleNone) {
+
+        NSRect selectionRect = NSInsetRect(self.bounds, 1, 1);
+
+        [[NSColor systemBlueColor] setStroke];  //设置边框颜色
+        [[NSColor systemBlueColor] setFill];  //设置填充背景颜色
+
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:selectionRect];
+        [path fill];
+        [path stroke];
+    }
+}
 
 @end

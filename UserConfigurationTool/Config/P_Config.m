@@ -193,8 +193,12 @@
         if ([self.type isEqualToString:Plist.Dictionary] && [self.key isEqualToString:key]) {
             return self;
         } else {
+            P_Config *tmp = nil;
             for (P_Config *c in self.m_childDatas) {
-                return [c configAtKey:key];
+                tmp = [c configAtKey:key];
+                if (tmp) {
+                    return tmp;
+                }
             }
         }
     }

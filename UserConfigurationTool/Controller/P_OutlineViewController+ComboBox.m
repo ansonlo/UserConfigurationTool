@@ -17,12 +17,17 @@
 
 static NSString *P_OutlineView_root_configKey;
 static NSString *P_OutlineView_configKey;
+static NSString *P_OutlineView_textFieldEditing;
+static NSString *P_OutlineView_comboBoxPopUping;
 
 @interface P_OutlineViewController () <NSComboBoxDataSource, NSComboBoxDelegate>
 
 @property (nonatomic, strong) P_Config *root_config;
 
 @property (nonatomic, strong) P_Config *config;
+
+@property (nonatomic, assign) BOOL textFieldEditing;
+@property (nonatomic, assign) BOOL comboBoxPopUping;
 
 @end
 
@@ -46,6 +51,26 @@ static NSString *P_OutlineView_configKey;
 - (P_Config *)config
 {
     return objc_getAssociatedObject([self class], &P_OutlineView_configKey);
+}
+
+- (void)setTextFieldEditing:(BOOL)textFieldEditing
+{
+    objc_setAssociatedObject([self class], &P_OutlineView_textFieldEditing, @(textFieldEditing), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)textFieldEditing
+{
+    return [objc_getAssociatedObject([self class], &P_OutlineView_textFieldEditing) boolValue];
+}
+
+- (void)setComboBoxPopUping:(BOOL)comboBoxPopUping
+{
+    objc_setAssociatedObject([self class], &P_OutlineView_comboBoxPopUping, @(comboBoxPopUping), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)comboBoxPopUping
+{
+    return [objc_getAssociatedObject([self class], &P_OutlineView_comboBoxPopUping) boolValue];
 }
 
 #pragma mark - NSComboBoxDataSource
@@ -72,52 +97,52 @@ static NSString *P_OutlineView_configKey;
 #pragma mark - NSComboBoxDelegate
 - (void)comboBoxWillPopUp:(NSNotification *)notification
 {
+    self.comboBoxPopUping = YES;
     NSComboBox *comboBox = notification.object;
-    [comboBox abortEditing];
-    NSInteger selectionRow = [self.outlineView rowForView:comboBox];
-    NSTableRowView *rowView = [self.outlineView rowViewAtRow:selectionRow makeIfNecessary:NO];
-    rowView.emphasized = YES;
-    [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
+    [comboBox.window endEditingFor:comboBox];
 }
 
 - (void)comboBoxWillDismiss:(NSNotification *)notification
 {
+    self.comboBoxPopUping = NO;
     NSComboBox *comboBox = notification.object;
-    [comboBox abortEditing];
-    NSInteger selectionRow = [self.outlineView rowForView:comboBox];
-    NSTableRowView *rowView = [self.outlineView rowViewAtRow:selectionRow makeIfNecessary:NO];
-    rowView.emphasized = YES;
-    [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
+    [comboBox.window endEditingFor:comboBox];
 }
 
 - (void)comboBoxSelectionDidChange:(NSNotification *)notification
 {
     NSComboBox *comboBox = notification.object;
+    /** 已经确定选择后，需要关闭已经输入的标记。否则会调用controlTextDidEndEditing，导致处理2次数据。 */
+    self.textFieldEditing = NO;
     if (comboBox.indexOfSelectedItem > -1) {
-        
-        NSLog(@"config:%@", [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data);
+//        NSLog(@"config:%@", [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data);
         
         [self comboBoxDidEndEditing:comboBox config:[self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem]];
     }
+    [comboBox.window endEditingFor:comboBox];
 }
 
 #pragma mark NSTextFieldDelegate
 
 - (void)controlTextDidBeginEditing:(NSNotification *)obj
 {
-    NSComboBox *comboBox = obj.object;
-    if (self.config == nil || comboBox.numberOfItems == 0) {
+    self.textFieldEditing = YES;
+    if (!self.comboBoxPopUping) {
+        NSComboBox *comboBox = obj.object;
         [comboBox noteNumberOfItemsChanged];
     }
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
+    if (self.textFieldEditing == NO) {
+        return;
+    }
+    self.textFieldEditing = NO;
+
     NSComboBox *comboBox = obj.object;
-    NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
+//    NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
     [self comboBoxDidEndEditing:comboBox config:[self.config completedKey:comboBox.stringValue]];
-    self.config = nil;
-    [comboBox abortEditing];
 }
 
 #pragma mark - 处理数据

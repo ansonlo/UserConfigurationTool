@@ -28,6 +28,7 @@
     // Do any additional setup after loading the view.
     
     NSURL *propertyListURL = [[NSBundle mainBundle].bundleURL URLByAppendingPathComponent:@"Contents/Info.plist"];
+    _plistUrl = propertyListURL;
     [self __loadPlistData:propertyListURL];
     
 }
