@@ -464,6 +464,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gzmiracle.UserConfigurationTool;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -486,6 +487,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gzmiracle.UserConfigurationTool;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
