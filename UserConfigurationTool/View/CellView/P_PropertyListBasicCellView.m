@@ -32,6 +32,11 @@
 }
 
 #pragma mark - overwrite
+- (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle
+{
+    /** 禁止系统自动改变文字颜色 */
+}
+
 - (NSArray<NSDraggingImageComponent *> *)draggingImageComponents
 {
     NSArray<NSDraggingImageComponent *> *s_draggingImageComponents = [super draggingImageComponents];

@@ -278,7 +278,10 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [parent_p removeChildDataAtIndex:index];
     [parentItem insertChildData:p atIndex:toIndex];
     
+    [self endUpdates];
+    
     void (^handleParentItem)(P_Data *, NSInteger) = ^(P_Data *b_parentItem, NSInteger b_idx){
+        
         if (b_parentItem) {
             [self reloadItem:b_parentItem];
         }
@@ -299,8 +302,6 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
         handleParentItem(parent_p, index);
         handleParentItem(parentItem, toIndex);
     }
-    
-    [self endUpdates];
     
     [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView* _Nonnull target) {
         [target moveItem:item toIndex:index inParent:parent_p];
@@ -359,6 +360,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
     [parent_p insertChildData:new_p atIndex:index];
+
+    
+    [self endUpdates];
     
     if (parent_p) {
         [self reloadItem:parent_p];
@@ -372,8 +376,6 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
             [self reloadItem:children[idx]];
         }];
     }
-    
-    [self endUpdates];
     
     NSInteger insertedRow = [self rowForItem:new_p];
     
@@ -416,6 +418,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
     [parent_p removeChildDataAtIndex:index];
     
+    
+    [self endUpdates];
+    
     if (parent_p) {
         [self reloadItem:parent_p];
     }
@@ -428,8 +433,6 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
             [self reloadItem:children[idx]];
         }];
     }
-    
-    [self endUpdates];
     
     [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView* _Nonnull target) {
         [target insertItem:item ofItem:[self itemAtRow:selectedRow-1]];
@@ -449,6 +452,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 
 - (void)updateItem:(id)newItem ofItem:(id)item
 {
+    /** 关闭输入框 */
+    [self.window endEditingFor:self];
+    
     P_Data *new_p = newItem;
     P_Data *p = item;
     if([p.key isEqualToString:new_p.key])
@@ -470,12 +476,8 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [parent_p removeChildDataAtIndex:index];
     [parent_p insertChildData:new_p atIndex:index];
     
-    if (parent_p) {
-        [self reloadItem:parent_p];
-    }
-    
     [self endUpdates];
-    
+
     NSInteger selectionRow = [self rowForItem:new_p];
     [self selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
     [self scrollPoint:point];

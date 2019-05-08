@@ -36,7 +36,8 @@
 {
     [super prepareForReuse];
     
-//    self.plusButton.hidden = self.minusButton.hidden = YES;
+    self.comboBoxTrailing.constant = 2;
+    self.plusButton.hidden = self.minusButton.hidden = YES;
 }
 
 #pragma mark - overwrite
