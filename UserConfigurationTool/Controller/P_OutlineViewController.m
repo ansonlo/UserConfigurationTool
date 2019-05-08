@@ -28,7 +28,7 @@
 
 @property (nonatomic, strong) P_Data *root;
 
-@property (nonatomic, strong) NSArray *dragItems;
+@property (nonatomic, strong) NSArray <P_Data *>*dragItems;
 
 @end
 
@@ -237,7 +237,7 @@
         P_Data *p = (P_Data *)item;
         if (p.operation & P_Data_Operation_Move) {
             NSPasteboardItem *pbItem = [[NSPasteboardItem alloc] init];
-            [pbItem setString:[NSString stringWithFormat:@"%ld", self.outlineView.selectedRow] forType:[NSBundle mainBundle].bundleIdentifier];
+            [pbItem setString:[NSString stringWithFormat:@"%ld", self.outlineView.selectedRow] forType:self.outlineView.pasteboardType];
             return pbItem;
         }
     }
@@ -270,13 +270,14 @@
     NSPasteboard *pasteboard = info.draggingPasteboard;
     /** 只支持同级拖动 */
     P_Data *p = (P_Data *)item;
+//    NSLog(@"%@, %@", p.parentData.key, [self.dragItems firstObject].key);
     for (P_Data *obj in self.dragItems) {
-        if (obj.level <= p.level) {
+        if (![p.childDatas containsObject:obj]) {
             return NSDragOperationNone;
         }
     }
     if (index >= 0) {
-        if ([[pasteboard types] containsObject:[NSBundle mainBundle].bundleIdentifier]) {
+        if ([[pasteboard types] containsObject:self.outlineView.pasteboardType]) {
             if (sourceDragMask & NSDragOperationMove) {
                 return NSDragOperationGeneric;
             }
@@ -289,17 +290,17 @@
 - (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id<NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)index{
     NSPasteboard *pasteboard = [info draggingPasteboard];
     NSPasteboardItem *pbItem = pasteboard.pasteboardItems.firstObject;
-    NSString *selectedRowStr = [pbItem stringForType:[NSBundle mainBundle].bundleIdentifier];
+    NSString *selectedRowStr = [pbItem stringForType:self.outlineView.pasteboardType];
     if (selectedRowStr) {
-        NSInteger selectedRow = selectedRowStr.integerValue;
-        NSLog(@"%ld", selectedRow);
-        P_Data *p = [self.outlineView itemAtRow:selectedRow];
-        
-        NSLog(@"%p", p );
-        
-//        [self.outlineView beginUpdates];
-//        [self.outlineView moveItemAtIndex:(NSInteger) inParent:<#(nullable id)#> toIndex:<#(NSInteger)#> inParent:<#(nullable id)#>]
-//        [self.outlineView endUpdates];
+        P_Data *p = (P_Data *)item;
+        if ([p.type isEqualToString:@"Array"]) {
+            if (p.childDatas.count == index) {
+                index = p.childDatas.count - 1;
+            }
+        }
+        for (P_Data *obj in self.dragItems) {
+            [self.outlineView moveItem:obj toIndex:index inParent:item];
+        }
     }
     return YES;
 }
