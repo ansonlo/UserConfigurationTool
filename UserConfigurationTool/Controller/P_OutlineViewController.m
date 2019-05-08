@@ -293,13 +293,21 @@
     NSString *selectedRowStr = [pbItem stringForType:self.outlineView.pasteboardType];
     if (selectedRowStr) {
         P_Data *p = (P_Data *)item;
-        if ([p.type isEqualToString:@"Array"]) {
-            if (p.childDatas.count == index) {
-                index = p.childDatas.count - 1;
-            }
-        }
+        /** 这里是单个拖动 */
         for (P_Data *obj in self.dragItems) {
-            [self.outlineView moveItem:obj toIndex:index inParent:item];
+            BOOL canDo = YES;
+            if ([p.type isEqualToString:@"Array"]) {
+                NSInteger selectIndex = [p.childDatas indexOfObject:obj];
+                if (index == selectIndex) {
+                    canDo = NO;
+                }
+                if (index == (selectIndex + 1)) {
+                    canDo = NO;
+                }
+            }
+            if (canDo) {
+                [self.outlineView moveItem:obj toIndex:index inParent:item];
+            }
         }
     }
     return YES;
