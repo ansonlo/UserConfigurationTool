@@ -21,6 +21,7 @@
 		C71439BC226F0540008D15C6 /* P_PropertyListDatePickerCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439BB226F0540008D15C6 /* P_PropertyListDatePickerCellView.m */; };
 		C71439C0226F06EE008D15C6 /* P_PropertyListDatePicker.mm in Sources */ = {isa = PBXBuildFile; fileRef = C71439BF226F06EE008D15C6 /* P_PropertyListDatePicker.mm */; };
 		C71439C3226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439C2226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m */; };
+		C743D4B92282BBBC000FC282 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = C743D4B82282BBBC000FC282 /* Config.plist */; };
 		C7BD99BA226FF78500CA3351 /* NSView+P_Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */; };
 		C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99BD226FF96900CA3351 /* P_PropertyListBasicCellView.m */; };
 		C7BD9A162272EC2600CA3351 /* AESCrypt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BD9A152272EC2600CA3351 /* AESCrypt.framework */; };
@@ -62,6 +63,7 @@
 		C71439BF226F06EE008D15C6 /* P_PropertyListDatePicker.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = P_PropertyListDatePicker.mm; sourceTree = "<group>"; };
 		C71439C1226F0740008D15C6 /* P_PropertyListPopUpButtonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListPopUpButtonCell.h; sourceTree = "<group>"; };
 		C71439C2226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_PropertyListPopUpButtonCell.m; sourceTree = "<group>"; };
+		C743D4B82282BBBC000FC282 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = SOURCE_ROOT; };
 		C7BD99B8226FF78500CA3351 /* NSView+P_Animation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+P_Animation.h"; sourceTree = "<group>"; };
 		C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+P_Animation.m"; sourceTree = "<group>"; };
 		C7BD99BC226FF96900CA3351 /* P_PropertyListBasicCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListBasicCellView.h; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 		C7BD9A21227597D800CA3351 /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				C743D4B82282BBBC000FC282 /* Config.plist */,
 				C7BD9A22227597D800CA3351 /* ConfigDescription.plist */,
 				C7BD9A23227597D800CA3351 /* DefaultConfig.plist */,
 				C7BD9A262275A9D000CA3351 /* P_Config.h */,
@@ -291,6 +294,7 @@
 				C7BD9A25227597D800CA3351 /* DefaultConfig.plist in Resources */,
 				C7BD9A24227597D800CA3351 /* ConfigDescription.plist in Resources */,
 				C714395A2269CD80008D15C6 /* Assets.xcassets in Resources */,
+				C743D4B92282BBBC000FC282 /* Config.plist in Resources */,
 				C714395D2269CD80008D15C6 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
