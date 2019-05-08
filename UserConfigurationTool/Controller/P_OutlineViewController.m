@@ -269,6 +269,12 @@
     NSDragOperation sourceDragMask = [info draggingSourceOperationMask];
     NSPasteboard *pasteboard = info.draggingPasteboard;
     /** 只支持同级拖动 */
+    P_Data *p = (P_Data *)item;
+    for (P_Data *obj in self.dragItems) {
+        if (obj.level <= p.level) {
+            return NSDragOperationNone;
+        }
+    }
     if (index >= 0) {
         if ([[pasteboard types] containsObject:[NSBundle mainBundle].bundleIdentifier]) {
             if (sourceDragMask & NSDragOperationMove) {
@@ -292,7 +298,7 @@
         NSLog(@"%p", p );
         
 //        [self.outlineView beginUpdates];
-//        [self.outlineView moveItemAtIndex:<#(NSInteger)#> inParent:<#(nullable id)#> toIndex:<#(NSInteger)#> inParent:<#(nullable id)#>]
+//        [self.outlineView moveItemAtIndex:(NSInteger) inParent:<#(nullable id)#> toIndex:<#(NSInteger)#> inParent:<#(nullable id)#>]
 //        [self.outlineView endUpdates];
     }
     return YES;
