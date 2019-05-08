@@ -274,7 +274,11 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     P_Data *parent_p = p.level > 0 ? p.parentData : nil;
     
     NSInteger index = [parent_p.childDatas indexOfObject:p];
-    [self moveItemAtIndex:index inParent:parent_p toIndex:toIndex inParent:parent];
+    [self moveItemAtIndex:index inParent:parent_p toIndex:toIndex inParent:parentItem];
+    /** 修复自身数组的处理位置 */
+    if (parentItem == parent_p) {
+        toIndex = (toIndex > index ? toIndex -1 : toIndex);
+    }
     [parent_p removeChildDataAtIndex:index];
     [parentItem insertChildData:p atIndex:toIndex];
     
