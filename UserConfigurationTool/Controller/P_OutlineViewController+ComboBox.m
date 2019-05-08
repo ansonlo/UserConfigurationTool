@@ -120,22 +120,9 @@ static NSString *P_OutlineView_comboBoxPopUping;
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
     NSComboBox *comboBox = obj.object;
-    NSInteger row = [self.outlineView rowForView:comboBox];
-    P_Data *p = nil;
-    if (row != -1) {
-        p = [self.outlineView itemAtRow:row];
-    }
+
     if (self.textFieldEditing == NO) {
-        /** 兼容新增行时的激活编辑后避免return了操作 */
-        if ([p.key isEqualToString: comboBox.stringValue]) {
-            return;
-        } else {
-            /** 弹起菜单选择也会触发，这里需要判断一下 */
-            if (self.comboBoxPopUping) {
-                return;
-            }
-            [comboBox noteNumberOfItemsChanged];
-        }
+        return;
     }
     self.textFieldEditing = NO;
 
@@ -146,6 +133,7 @@ static NSString *P_OutlineView_comboBoxPopUping;
 #pragma mark - 处理数据
 - (void)comboBoxDidEndEditing:(NSComboBox *)comboBox config:(P_Config *)config
 {
+    
     NSInteger row = [self.outlineView rowForView:comboBox];
     NSUInteger column = [self.outlineView columnForView:comboBox];
     
@@ -162,6 +150,7 @@ static NSString *P_OutlineView_comboBoxPopUping;
     }
     
     if (new_p.key.length == 0) {
+        /** key不能为空 */
         [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
         
         [self p_showAlertViewWith:NSLocalizedString(@"The key can not be empty.", @"")];
@@ -174,6 +163,16 @@ static NSString *P_OutlineView_comboBoxPopUping;
     if([p containsChildrenAndWithOutSelfWithKey:new_p.key] == NO)
     {
         [self.outlineView updateItem:new_p ofItem:p];
+        
+        if (new_p.requested) {
+            /** value不能为空 */
+            NSTableRowView *rowView = [self.outlineView rowViewAtRow:row makeIfNecessary:NO];
+            NSTableCellView *cellView = [rowView viewAtColumn:rowView.numberOfColumns-1];
+            /** controlTextDidEndEditing后不能立即触发其他控件的激活，无奈之下只能延迟0.2s */
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [cellView.textField becomeFirstResponder];
+            });
+        }
     }
     else
     {

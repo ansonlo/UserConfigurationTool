@@ -413,9 +413,12 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
             idx++;
         } while ([new_p containsChildrenAndWithOutSelfWithKey:defaultKey]);
         
+        new_p.key = defaultKey;
         P_PropertyListBasicCellView *cellView = [self viewAtColumn:0 row:insertedRow makeIfNecessary:NO];
         [cellView p_setControlWithString:defaultKey];
         [cellView.textField becomeFirstResponder];
+        /** 主动触发代理 */
+        [[NSNotificationCenter defaultCenter] postNotificationName:NSControlTextDidBeginEditingNotification object:cellView.textField];
     }
     
     /** didChangeNode */
@@ -482,7 +485,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     P_Data *new_p = newItem;
     P_Data *p = item;
-    if([p.key isEqualToString:new_p.key])
+    if([p isEqualToP_Data:new_p])
     {
         return;
     }
