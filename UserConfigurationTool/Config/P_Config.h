@@ -19,11 +19,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) P_PlistTypeName type;
 @property (nonatomic, readonly) id value;
 @property (nonatomic, readonly) id keyDesc;
+/** 必填 */
+@property (nonatomic, readonly) BOOL requested;
 
 @property (nonatomic, readonly) NSArray <P_Config *>*childDatas;
 
 @property (nonatomic, readonly) P_Data *data;
 
+/** 单例 static */
 + (instancetype)config;
 
 /** 匹配 类型是Dictionary并且key一致的对象 */

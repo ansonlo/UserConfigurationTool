@@ -47,6 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeChildDataAtIndex:(NSUInteger)idx;
 - (void)removeChildData:(P_Data *)data;
 
+- (BOOL)containsData:(P_Data *)p;
+
 /** key是否在同级中有相同的 */
 - (BOOL)containsChildrenWithKey:(NSString*)key;
 /** key是否在同级中有相同的并且排除自身 */

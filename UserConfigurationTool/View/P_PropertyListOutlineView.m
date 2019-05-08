@@ -9,6 +9,7 @@
 #import "P_PropertyListOutlineView.h"
 #import "P_Data.h"
 #import "P_Data+P_Exten.h"
+#import "P_Config.h"
 
 #import "P_PropertyListBasicCellView.h"
 #import "P_PropertyList2ButtonCellView.h"
@@ -264,6 +265,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 #pragma mark - 移动
 - (void)moveItem:(id)item toIndex:(NSUInteger)toIndex inParent:(id)parent
 {
+    /** 关闭输入框 */
+    [self.window endEditingFor:self];
+    
     P_Data *p = item;
     P_Data *parentItem = parent;
     
@@ -272,13 +276,14 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [self beginUpdates];
     
     P_Data *parent_p = p.level > 0 ? p.parentData : nil;
-    
     NSInteger index = [parent_p.childDatas indexOfObject:p];
-    [self moveItemAtIndex:index inParent:parent_p toIndex:toIndex inParent:parentItem];
+    
     /** 修复自身数组的处理位置 */
     if (parentItem == parent_p) {
         toIndex = (toIndex > index ? toIndex -1 : toIndex);
     }
+    
+    [self moveItemAtIndex:index inParent:parent_p toIndex:toIndex inParent:parentItem];
     [parent_p removeChildDataAtIndex:index];
     [parentItem insertChildData:p atIndex:toIndex];
     
@@ -325,6 +330,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 #pragma mark - 插入值key、type、value
 - (void)insertItem:(id)newItem ofItem:(id)item
 {
+    /** 关闭输入框 */
+    [self.window endEditingFor:self];
+    
     P_Data *new_p = newItem;
     P_Data *parent_p = nil;
     
@@ -391,9 +399,22 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     // 激活key的输入框
     if (new_p.key.length == 0) {
+        /** 给一个默认配置的key，如果没有，可以给一个默认的key */
+        P_Config *config = [[P_Config config] configAtKey: new_p.parentData.key];
+        NSArray<P_Config *> *configChildren = config.childDatas;
+        NSString *defaultKey = nil;
+        NSInteger idx = 0;
+        do {
+            if (idx == configChildren.count) {
+                defaultKey = PlistGlobalConfig.defaultKey;
+                break;
+            }
+            defaultKey = [configChildren[idx] key];
+            idx++;
+        } while ([new_p containsChildrenAndWithOutSelfWithKey:defaultKey]);
         
-        NSTableCellView *cellView = [self viewAtColumn:0 row:insertedRow makeIfNecessary:NO];
-//        [cellView.textField performClick:cellView.textField];
+        P_PropertyListBasicCellView *cellView = [self viewAtColumn:0 row:insertedRow makeIfNecessary:NO];
+        [cellView p_setControlWithString:defaultKey];
         [cellView.textField becomeFirstResponder];
     }
     

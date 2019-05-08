@@ -270,9 +270,8 @@
     NSPasteboard *pasteboard = info.draggingPasteboard;
     /** 只支持同级拖动 */
     P_Data *p = (P_Data *)item;
-//    NSLog(@"%@, %@", p.parentData.key, [self.dragItems firstObject].key);
     for (P_Data *obj in self.dragItems) {
-        if (![p.childDatas containsObject:obj]) {
+        if (![p containsData:obj]) {
             return NSDragOperationNone;
         }
     }
@@ -296,14 +295,12 @@
         /** 这里是单个拖动 */
         for (P_Data *obj in self.dragItems) {
             BOOL canDo = YES;
-            if ([p.type isEqualToString:@"Array"]) {
-                NSInteger selectIndex = [p.childDatas indexOfObject:obj];
-                if (index == selectIndex) {
-                    canDo = NO;
-                }
-                if (index == (selectIndex + 1)) {
-                    canDo = NO;
-                }
+            NSInteger selectIndex = [p.childDatas indexOfObject:obj];
+            if (index == selectIndex) {
+                canDo = NO;
+            }
+            else if (index == (selectIndex + 1)) {
+                canDo = NO;
             }
             if (canDo) {
                 [self.outlineView moveItem:obj toIndex:index inParent:item];
@@ -350,6 +347,9 @@
     }
     else if(column == 2)
     {
+        if (p.requested) {
+#warning 验证value必须有值，@"", [NSData data] 不算有值
+        }
 #warning 验证NSData的正确性
         if (1==1)
         {

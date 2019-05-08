@@ -16,13 +16,13 @@ struct PlistGlobalConfigType {
     NSString *allowedFileTypes;
     /** 加密文件后缀 */
     NSString *encryptFileExtension;
-    /** 仅支持指定key的输入 */
-    BOOL onlySupportSpecifiedKey;
-    
+    /** 必填关键字 */
     NSString *requestedName;
+    /** 默认key关键字 */
+    NSString *defaultKey;
 };
 
-static struct PlistGlobalConfigType PlistGlobalConfig = {@"plist,mrlPlist", @"mrlPlist", NO, @"【必填】"};
+static struct PlistGlobalConfigType PlistGlobalConfig = {@"plist,mrlPlist", @"mrlPlist", @"【必填】", @"Key"};
 
 typedef NSString *P_PlistColumnIdentifierName NS_EXTENSIBLE_STRING_ENUM;
 

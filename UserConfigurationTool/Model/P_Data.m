@@ -20,6 +20,8 @@
 @property (nonatomic, assign) P_Data_EditableType editable;
 /** 操作类型 */
 @property (nonatomic, assign) P_Data_OperationType operation;
+/** 必填 */
+@property (nonatomic, assign) BOOL requested;
 
 @end
 
@@ -282,6 +284,10 @@
 {
     [_m_childDatas removeObject:data];
     data.parentData = nil;
+}
+- (BOOL)containsData:(P_Data *)p
+{
+    return [_m_childDatas containsObject:p];
 }
 
 - (BOOL)containsChildrenWithKey:(NSString*)key

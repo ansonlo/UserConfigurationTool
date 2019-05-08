@@ -22,8 +22,6 @@ static NSString *P_OutlineView_comboBoxPopUping;
 
 @interface P_OutlineViewController () <NSComboBoxDataSource, NSComboBoxDelegate>
 
-@property (nonatomic, strong) P_Config *root_config;
-
 @property (nonatomic, strong) P_Config *config;
 
 @property (nonatomic, assign) BOOL textFieldEditing;
@@ -32,16 +30,6 @@ static NSString *P_OutlineView_comboBoxPopUping;
 @end
 
 @implementation P_OutlineViewController (ComboBox)
-
-- (void)setRoot_config:(P_Config *)root_config
-{
-    objc_setAssociatedObject([self class], &P_OutlineView_root_configKey, root_config, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (P_Config *)root_config
-{
-    return objc_getAssociatedObject([self class], &P_OutlineView_root_configKey);
-}
 
 - (void)setConfig:(P_Config *)config
 {
@@ -77,14 +65,10 @@ static NSString *P_OutlineView_comboBoxPopUping;
 /* These two methods are required when not using bindings */
 - (NSInteger)numberOfItemsInComboBox:(NSComboBox *)comboBox
 {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        self.root_config = [P_Config config];
-    });
     NSInteger row = [self.outlineView rowForView:comboBox];
     P_Data *p = [self.outlineView itemAtRow:row];
     
-    self.config = [self.root_config configAtKey: p.parentData.key];
+    self.config = [[P_Config config] configAtKey: p.parentData.key];
     
     return self.config.childDatas.count;
 }
@@ -135,12 +119,26 @@ static NSString *P_OutlineView_comboBoxPopUping;
 
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
+    NSComboBox *comboBox = obj.object;
+    NSInteger row = [self.outlineView rowForView:comboBox];
+    P_Data *p = nil;
+    if (row != -1) {
+        p = [self.outlineView itemAtRow:row];
+    }
     if (self.textFieldEditing == NO) {
-        return;
+        /** 兼容新增行时的激活编辑后避免return了操作 */
+        if ([p.key isEqualToString: comboBox.stringValue]) {
+            return;
+        } else {
+            /** 弹起菜单选择也会触发，这里需要判断一下 */
+            if (self.comboBoxPopUping) {
+                return;
+            }
+            [comboBox noteNumberOfItemsChanged];
+        }
     }
     self.textFieldEditing = NO;
 
-    NSComboBox *comboBox = obj.object;
 //    NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
     [self comboBoxDidEndEditing:comboBox config:[self.config completedKey:comboBox.stringValue]];
 }
@@ -161,6 +159,16 @@ static NSString *P_OutlineView_comboBoxPopUping;
         new_p.type = p.type;
         new_p.value = p.value;
         new_p.childDatas = p.childDatas;
+    }
+    
+    if (new_p.key.length == 0) {
+        [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+        
+        [self p_showAlertViewWith:NSLocalizedString(@"The key can not be empty.", @"")];
+        
+        comboBox.stringValue = p.key;
+        
+        return;
     }
     
     if([p containsChildrenAndWithOutSelfWithKey:new_p.key] == NO)

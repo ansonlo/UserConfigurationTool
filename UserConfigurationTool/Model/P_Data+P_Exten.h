@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) P_Data_EditableType editable;
 /** 操作类型 */
 @property (nonatomic, assign) P_Data_OperationType operation;
+/** 必填 */
+@property (nonatomic, assign) BOOL requested;
 
 @end
 

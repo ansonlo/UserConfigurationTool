@@ -9,6 +9,8 @@
 #import "P_Config.h"
 #import "P_Data+P_Exten.h"
 
+static P_Config *root_config;
+
 @interface P_Config ()
 
 @property (nonatomic, strong) NSMutableArray <P_Config *>*m_childDatas;
@@ -19,19 +21,21 @@
 
 + (instancetype)config
 {
-    NSURL *configDescriptionListURL = [[NSBundle mainBundle] URLForResource:@"ConfigDescription" withExtension:@"plist"];
-    NSData *data = [NSData dataWithContentsOfURL:configDescriptionListURL];
-    NSDictionary *configPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
-    NSURL *configDefaultListURL = [[NSBundle mainBundle] URLForResource:@"DefaultConfig" withExtension:@"plist"];
-    data = [NSData dataWithContentsOfURL:configDefaultListURL];
-    NSDictionary *defaultPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
-
-    if (configPlist && defaultPlist) {
-        return [[[self class] alloc] initWithPlistKey:@"Root" desc:nil value:configPlist[@"Root"] defaultValue:defaultPlist];
-    } else {
-        NSLog(@"Configuration file could not be found.");
+    if (root_config == nil) {
+        NSURL *configDescriptionListURL = [[NSBundle mainBundle] URLForResource:@"ConfigDescription" withExtension:@"plist"];
+        NSData *data = [NSData dataWithContentsOfURL:configDescriptionListURL];
+        NSDictionary *configPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+        NSURL *configDefaultListURL = [[NSBundle mainBundle] URLForResource:@"DefaultConfig" withExtension:@"plist"];
+        data = [NSData dataWithContentsOfURL:configDefaultListURL];
+        NSDictionary *defaultPlist = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+        
+        if (configPlist && defaultPlist) {
+            root_config = [[[self class] alloc] initWithPlistKey:@"Root" desc:nil value:configPlist[@"Root"] defaultValue:defaultPlist];
+        } else {
+            NSLog(@"Configuration file could not be found.");
+        }
     }
-    return nil;
+    return root_config;
 }
 
 - (instancetype)initWithPlistKey:(NSString *)key desc:(NSString *)desc value:(id)value defaultValue:(id)defaultValue
@@ -41,6 +45,9 @@
         _key = key;
         _keyDesc = desc;
         _value = ([defaultValue isKindOfClass:[NSDictionary class]] || [defaultValue isKindOfClass:[NSArray class]]) ? nil : defaultValue;
+        if ([desc containsString:PlistGlobalConfig.requestedName]) {
+            _requested = YES;
+        }
         
         id n_value = defaultValue ?: value;
         
@@ -183,6 +190,7 @@
     
     p.editable = P_Data_Editable_Key | P_Data_Editable_Value;
     p.operation = P_Data_Operation_Insert | P_Data_Operation_Delete;
+    p.requested = self.requested;
     
     return p;
 }
