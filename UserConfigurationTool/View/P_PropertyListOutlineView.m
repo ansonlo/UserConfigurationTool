@@ -16,6 +16,8 @@
 #import "P_PropertyListPopUpButtonCellView.h"
 #import "P_PropertyListDatePickerCellView.h"
 
+#import <Carbon/Carbon.h>
+
 static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfigurationTool";
 
 @interface P_PropertyListOutlineView ()
@@ -83,6 +85,15 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
         }
     } else {
         [super mouseDown:event];
+    }
+}
+
+- (void)keyDown:(NSEvent *)event
+{
+    if (event.keyCode == kVK_Return) { //回车
+        [self add:nil];
+    } else {
+        [super keyDown:event];
     }
 }
 

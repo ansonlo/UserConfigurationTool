@@ -16,6 +16,13 @@
 
 @implementation P_PropertyListPopUpButtonCellView
 
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    
+    [self.typeButton.cell setArrowPosition:NSPopUpArrowAtBottom];
+}
+
 - (void)p_setControlWithBoolean:(BOOL)boolean
 {
     [self.typeButton selectItemAtIndex:(NSInteger)boolean];
