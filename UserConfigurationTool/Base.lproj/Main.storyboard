@@ -869,8 +869,8 @@ CA
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </comboBoxCell>
                                                                     <connections>
-                                                                        <outlet property="dataSource" destination="XfG-lQ-9wD" id="Don-2H-U60"/>
-                                                                        <outlet property="delegate" destination="XfG-lQ-9wD" id="44U-gK-QfZ"/>
+                                                                        <outlet property="dataSource" destination="Uum-ob-r42" id="Iik-Um-x8n"/>
+                                                                        <outlet property="delegate" destination="Uum-ob-r42" id="rfA-oe-ccz"/>
                                                                     </connections>
                                                                 </comboBox>
                                                             </subviews>

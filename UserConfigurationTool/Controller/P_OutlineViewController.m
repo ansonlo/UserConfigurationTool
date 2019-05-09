@@ -10,9 +10,11 @@
 #import "P_TypeHeader.h"
 #import "P_Data.h"
 #import "P_Data+P_Exten.h"
+#import "P_Config.h"
 
 #import "NSView+P_Animation.h"
 #import "NSString+P_16Data.h"
+
 
 #import "P_PropertyListRowView.h"
 #import "P_PropertyListBasicCellView.h"
@@ -120,115 +122,6 @@
     return nil;
 }
 
-#pragma mark - NSOutlineViewDelegate
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldExpandItem:(id)item
-{
-    // Query our model for the answer to this question
-    P_Data *p = item;
-    // We can expand items if the model tells us it is a container
-    return p.isExpandable;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldCollapseItem:(id)item
-{
-    // Query our model for the answer to this question
-    P_Data *p = item;
-    // We can expand items if the model tells us it is a container
-    return p.isExpandable;
-}
-
-- (NSTableRowView *)outlineView:(NSOutlineView *)outlineView rowViewForItem:(id)item
-{
-    P_Data *p = item;
-    P_PropertyListRowView* rowView = [P_PropertyListRowView new];
-    rowView.p = p;
-    
-    return rowView;
-}
-
-- (nullable NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(nullable NSTableColumn *)tableColumn item:(id)item
-{
-    P_Data *p = item;
-    P_PlistCellName cellIdentifier = nil;
-    BOOL editable = YES;
-    
-    NSString *identifier = [tableColumn identifier];
-    if ([identifier isEqualToString:PlistColumnIdentifier.Key])
-    {
-        cellIdentifier = PlistCell.KeyCell;
-        editable = (p.editable & P_Data_Editable_Key) && ![p.parentData.type isEqualToString: Plist.Array];
-    }
-    else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
-    {
-        cellIdentifier = PlistCell.TypeCell;
-        editable = (p.editable & P_Data_Editable_Type);
-    }
-    else if ([identifier isEqualToString:PlistColumnIdentifier.Value])
-    {
-        editable = (p.editable & P_Data_Editable_Value) && !([p.type isEqualToString: Plist.Array] || [p.type isEqualToString: Plist.Dictionary]);
-        if ([p.type isEqualToString: Plist.Boolean]) {
-            cellIdentifier = PlistCell.ValueBoolCell;
-        } else if ([p.type isEqualToString: Plist.Date]) {
-            cellIdentifier = PlistCell.ValueDateCell;
-        } else {
-            cellIdentifier = PlistCell.ValueCell;
-        }
-    }
-    
-    P_PropertyListBasicCellView *cellView = [outlineView makeViewWithIdentifier:cellIdentifier owner:self];
-    cellView.delegate = self;
-    [self outlineView:outlineView willDisplayCell:cellView forTableColumn:tableColumn item:item];
-    [cellView p_setControlEditable:editable];
-    
-    return cellView;
-}
-
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(P_PropertyListBasicCellView *)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    P_Data *p = item;
-    // For all the other columns, we don't do anything.
-    
-    NSString *identifier =[tableColumn identifier];
-    if ([identifier isEqualToString:PlistColumnIdentifier.Key])
-    {
-        [cell p_setControlWithString:p.key toolTip:p.keyDesc];
-    }
-    else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
-    {
-        [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithString:p.type];
-    }
-    else if ([identifier isEqualToString:PlistColumnIdentifier.Value])
-    {
-        if ([p.type isEqualToString: Plist.Boolean]) {
-            [(P_PropertyListPopUpButtonCellView *)cell p_setControlWithBoolean:[p.value boolValue]];
-        } else if ([p.type isEqualToString: Plist.Date]) {
-            [(P_PropertyListDatePickerCellView *)cell p_setControlWithDate:p.value];
-        } else {
-            [cell p_setControlWithString:p.valueDesc];
-        }
-    }
-}
-
-#pragma mark - sort
-
-- (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray<NSSortDescriptor *> *)oldDescriptors;
-{
-    //Make the outline view as the first responder to prevent issues with currently edited text fields.
-    [outlineView.window makeFirstResponder:outlineView];
-    
-    /** 记录之前选中的对象 */
-    id item = [outlineView itemAtRow:outlineView.selectedRow];
-    
-    /** 排序&刷新 */
-    [_root sortWithSortDescriptors:outlineView.sortDescriptors recursively:YES];
-    [self.outlineView reloadItem:nil reloadChildren:YES];
-    
-    /** 重置选中对象的视图 */
-    NSInteger selectionRow = [outlineView rowForItem:item];
-    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
-    [outlineView scrollRowToVisible:selectionRow];
-}
-
 #pragma mark - drag & drop
 
 //阶段二之支持拖拽
@@ -316,6 +209,127 @@
     self.dragItems = nil;
 }
 
+#pragma mark - sort
+
+- (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray<NSSortDescriptor *> *)oldDescriptors;
+{
+    //Make the outline view as the first responder to prevent issues with currently edited text fields.
+    [outlineView.window makeFirstResponder:outlineView];
+    
+    /** 记录之前选中的对象 */
+    id item = [outlineView itemAtRow:outlineView.selectedRow];
+    
+    /** 排序&刷新 */
+    [_root sortWithSortDescriptors:outlineView.sortDescriptors recursively:YES];
+    [self.outlineView reloadItem:nil reloadChildren:YES];
+    
+    /** 重置选中对象的视图 */
+    NSInteger selectionRow = [outlineView rowForItem:item];
+    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
+    [outlineView scrollRowToVisible:selectionRow];
+}
+
+#pragma mark - NSOutlineViewDelegate
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldExpandItem:(id)item
+{
+    // Query our model for the answer to this question
+    P_Data *p = item;
+    // We can expand items if the model tells us it is a container
+    return p.isExpandable;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldCollapseItem:(id)item
+{
+    // Query our model for the answer to this question
+    P_Data *p = item;
+    // We can expand items if the model tells us it is a container
+    return p.isExpandable;
+}
+
+- (NSTableRowView *)outlineView:(NSOutlineView *)outlineView rowViewForItem:(id)item
+{
+    P_Data *p = item;
+    P_PropertyListRowView* rowView = [P_PropertyListRowView new];
+    rowView.p = p;
+    
+    return rowView;
+}
+
+- (nullable NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(nullable NSTableColumn *)tableColumn item:(id)item
+{
+    P_Data *p = item;
+    P_PlistCellName cellIdentifier = nil;
+    BOOL editable = YES;
+    
+    NSString *identifier = [tableColumn identifier];
+    if ([identifier isEqualToString:PlistColumnIdentifier.Key])
+    {
+        if ([p.parentData.type isEqualToString:Plist.Array]) {
+            cellIdentifier = PlistCell.ValueCell;
+        } else {
+            cellIdentifier = PlistCell.KeyCell;
+        }
+        editable = (p.editable & P_Data_Editable_Key) && ![p.parentData.type isEqualToString: Plist.Array];
+    }
+    else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
+    {
+        cellIdentifier = PlistCell.TypeCell;
+        editable = (p.editable & P_Data_Editable_Type);
+    }
+    else if ([identifier isEqualToString:PlistColumnIdentifier.Value])
+    {
+        editable = (p.editable & P_Data_Editable_Value) && !([p.type isEqualToString: Plist.Array] || [p.type isEqualToString: Plist.Dictionary]);
+        if ([p.type isEqualToString: Plist.Boolean]) {
+            cellIdentifier = PlistCell.ValueBoolCell;
+        } else if ([p.type isEqualToString: Plist.Date]) {
+            cellIdentifier = PlistCell.ValueDateCell;
+        } else {
+            cellIdentifier = PlistCell.ValueCell;
+        }
+    }
+    
+    P_PropertyListBasicCellView *cellView = [outlineView makeViewWithIdentifier:cellIdentifier owner:self];
+    cellView.delegate = self;
+    
+    
+    if ([identifier isEqualToString:PlistColumnIdentifier.Key])
+    {
+        if ([p.parentData.type isEqualToString:Plist.Array]) {
+            [cellView p_setControlWithString:p.key];
+        } else {
+            P_Config *c = nil;
+            if (editable) {
+                c = [[P_Config config] configAtKey: p.parentData.key];
+            }
+            [(P_PropertyList2ButtonCellView *)cellView p_setControlData:p config:c];
+        }
+    }
+    else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
+    {
+        [(P_PropertyListPopUpButtonCellView *)cellView p_setControlWithString:p.type];
+    }
+    else if ([identifier isEqualToString:PlistColumnIdentifier.Value])
+    {
+        if ([p.type isEqualToString: Plist.Boolean]) {
+            [(P_PropertyListPopUpButtonCellView *)cellView p_setControlWithBoolean:[p.value boolValue]];
+        } else if ([p.type isEqualToString: Plist.Date]) {
+            [(P_PropertyListDatePickerCellView *)cellView p_setControlWithDate:p.value];
+        } else {
+            [cellView p_setControlWithString:p.valueDesc];
+        }
+    }
+    
+    if ([identifier isEqualToString:PlistColumnIdentifier.Key] && [p.parentData.type isEqualToString:Plist.Array]) {
+        [cellView p_setControlEditableWithOutTextColor:editable];
+    } else {
+        [cellView p_setControlEditable:editable];        
+    }
+    
+    
+    return cellView;
+}
+
 
 #pragma mark - P_PropertyListCellViewDelegate
 - (id)p_propertyListCellDidEndEditing:(P_PropertyListBasicCellView *)cellView value:(id)value
@@ -328,22 +342,44 @@
     
     if(column == 0)
     {
-        if([item containsChildrenAndWithOutSelfWithKey:value] == NO)
+        P_Data *new_p = value;
+        
+        /** key不能为空 */
+        if (new_p.key.length == 0) {
+            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+            
+            [self p_showAlertViewWith:NSLocalizedString(@"The key can not be empty.", @"")];
+            
+            return p;
+        }
+        
+        if([p containsChildrenAndWithOutSelfWithKey:new_p.key] == NO)
         {
-            [self.outlineView updateKey:value ofItem:item withView:NO];
+            [self.outlineView updateItem:new_p ofItem:p];
+            
+            /** value不能为空 */
+            if (new_p.requested) {
+                NSTableRowView *rowView = [self.outlineView rowViewAtRow:row makeIfNecessary:NO];
+                NSTableCellView *cellView = [rowView viewAtColumn:rowView.numberOfColumns-1];
+                /** controlTextDidEndEditing后不能立即触发其他控件的激活，无奈之下只能延迟0.2s */
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [cellView.textField becomeFirstResponder];
+                });
+            }
         }
         else
         {
             [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
             
-            [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), value]];
+            [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), new_p.key]];
             
+            return p.key;
         }
-        return p.key;
     }
     else if(column == 1)
     {
-        [self.outlineView updateType:value value:p.value childDatas:nil ofItem:item];
+        P_PlistTypeName type = value;
+        [self.outlineView updateType:type value:p.value childDatas:nil ofItem:item];
     }
     else if(column == 2)
     {
@@ -358,7 +394,7 @@
             [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
             // Your entry is not valid.  Do you want to keep editing and fix the error or cancel editing?
         }
-        
+#warning 根据类型返回不同的值
         return p.valueDesc;
     }
     

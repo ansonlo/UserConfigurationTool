@@ -54,7 +54,11 @@ NS_ASSUME_NONNULL_BEGIN
 /** key是否在同级中有相同的并且排除自身 */
 - (BOOL)containsChildrenAndWithOutSelfWithKey:(NSString*)key;
 
+#pragma mark - isEqualToP_Data
 - (BOOL)isEqualToP_Data:(P_Data *)object;
+#pragma mark - copyP_Data
+- (void)copyP_Data:(P_Data *)p;
+
 @end
 
 NS_ASSUME_NONNULL_END

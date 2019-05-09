@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@class P_Data;
+
 @protocol P_PropertyListCellViewDelegate;
 
 @interface P_PropertyListBasicCellView : NSTableCellView
@@ -18,7 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)p_setControlWithString:(NSString *)str;
 - (void)p_setControlWithString:(NSString *)str toolTip:(NSString *)toolTip;
+
 - (void)p_setControlEditable:(BOOL)editable;
+- (void)p_setControlEditableWithOutTextColor:(BOOL)editable;
 
 @end
 

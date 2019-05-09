@@ -72,6 +72,12 @@
     self.textField.textColor = controlColor;
 }
 
+- (void)p_setControlEditableWithOutTextColor:(BOOL)editable
+{
+    self.textField.selectable = self.textField.editable = editable;
+    
+}
+
 #pragma mark NSTextFieldDelegate
 
 - (void)controlTextDidEndEditing:(NSNotification *)obj

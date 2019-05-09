@@ -9,7 +9,7 @@
 #import "P_PropertyListBasicCellView.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@class P_PropertyList2ButtonCellView;
+@class P_PropertyList2ButtonCellView, P_Data, P_Config;
 
 @protocol P_PropertyList2ButtonCellViewDelegate <P_PropertyListCellViewDelegate>
 
@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<P_PropertyList2ButtonCellViewDelegate> delegate;
 
+- (void)p_setControlData:(P_Data *)p config:(P_Config *)c;
 - (void)p_setShowsControlButtons:(BOOL)showsControlButtons addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled;
 
 @end

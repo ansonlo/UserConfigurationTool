@@ -95,6 +95,11 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [super drawGridInClipRect:finalClipRect];
 }
 
+- (void)endEditing
+{
+    [self.window endEditingFor:self];
+}
+
 #pragma mark - NSPopUpButtonWillPopUpNotification
 - (void)popUpButtonWillPopUpNotification:(NSNotification *)notify
 {
@@ -266,7 +271,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)moveItem:(id)item toIndex:(NSUInteger)toIndex inParent:(id)parent
 {
     /** 关闭输入框 */
-    [self.window endEditingFor:self];
+    [self endEditing];
     
     P_Data *p = item;
     P_Data *parentItem = parent;
@@ -331,7 +336,10 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)insertItem:(id)newItem ofItem:(id)item
 {
     /** 关闭输入框 */
-    [self.window endEditingFor:self];
+    [self endEditing];
+    
+    NSAssert(item != nil, @"Item is nil.");
+    NSAssert([self rowForItem:item], @"Item is not in the list.");
     
     P_Data *new_p = newItem;
     P_Data *parent_p = nil;
@@ -430,7 +438,10 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)deleteItem:(id)item
 {
     /** 关闭输入框 */
-    [self.window endEditingFor:self];
+    [self endEditing];
+    
+    NSAssert(item != nil, @"Item is nil.");
+    NSAssert([self rowForItem:item], @"Item is not in the list.");
     
     P_Data *p = item;
     
@@ -481,10 +492,14 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)updateItem:(id)newItem ofItem:(id)item
 {
     /** 关闭输入框 */
-    [self.window endEditingFor:self];
+    [self endEditing];
+    
+    NSAssert(item != nil, @"Item is nil.");
+    NSAssert([self rowForItem:item], @"Item is not in the list.");
     
     P_Data *new_p = newItem;
     P_Data *p = item;
+    
     if([p isEqualToP_Data:new_p])
     {
         return;
@@ -492,35 +507,25 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     /** willChangeNode */
     
+    P_Data *old_p = [p copy];
+    [p copyP_Data:new_p];
     
-    [self beginUpdates];
-    
-    NSPoint point = self.enclosingScrollView.documentVisibleRect.origin;
-    P_Data *parent_p = p.parentData;
-    NSInteger index = [parent_p.childDatas indexOfObject:p];
-    
-    [self removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
-    [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
-    [parent_p removeChildDataAtIndex:index];
-    [parent_p insertChildData:new_p atIndex:index];
-    
-    [self endUpdates];
+    [self reloadItem:p];
 
-    NSInteger selectionRow = [self rowForItem:new_p];
-    [self selectRowIndexes:[NSIndexSet indexSetWithIndex:selectionRow] byExtendingSelection:NO];
-    [self scrollPoint:point];
-    
     [_undoManager registerUndoWithTarget:self handler:^(P_PropertyListOutlineView * _Nonnull target) {
-        [target updateItem:item ofItem:newItem];
+        [target updateItem:old_p ofItem:p];
     }];
     
     /** didChangeNode */
     
-    NSLog(@"update %@", new_p);
+    NSLog(@"update %@", item);
 }
 
 - (void)updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
 {
+    NSAssert(item != nil, @"Item is nil.");
+    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    
     P_Data *p = item;
     if([p.key isEqualToString:key])
     {
@@ -551,6 +556,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 
 - (void)updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *_Nullable)childDatas ofItem:(id)item
 {
+    NSAssert(item != nil, @"Item is nil.");
+    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    
     P_Data *p = item;
     if([p.type isEqualToString:type])
     {
@@ -582,6 +590,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 
 - (void)updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
 {
+    NSAssert(item != nil, @"Item is nil.");
+    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    
     P_Data *p = item;
     if ([p.valueDesc isEqual: value]) {
         return;

@@ -307,13 +307,13 @@
     id plist = nil;
     if ([self.type isEqualToString: Plist.Dictionary]) {
         NSMutableDictionary *tmpPlist = [NSMutableDictionary dictionary];
-        for (P_Data *p in self.childDatas) {
+        for (P_Data *p in self.m_childDatas) {
             [tmpPlist setObject:p.plist forKey:p.key];
         }
         plist = tmpPlist;
     } else if ([self.type isEqualToString: Plist.Array]) {
         NSMutableArray *tmpPlist = [NSMutableArray array];
-        for (P_Data *p in self.childDatas) {
+        for (P_Data *p in self.m_childDatas) {
             [tmpPlist addObject:p.plist];
         }
         plist = tmpPlist;
@@ -349,6 +349,7 @@
     // exten
     p.editable = self.editable;
     p.operation = self.operation;
+    p.requested = self.requested;
     // child
     P_Data *c_subData = nil;
     for (P_Data *subData in _m_childDatas) {
@@ -377,6 +378,7 @@
         
         _editable = [[aDecoder decodeObjectForKey:@"editable"] integerValue];
         _operation = [[aDecoder decodeObjectForKey:@"operation"] integerValue];
+        _requested = [[aDecoder decodeObjectForKey:@"requested"] boolValue];
         
         [_m_childDatas enumerateObjectsUsingBlock:^(P_Data * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             obj.parentData = self;
@@ -397,6 +399,7 @@
     
     [aCoder encodeObject:@(self.editable) forKey:@"editable"];
     [aCoder encodeObject:@(self.operation) forKey:@"operation"];
+    [aCoder encodeObject:@(self.requested) forKey:@"requested"];
 }
 
 + (BOOL)supportsSecureCoding
@@ -424,18 +427,36 @@
         BOOL haveEqualType = (!self.type && !object.type) || [self.type isEqualToString:object.type];
         BOOL haveEqualValue = (self.value == object.value) || ((!self.value && !object.value) || [self.value isEqual:object.value]);
         
-        BOOL haveEqualLevel = self.level == object.level;
-        NSArray *my_childDatas = self.childDatas;
-        NSArray *obj_childDatas = object.childDatas;
+        NSArray *my_childDatas = self.m_childDatas;
+        NSArray *obj_childDatas = object.m_childDatas;
         BOOL haveEqualChildren = (my_childDatas == obj_childDatas) || ((!my_childDatas && !obj_childDatas) || [my_childDatas isEqual:obj_childDatas]);
         
-        return haveEqualKey && haveEqualType &&haveEqualValue && haveEqualLevel && haveEqualChildren;
+        // exten
+        BOOL haveEqualEditable = self.editable == object.editable;
+        BOOL haveEqualOperation = self.operation == object.operation;
+        BOOL haveEqualRequested = self.requested == object.requested;
+        
+        return haveEqualKey && haveEqualType &&haveEqualValue && haveEqualChildren && haveEqualEditable && haveEqualOperation && haveEqualRequested;
     }
 }
 
 - (NSUInteger)hash
 {
-    return [self.key hash] ^ [self.type hash] ^ [self.value hash] ^ self.level ^ [_m_childDatas hash];
+    return [self.key hash] ^ [self.type hash] ^ [self.value hash] ^ [_m_childDatas hash];
+}
+
+#pragma mark - copyP_Data
+- (void)copyP_Data:(P_Data *)p
+{
+    self.key = p.key;
+    self.type = p.type;
+    self.value = p.value;
+    // exten
+    self.editable = p.editable;
+    self.operation = p.operation;
+    self.requested = p.requested;
+    //children
+    self.childDatas = p.childDatas;
 }
 
 #pragma mark - description

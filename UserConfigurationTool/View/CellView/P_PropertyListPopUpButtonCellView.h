@@ -13,7 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface P_PropertyListPopUpButtonCellView : P_PropertyListBasicCellView
 
+/** value column */
 - (void)p_setControlWithBoolean:(BOOL)boolean;
+/** type column */
 - (void)p_setControlWithString:(P_PlistTypeName)str;
 - (void)p_setShowsControlButtons:(BOOL)showsControlButtons;
 
