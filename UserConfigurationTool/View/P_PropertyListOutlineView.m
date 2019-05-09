@@ -410,11 +410,10 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
         /** 给一个默认配置的key，如果没有，可以给一个默认的key */
         P_Config *config = [[P_Config config] configAtKey: new_p.parentData.key];
         NSArray<P_Config *> *configChildren = config.childDatas;
-        NSString *defaultKey = nil;
+        NSString *defaultKey = @"";
         NSInteger idx = 0;
         do {
             if (idx == configChildren.count) {
-                defaultKey = PlistGlobalConfig.defaultKey;
                 break;
             }
             defaultKey = [configChildren[idx] key];

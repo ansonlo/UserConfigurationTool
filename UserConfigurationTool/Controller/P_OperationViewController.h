@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import "P_PropertyListOutlineView.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource>
 
 @property (weak) IBOutlet P_PropertyListOutlineView *outlineView;
@@ -16,6 +18,8 @@
 @property (nonatomic, readonly) NSURL *plistUrl;
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText;
+-(void)p_showAlertViewWith:(NSString *)InformativeText completionHandler:(void (^ __nullable)(void))handler;
 
 @end
 
+NS_ASSUME_NONNULL_END

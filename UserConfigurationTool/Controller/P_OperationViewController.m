@@ -109,6 +109,20 @@
     [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
 }
 
+-(void)p_showAlertViewWith:(NSString *)InformativeText completionHandler:(void (^ __nullable)(void))handler
+{
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"提 示"];
+    [alert setInformativeText:InformativeText];
+    [alert addButtonWithTitle:NSLocalizedString(@"OK", @"")];
+    [alert setAlertStyle:NSAlertStyleWarning];
+    [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse returnCode) {
+        if (handler) {
+            handler();
+        }
+    }];
+}
+
 #pragma mark - private
 
 - (void)__listPlistFile:(NSString *)appPath

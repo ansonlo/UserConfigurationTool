@@ -323,7 +323,7 @@
     if ([identifier isEqualToString:PlistColumnIdentifier.Key] && [p.parentData.type isEqualToString:Plist.Array]) {
         [cellView p_setControlEditableWithOutTextColor:editable];
     } else {
-        [cellView p_setControlEditable:editable];        
+        [cellView p_setControlEditable:editable];
     }
     
     
@@ -346,9 +346,13 @@
         
         /** key不能为空 */
         if (new_p.key.length == 0) {
-            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+            [cellView p_flashError];
             
-            [self p_showAlertViewWith:NSLocalizedString(@"The key can not be empty.", @"")];
+            [self p_showAlertViewWith:NSLocalizedString(@"The key can not be empty.", @"") completionHandler:^{
+                if (p.key.length == 0) {                
+                    [cellView.textField becomeFirstResponder];
+                }
+            }];
             
             return p;
         }
@@ -369,7 +373,7 @@
         }
         else
         {
-            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+            [cellView p_flashError];
             
             [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), new_p.key]];
             
@@ -383,18 +387,46 @@
     }
     else if(column == 2)
     {
+        
+        BOOL (^validateValue)(NSString *) = ^(NSString *v){
+            //验证value必须有值，@"", [NSData data] 不算有值
+            if ([v isKindOfClass:[NSString class]]) {
+                if ([p.type isEqualToString:Plist.Data]) {
+                    if ([v isEqualToString:@"<>"]) {
+                        return NO;
+                    }
+                } else if ([p.type isEqualToString:Plist.String]) {
+                    if ([v length] == 0) {
+                        return NO;
+                    }
+                }
+            }
+            return YES;
+        };
+        
         if (p.requested) {
-#warning 验证value必须有值，@"", [NSData data] 不算有值
+            
+            if (!validateValue(value)) {
+                [cellView p_flashError];
+                
+                [self p_showAlertViewWith:NSLocalizedString(@"The value can not be empty.", @"") completionHandler:^{
+                    if (!validateValue(p.valueDesc)) {
+                        [cellView.textField becomeFirstResponder];
+                    }
+                }];
+                
+                
+                return p.valueDesc;
+            }
         }
 #warning 验证NSData的正确性
         if (1==1)
         {
             [self.outlineView updateValue:value ofItem:item withView:NO];
         } else {
-            [[self.outlineView viewAtColumn:column row:row makeIfNecessary:NO] p_flashError];
+            [cellView p_flashError];
             // Your entry is not valid.  Do you want to keep editing and fix the error or cancel editing?
         }
-#warning 根据类型返回不同的值
         return p.valueDesc;
     }
     
