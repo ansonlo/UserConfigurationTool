@@ -346,6 +346,7 @@
     p.key = self.key;
     p.type = self.type;
     p.value = self.value;
+    p.keyDesc = self.keyDesc;
     // exten
     p.editable = self.editable;
     p.operation = self.operation;
@@ -451,6 +452,7 @@
     self.key = p.key;
     self.type = p.type;
     self.value = p.value;
+    self.keyDesc = p.keyDesc;
     // exten
     self.editable = p.editable;
     self.operation = p.operation;

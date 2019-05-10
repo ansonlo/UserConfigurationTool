@@ -20,7 +20,11 @@
 {
     [super prepareForReuse];
     
-    [self.typeButton.cell setArrowPosition:NSPopUpArrowAtBottom];
+    if ([self.superview isKindOfClass:[NSTableRowView class]]) {
+        [self p_setShowsControlButtons:[(NSTableRowView *)self.superview isSelected]];
+    } else {
+        [self p_setShowsControlButtons:NO];
+    }
 }
 
 - (void)p_setControlWithBoolean:(BOOL)boolean

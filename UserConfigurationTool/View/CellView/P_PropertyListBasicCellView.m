@@ -91,4 +91,16 @@
     }
 }
 
+
+- (BOOL)control:(NSControl *)control isValidObject:(nullable id)obj
+{
+    if ([obj isKindOfClass:[NSString class]]) {
+        if ([self.delegate respondsToSelector:@selector(p_propertyListCell:isValidObject:)]) {
+            return [self.delegate p_propertyListCell:self isValidObject:obj];
+        }
+    }
+    return YES;
+}
+
+
 @end

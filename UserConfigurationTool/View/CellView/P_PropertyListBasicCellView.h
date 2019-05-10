@@ -28,6 +28,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
+
+/**
+ 验证输入内容
+
+ @param cellView 编辑视图
+ @param value 编辑后的值
+ @return 返回是否验证通过
+ */
+- (BOOL)p_propertyListCell:(P_PropertyListBasicCellView *)cellView isValidObject:(id)value;
 /**
  编辑完毕后的回调
 

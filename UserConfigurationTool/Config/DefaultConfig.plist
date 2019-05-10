@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>host</key>
+	<string>im.mesystem.cn</string>
+	<key>port</key>
+	<string>9098</string>
+	<key>webPort</key>
+	<string>443</string>
+	<key>appInHost</key>
+	<string>http://www.mubiaoyi.com:80</string>
 	<key>Server_Key</key>
 	<dict>
 		<key>HomeView_Subviews</key>
@@ -139,6 +147,8 @@
 		<string>Publicfree</string>
 		<key>MicroApp_BatchSet_NoNewTag_AfterDays</key>
 		<string>0</string>
+		<key>AppDownPageURL</key>
+		<string>http://im.mesystem.cn:8080/client/mobile.html</string>
 	</dict>
 	<key>Custom_Key</key>
 	<dict>

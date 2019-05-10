@@ -74,6 +74,37 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (BOOL)validateProposedFirstResponder:(NSResponder *)responder forEvent:(NSEvent *)event
+{
+    switch (event.type) {
+        case NSEventTypeLeftMouseDown:
+        case NSEventTypeOtherMouseDown:
+        case NSEventTypeRightMouseDown:
+        case NSEventTypeKeyDown:
+        {
+            /** 获取当然window的响应者 */
+            NSResponder *firstResponder = self.window.firstResponder;
+            if ([firstResponder respondsToSelector:@selector(delegate)]) {
+                /** 获取代理对象 */
+                id delegateObj = [firstResponder performSelector:@selector(delegate)];
+                if ([delegateObj isKindOfClass:[NSTextField class]]) {
+                    /** 对象是outlineView的成员之一 */
+                    NSInteger row = [self rowForView:delegateObj];
+                    if (row != -1) {
+                        /** 禁止其他响应者激活 */
+                        return NO;
+                    }
+                }
+            }
+        }
+            break;
+        default:
+            break;
+    }
+    
+    return [super validateProposedFirstResponder:responder forEvent:event];
+}
+
 - (void)mouseDown:(NSEvent *)event
 {
     if (event.clickCount > 1) {
@@ -353,14 +384,16 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     NSAssert([self rowForItem:item], @"Item is not in the list.");
     
     P_Data *new_p = newItem;
+    P_Data *p = item;
     P_Data *parent_p = nil;
+    
+    BOOL isEmptyKey = new_p.key.length == 0;
     
     /** willChangeNode */
     
     [self beginUpdates];
     
     NSInteger index;
-    P_Data *p = item;
     
     if([self isItemExpanded:p])
     {
@@ -371,6 +404,28 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     {
         parent_p = p.parentData;
         index = [parent_p.childDatas indexOfObject:p] + 1;
+    }
+    
+    if (isEmptyKey) {
+        /** 给一个默认配置的key，如果没有，可以给一个默认的key */
+        P_Config *config = [[P_Config config] configAtKey: parent_p.key];
+        NSArray<P_Config *> *configChildren = config.childDatas;
+        P_Config *c = nil;
+        NSInteger idx = 0;
+        P_Data *tmpP = parent_p.childDatas.firstObject;
+        do {
+            if (idx == configChildren.count) {
+                break;
+            }
+            c = configChildren[idx];
+            idx++;
+        } while ([tmpP containsChildrenWithKey:c.key]);
+        
+        if (c) {
+            [new_p copyP_Data:c.data];
+        } else {
+            new_p.key = PlistGlobalConfig.defaultKey;
+        }
     }
     
     if (parent_p.type == Plist.Dictionary) {
@@ -416,30 +471,13 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
         [target deleteItem:new_p];
     }];
     
-    // 激活key的输入框
-    if (new_p.key.length == 0) {
-        /** 给一个默认配置的key，如果没有，可以给一个默认的key */
-        P_Config *config = [[P_Config config] configAtKey: new_p.parentData.key];
-        NSArray<P_Config *> *configChildren = config.childDatas;
-        NSString *defaultKey = @"";
-        NSInteger idx = 0;
-        do {
-            if (idx == configChildren.count) {
-                break;
-            }
-            defaultKey = [configChildren[idx] key];
-            idx++;
-        } while ([new_p containsChildrenAndWithOutSelfWithKey:defaultKey]);
-        
-        new_p.key = defaultKey;
-        P_PropertyListBasicCellView *cellView = [self viewAtColumn:0 row:insertedRow makeIfNecessary:NO];
-        [cellView p_setControlWithString:defaultKey];
-        [cellView.textField becomeFirstResponder];
-        /** 主动触发代理 */
-        [[NSNotificationCenter defaultCenter] postNotificationName:NSControlTextDidBeginEditingNotification object:cellView.textField];
-    }
-    
     /** didChangeNode */
+    
+    if (isEmptyKey) {
+        P_PropertyListBasicCellView *cellView = [self viewAtColumn:0 row:insertedRow makeIfNecessary:NO];
+        // 激活key的输入框
+        [cellView.textField becomeFirstResponder];
+    }
     
     NSLog(@"insert %@", new_p);
 }

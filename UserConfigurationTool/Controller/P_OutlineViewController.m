@@ -296,7 +296,7 @@
     if ([identifier isEqualToString:PlistColumnIdentifier.Key])
     {
         if ([p.parentData.type isEqualToString:Plist.Array]) {
-            [cellView p_setControlWithString:p.key];
+            [cellView p_setControlWithString:p.key toolTip:p.keyDesc];
         } else {
             P_Config *c = nil;
             if (editable) {
@@ -330,9 +330,18 @@
     return cellView;
 }
 
+// 不能移动column
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldReorderColumn:(NSInteger)columnIndex toColumn:(NSInteger)newColumnIndex
+{
+    NSTableColumn *column = outlineView.tableColumns[columnIndex];
+    column.headerCell.state = NSControlStateValueOff;
+    
+    return NO;
+}
+
 
 #pragma mark - P_PropertyListCellViewDelegate
-- (id)p_propertyListCellDidEndEditing:(P_PropertyListBasicCellView *)cellView value:(id)value
+- (BOOL)p_propertyListCell:(P_PropertyListBasicCellView *)cellView isValidObject:(id)value
 {
     NSUInteger row = [self.outlineView rowForView:cellView];
     NSUInteger column = [self.outlineView columnForView:cellView];
@@ -342,48 +351,25 @@
     
     if(column == 0)
     {
-        P_Data *new_p = value;
+        NSString *key = value;
         
         /** key不能为空 */
-        if (new_p.key.length == 0) {
+        if (key.length == 0) {
             [cellView p_flashError];
             
-            [self p_showAlertViewWith:NSLocalizedString(@"The key can not be empty.", @"") completionHandler:^{
-                if (p.key.length == 0) {                
-                    [cellView.textField becomeFirstResponder];
-                }
-            }];
+            [self p_showAlertViewWith:NSLocalizedString(@"The key can not be empty.", @"")];
             
-            return p;
+            return NO;
         }
         
-        if([p containsChildrenAndWithOutSelfWithKey:new_p.key] == NO)
-        {
-            [self.outlineView updateItem:new_p ofItem:p];
-            
-            /** value不能为空 */
-            if (new_p.requested) {
-                NSTableRowView *rowView = [self.outlineView rowViewAtRow:row makeIfNecessary:NO];
-                NSTableCellView *cellView = [rowView viewAtColumn:rowView.numberOfColumns-1];
-                /** controlTextDidEndEditing后不能立即触发其他控件的激活，无奈之下只能延迟0.2s */
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [cellView.textField becomeFirstResponder];
-                });
-            }
-        }
-        else
+        if([p containsChildrenAndWithOutSelfWithKey:key])
         {
             [cellView p_flashError];
             
-            [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), new_p.key]];
+            [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), key]];
             
-            return p.key;
+            return NO;
         }
-    }
-    else if(column == 1)
-    {
-        P_PlistTypeName type = value;
-        [self.outlineView updateType:type value:p.value childDatas:nil ofItem:item];
     }
     else if(column == 2)
     {
@@ -409,24 +395,44 @@
             if (!validateValue(value)) {
                 [cellView p_flashError];
                 
-                [self p_showAlertViewWith:NSLocalizedString(@"The value can not be empty.", @"") completionHandler:^{
-                    if (!validateValue(p.valueDesc)) {
-                        [cellView.textField becomeFirstResponder];
-                    }
-                }];
+                [self p_showAlertViewWith:NSLocalizedString(@"The value can not be empty.", @"")];
                 
                 
-                return p.valueDesc;
+                return NO;
             }
         }
 #warning 验证NSData的正确性
-        if (1==1)
+        if (1==0)
         {
-            [self.outlineView updateValue:value ofItem:item withView:NO];
-        } else {
             [cellView p_flashError];
-            // Your entry is not valid.  Do you want to keep editing and fix the error or cancel editing?
+            return NO;
         }
+    }
+    return YES;
+}
+
+- (id)p_propertyListCellDidEndEditing:(P_PropertyListBasicCellView *)cellView value:(id)value
+{
+    NSUInteger row = [self.outlineView rowForView:cellView];
+    NSUInteger column = [self.outlineView columnForView:cellView];
+    
+    id item = [self.outlineView itemAtRow:row];
+    P_Data *p = item;
+    
+    if(column == 0)
+    {
+        P_Data *new_p = value;
+        
+        [self.outlineView updateItem:new_p ofItem:p];
+    }
+    else if(column == 1)
+    {
+        P_PlistTypeName type = value;
+        [self.outlineView updateType:type value:p.value childDatas:nil ofItem:item];
+    }
+    else if(column == 2)
+    {
+        [self.outlineView updateValue:value ofItem:item withView:NO];
         return p.valueDesc;
     }
     

@@ -892,7 +892,7 @@ CA
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="Type" width="100" minWidth="40" maxWidth="1000" id="Fl6-I2-J4P">
+                                                <tableColumn identifier="Type" width="103" minWidth="40" maxWidth="1000" id="Fl6-I2-J4P">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Type">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -907,11 +907,11 @@ CA
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="P_TypeCell" id="3Z7-No-DHz" customClass="P_PropertyListPopUpButtonCellView">
-                                                            <rect key="frame" x="243" y="1" width="100" height="17"/>
+                                                            <rect key="frame" x="243" y="1" width="103" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="NZO-uY-h39" userLabel="Type Button">
-                                                                    <rect key="frame" x="-8" y="0.0" width="108" height="18"/>
+                                                                    <rect key="frame" x="-8" y="0.0" width="111" height="18"/>
                                                                     <popUpButtonCell key="cell" type="bevel" title="Array" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" arrowPosition="noArrow" selectedItem="7Ob-pV-Xsn" id="JB1-PY-Vx9" customClass="P_PropertyListPopUpButtonCell">
                                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -987,7 +987,7 @@ CA
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="P_ValueCell" id="lkU-Zo-Cxp" customClass="P_PropertyListBasicCellView">
-                                                            <rect key="frame" x="345" y="1" width="371" height="17"/>
+                                                            <rect key="frame" x="348" y="1" width="371" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="q6w-JX-BqY" userLabel="Value Title">
@@ -1012,7 +1012,7 @@ CA
                                                             </connections>
                                                         </tableCellView>
                                                         <tableCellView identifier="P_ValueBoolCell" id="hCu-tD-J1u" customClass="P_PropertyListPopUpButtonCellView">
-                                                            <rect key="frame" x="345" y="21" width="371" height="17"/>
+                                                            <rect key="frame" x="348" y="21" width="371" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="SMu-y4-COc" userLabel="Type Button">
@@ -1047,7 +1047,7 @@ CA
                                                             </connections>
                                                         </tableCellView>
                                                         <tableCellView identifier="P_ValueDateCell" id="LJh-B1-fvH" customClass="P_PropertyListDatePickerCellView">
-                                                            <rect key="frame" x="345" y="41" width="371" height="17"/>
+                                                            <rect key="frame" x="348" y="41" width="371" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <customView placeholderIntrinsicWidth="279" placeholderIntrinsicHeight="17" translatesAutoresizingMaskIntoConstraints="NO" id="LDV-wA-aya" customClass="P_PropertyListDatePicker">

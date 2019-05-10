@@ -45,6 +45,8 @@
 {
     _p = p;
     [self p_updateEditButtons];
+    
+    [self p_updatePopUpButtons];
 }
 
 #pragma mark - overwrite
@@ -93,6 +95,12 @@
     }
     [self p_updateEditButtons];
     
+    [self p_updatePopUpButtons];
+}
+
+#pragma mark - public
+- (void)p_updatePopUpButtons
+{
     if (self.numberOfColumns > 1) {
         NSTableCellView *cellView = [self viewAtColumn:1];
         if ([cellView isKindOfClass:[P_PropertyListPopUpButtonCellView class]]) {
@@ -101,9 +109,7 @@
     }
 }
 
-#pragma mark - public
-
-- (void)p_updateEditButtons;
+- (void)p_updateEditButtons
 {
     if(self.numberOfColumns > 0)
     {
