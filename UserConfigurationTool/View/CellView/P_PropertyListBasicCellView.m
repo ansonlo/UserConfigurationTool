@@ -10,6 +10,8 @@
 
 @interface P_PropertyListBasicCellView () <NSTextFieldDelegate>
 
+@property (nonatomic, assign) BOOL textFieldEditing;
+
 @end
 
 @implementation P_PropertyListBasicCellView
@@ -18,8 +20,8 @@
 {
     [super awakeFromNib];
     
-    //点击的时候不显示蓝色外框
-    self.textField.focusRingType = NSFocusRingTypeNone;
+    //点击的时候显示蓝色外框
+    self.textField.focusRingType = NSFocusRingTypeDefault;
     //自动换行
     [[self.textField cell] setLineBreakMode:NSLineBreakByCharWrapping];
     //最大行数
@@ -28,7 +30,6 @@
     [self.textField cell].usesSingleLineMode = NO;
     //设置超出行数是否隐藏
 //    [self.textField cell].truncatesLastVisibleLine = YES;
-    self.textField.focusRingType = NSFocusRingTypeDefault;
 }
 
 #pragma mark - overwrite
@@ -79,9 +80,18 @@
 }
 
 #pragma mark NSTextFieldDelegate
+- (void)controlTextDidBeginEditing:(NSNotification *)obj
+{
+    self.textFieldEditing = YES;
+}
 
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
+    if (self.textFieldEditing == NO) {
+        return;
+    }
+    self.textFieldEditing = NO;
+    
     NSTextField *textField = obj.object;
     if ([self.delegate respondsToSelector:@selector(p_propertyListCellDidEndEditing:value:)]) {
         id realValue = [self.delegate p_propertyListCellDidEndEditing:self value:textField.stringValue];

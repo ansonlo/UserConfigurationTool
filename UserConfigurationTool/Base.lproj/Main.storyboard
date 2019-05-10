@@ -713,7 +713,7 @@ CA
                         <rect key="frame" x="0.0" y="0.0" width="720" height="480"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="whW-ah-oIr">
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="whW-ah-oIr" customClass="P_PropertyListToolbarView">
                                 <rect key="frame" x="0.0" y="436" width="720" height="44"/>
                                 <subviews>
                                     <button toolTip="打开" translatesAutoresizingMaskIntoConstraints="NO" id="alq-ha-xSF">
