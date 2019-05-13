@@ -35,6 +35,8 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     self.enclosingScrollView.wantsLayer = YES;
     self.enclosingScrollView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
+    
+    [self setDoubleAction:@selector(doubleClick:)];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -74,6 +76,17 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)doubleClick:(id)object {
+    // This gets called after following steps 1-3.
+    NSInteger row = [self clickedRow];
+    NSInteger column = [self clickedColumn];
+    // Do something...
+    P_PropertyListBasicCellView *cellView = [self viewAtColumn:column row:row makeIfNecessary:NO];
+    if ([cellView.textField acceptsFirstResponder]) {
+        [cellView.textField becomeFirstResponder];
+    }
+}
+
 - (BOOL)validateProposedFirstResponder:(NSResponder *)responder forEvent:(NSEvent *)event
 {
     switch (event.type) {
@@ -103,20 +116,6 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     }
     
     return [super validateProposedFirstResponder:responder forEvent:event];
-}
-
-- (void)mouseDown:(NSEvent *)event
-{
-    if (event.clickCount > 1) {
-        NSInteger row = self.selectedRow;
-        NSInteger column = [self columnAtPoint:event.locationInWindow];
-        NSTableCellView *cellView = [self viewAtColumn:column row:row makeIfNecessary:NO];
-        if ([cellView.textField acceptsFirstResponder]) {
-            [cellView.textField becomeFirstResponder];
-        }
-    } else {
-        [super mouseDown:event];
-    }
 }
 
 - (void)keyDown:(NSEvent *)event
