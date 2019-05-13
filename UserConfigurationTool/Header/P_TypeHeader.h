@@ -18,9 +18,11 @@ struct PlistGlobalConfigType {
     NSString *encryptFileExtension;
     /** 必填关键字 */
     NSString *requestedName;
+    /** 默认key */
+    NSString *defaultKey;
 };
 
-static struct PlistGlobalConfigType PlistGlobalConfig = {@"plist,mrlPlist", @"mrlPlist", @"【必填】"};
+static struct PlistGlobalConfigType PlistGlobalConfig = {@"plist,mrlPlist", @"mrlPlist", @"【必填】", @"New item"};
 
 typedef NSString *P_PlistColumnIdentifierName NS_EXTENSIBLE_STRING_ENUM;
 

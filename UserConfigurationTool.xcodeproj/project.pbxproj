@@ -22,6 +22,7 @@
 		C71439C0226F06EE008D15C6 /* P_PropertyListDatePicker.mm in Sources */ = {isa = PBXBuildFile; fileRef = C71439BF226F06EE008D15C6 /* P_PropertyListDatePicker.mm */; };
 		C71439C3226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439C2226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m */; };
 		C743D4B92282BBBC000FC282 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = C743D4B82282BBBC000FC282 /* Config.plist */; };
+		C743D4C8228564BE000FC282 /* P_PropertyListToolbarView.m in Sources */ = {isa = PBXBuildFile; fileRef = C743D4C7228564BE000FC282 /* P_PropertyListToolbarView.m */; };
 		C7BD99BA226FF78500CA3351 /* NSView+P_Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */; };
 		C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99BD226FF96900CA3351 /* P_PropertyListBasicCellView.m */; };
 		C7BD9A162272EC2600CA3351 /* AESCrypt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BD9A152272EC2600CA3351 /* AESCrypt.framework */; };
@@ -63,6 +64,8 @@
 		C71439C1226F0740008D15C6 /* P_PropertyListPopUpButtonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListPopUpButtonCell.h; sourceTree = "<group>"; };
 		C71439C2226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_PropertyListPopUpButtonCell.m; sourceTree = "<group>"; };
 		C743D4B82282BBBC000FC282 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = SOURCE_ROOT; };
+		C743D4C6228564BE000FC282 /* P_PropertyListToolbarView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListToolbarView.h; sourceTree = "<group>"; };
+		C743D4C7228564BE000FC282 /* P_PropertyListToolbarView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_PropertyListToolbarView.m; sourceTree = "<group>"; };
 		C7BD99B8226FF78500CA3351 /* NSView+P_Animation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+P_Animation.h"; sourceTree = "<group>"; };
 		C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+P_Animation.m"; sourceTree = "<group>"; };
 		C7BD99BC226FF96900CA3351 /* P_PropertyListBasicCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListBasicCellView.h; sourceTree = "<group>"; };
@@ -162,6 +165,8 @@
 				C71439B0226EF75A008D15C6 /* P_PropertyListRowView.h */,
 				C71439B1226EF75A008D15C6 /* P_PropertyListRowView.m */,
 				C71439B6226EFC2E008D15C6 /* CellView */,
+				C743D4C6228564BE000FC282 /* P_PropertyListToolbarView.h */,
+				C743D4C7228564BE000FC282 /* P_PropertyListToolbarView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -310,6 +315,7 @@
 				C71439BC226F0540008D15C6 /* P_PropertyListDatePickerCellView.m in Sources */,
 				C71439B5226EF92E008D15C6 /* P_PropertyList2ButtonCellView.m in Sources */,
 				C7BD99BA226FF78500CA3351 /* NSView+P_Animation.m in Sources */,
+				C743D4C8228564BE000FC282 /* P_PropertyListToolbarView.m in Sources */,
 				C71439B9226EFCAE008D15C6 /* P_PropertyListPopUpButtonCellView.m in Sources */,
 				C7BD9A282275A9D000CA3351 /* P_Config.m in Sources */,
 				C71439C0226F06EE008D15C6 /* P_PropertyListDatePicker.mm in Sources */,

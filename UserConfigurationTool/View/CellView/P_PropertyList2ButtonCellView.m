@@ -38,12 +38,21 @@
     return curDelegate;
 }
 
+- (void)setConfig:(P_Config *)config
+{
+    _config = config;
+    [(NSComboBox *)self.textField noteNumberOfItemsChanged];
+}
+
 - (void)prepareForReuse
 {
     [super prepareForReuse];
     
-    self.comboBoxTrailing.constant = 2;
-    self.plusButton.hidden = self.minusButton.hidden = YES;
+    if ([self.superview isKindOfClass:[NSTableRowView class]]) {
+        [self p_setShowsControlButtons:[(NSTableRowView *)self.superview isSelected]];
+    } else {
+        [self p_setShowsControlButtons:NO];
+    }
     self.config = nil;
 }
 
@@ -76,14 +85,18 @@
 {
     [self p_setControlData:p];
     self.config = c;
-    [(NSComboBox *)self.textField noteNumberOfItemsChanged];
 }
 
-- (void)p_setShowsControlButtons:(BOOL)showsControlButtons addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled
+- (void)p_setShowsControlButtons:(BOOL)showsControlButtons
 {
     self.comboBoxTrailing.constant = showsControlButtons ? self.frame.size.width-self.plusButton.frame.origin.x : 2;
     
     self.plusButton.hidden = self.minusButton.hidden = !showsControlButtons;
+}
+
+- (void)p_setShowsControlButtons:(BOOL)showsControlButtons addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled
+{
+    [self p_setShowsControlButtons:showsControlButtons];
     
     self.plusButton.enabled = addButtonEnabled;
     self.minusButton.enabled = deleteButtonEnabled;
@@ -147,6 +160,17 @@
     //    NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
     [self comboBoxDidEndEditing:comboBox config:[self.config completedKey:comboBox.stringValue]];
 }
+
+- (BOOL)control:(NSControl *)control isValidObject:(nullable id)obj
+{
+    if ([obj isKindOfClass:[NSString class]]) {
+        if ([self.delegate respondsToSelector:@selector(p_propertyListCell:isValidObject:)]) {
+            return [self.delegate p_propertyListCell:self isValidObject:obj];
+        }
+    }
+    return YES;
+}
+
 
 #pragma mark - 处理数据
 - (void)comboBoxDidEndEditing:(NSComboBox *)comboBox config:(P_Config *)config
