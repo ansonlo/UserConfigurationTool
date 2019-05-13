@@ -396,7 +396,8 @@
                 [cellView p_flashError];
                 
                 [self p_showAlertViewWith:NSLocalizedString(@"The value can not be empty.", @"")];
-                
+                // NSTextField会出现无法恢复的情况。需要重新赋值。
+                [cellView p_setControlWithString:p.valueDesc];
                 
                 return NO;
             }
