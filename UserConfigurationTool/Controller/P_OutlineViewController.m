@@ -305,7 +305,7 @@
     }
     
     if ([_searchData containsObject:p]) {
-        [self setCell:cellView searchString:self.searchField.stringValue];
+        [self setCell:cellView searchString:self.searchString];
     }
     return cellView;
 }
@@ -445,17 +445,20 @@
 - (void)controlTextDidChange:(NSNotification *)notification
 {
     id obj = notification.object;
-    if ([obj isEqual:self.searchField]) {
+    if ([obj isKindOfClass:[NSSearchField class]]) {
         [self.outlineView deselectAll:self.root];
         _searchData = nil;
         [self.outlineView reloadItem:nil reloadChildren:YES];
 
-        NSString *searchStr = self.searchField.stringValue;
+        NSString *searchStr = self.searchString;
         
         if (searchStr.length > 0) {
-            NSString *name = [NSString stringWithFormat:@"key CONTAINS '%@' OR valueDesc CONTAINS '%@'", searchStr, searchStr];
-            NSPredicate *p = [NSPredicate predicateWithFormat:name];
-            _searchData = [self.root.childDatas filteredArrayUsingPredicate:p];
+            _searchData = [self.root filteredChildrenWithString:searchStr];
+            for (P_Data *obj in _searchData) {
+                if (![self.outlineView isItemExpanded:obj.parentData]) {
+                    [self.outlineView expandItem:obj.parentData expandChildren:YES];
+                }
+            }
             [self.outlineView reloadItem:nil reloadChildren:YES];
         }
     }
@@ -463,11 +466,11 @@
 
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector
 {
-    if ([control isEqual:self.searchField]) {
+    if ([control isKindOfClass:[NSSearchField class]]) {
         if ([textView respondsToSelector:commandSelector]) {
             if ([NSStringFromSelector(commandSelector) isEqualToString:@"insertNewline:"]) {
                 NSInteger row = [self.outlineView selectedRow];
-                NSString *searchString = [self.searchField.stringValue lowercaseString];
+                NSString *searchString = [self.searchString lowercaseString];
                 for (P_Data *obj in _searchData) {
                     if ([[obj.key lowercaseString] containsString:searchString] || [[obj.valueDesc lowercaseString] containsString:searchString]) {
                         NSInteger index = [self.outlineView rowForItem:obj];
@@ -491,20 +494,6 @@
 }
 
 
-- (void)_jr_findObjFrom:(P_Data *)data searchString:(NSString *)searchString results:(NSMutableArray **)results
-{
-    searchString = [searchString lowercaseString];
-    for (P_Data *obj in data.childDatas) {
-        if ([[obj.key lowercaseString] containsString:searchString] || [[obj.valueDesc lowercaseString] containsString:searchString]) {
-            if (![self.outlineView isItemExpanded:obj.parentData]) {
-                [self.outlineView expandItem:obj.parentData];
-            }
-            [*results addObject:obj];
-        } else {
-            [self _jr_findObjFrom:obj searchString:searchString results:results];
-        }
-    }
-}
 
 #pragma mark 高亮searchString
 - (void)setCell:(P_PropertyListBasicCellView *)cell searchString:(NSString *)string

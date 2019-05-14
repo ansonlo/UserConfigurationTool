@@ -13,11 +13,13 @@
 #import "P_Data.h"
 #import "P_Data+P_Exten.h"
 
-@interface P_OperationViewController () <P_PropertyListToolbarViewDelegate>
+@interface P_OperationViewController () <P_PropertyListToolbarViewDelegate, NSSearchFieldDelegate>
 
 @property (nonatomic, strong) NSURL *savePlistUrl;
 
 @property (weak) IBOutlet P_PropertyListToolbarView *toolbar;
+
+@property (weak) IBOutlet NSSearchField *searchField;
 
 @end
 
@@ -27,6 +29,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.toolbar.delegate = self;
+    self.searchField.delegate = self;
     // 新建空白
     [self newDocument:nil];
 }
@@ -38,6 +41,10 @@
     // Update the view, if already loaded.
 }
 
+- (NSString *)searchString
+{
+    return self.searchField.stringValue;
+}
 #pragma mark - P_PropertyListToolbarViewDelegate
 - (void)P_PropertyListToolbarView:(P_PropertyListToolbarView *)toolbar didClickButton:(P_PropertyListToolbarButton)buttonType
 {
@@ -264,10 +271,4 @@
     return YES;
 }
 
-
-- (IBAction)endSearchAction:(id)sender {
-    [self.searchField resignFirstResponder];
-    self.searchField.stringValue = @"";
-    [self.outlineView reloadData];
-}
 @end
