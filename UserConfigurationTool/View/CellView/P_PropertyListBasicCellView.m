@@ -12,10 +12,6 @@
 
 @property (nonatomic, assign) BOOL textFieldEditing;
 
-@property (nonatomic, strong) NSDictionary *dict;
-
-@property (nonatomic, strong) NSDictionary *searchDict;
-
 @end
 
 @implementation P_PropertyListBasicCellView
@@ -114,43 +110,6 @@
         }
     }
     return YES;
-}
-
-- (void)p_setControlSearchString:(NSString *)string
-{
-    NSString *currentString = [self.textField.attributedStringValue.string lowercaseString];
-    string = [string lowercaseString];
-    if (string.length > 0 && [currentString containsString:string]) {
-        NSRange range = [currentString rangeOfString:string];
-        /** 记录初始值 */
-        if (!_dict) {
-            NSRange rangecopy = NSRangeFromString(currentString);
-            _dict = [self.textField.attributedStringValue attributesAtIndex:0 effectiveRange:&rangecopy];
-        }
-        
-        NSMutableAttributedString *newAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textField.attributedStringValue];
-        
-        if (!_searchDict) {
-            /** 改变背景颜色，字体样式 */
-            NSFont *font = [_dict objectForKey:NSFontAttributeName];
-            NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:_dict];
-            [dic setValue:[NSColor yellowColor] forKey:NSBackgroundColorAttributeName];
-            [dic setValue:[NSFont boldSystemFontOfSize:font.pointSize] forKey:NSFontAttributeName];
-            _searchDict = [dic copy];
-        }
-        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[self.textField.attributedStringValue.string substringWithRange:range] attributes:_searchDict];
-        
-        [newAttributedString replaceCharactersInRange:range withAttributedString:attributedString];
-        self.textField.attributedStringValue = [newAttributedString copy];
-    } else {
-        if (_dict) {
-            NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textField.attributedStringValue];
-            [attributedString setAttributes:_dict range:NSRangeFromString(attributedString.string)];
-            self.textField.attributedStringValue = [attributedString copy];
-            _dict = nil;
-            _searchDict = nil;
-        }
-    }
 }
 
 @end

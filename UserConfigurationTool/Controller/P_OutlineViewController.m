@@ -329,14 +329,9 @@
         [cellView p_setControlEditable:editable];
     }
     
-//    if (self.isSearching) {
-//        NSString *searchKey = self.searchField.stringValue;
-//        if ([p.key isEqualToString:searchKey] || [p.valueDesc isEqualToString:searchKey]) {
-//        }
-//        [cellView p_setControlSearchString:self.searchField.stringValue];
-//    } else {
-//        [cellView p_setControlSearchString:@""];
-//    }
+    if ([_searchData containsObject:p]) {
+        [self setCell:cellView searchString:self.searchField.stringValue];
+    }
     return cellView;
 }
 
@@ -475,28 +470,16 @@
     id obj = notification.object;
     if ([obj isEqual:self.searchField]) {
         [self.outlineView deselectAll:self.root];
-        for (P_Data *obj in _searchData) {
-            [self.outlineView reloadItem:obj];
-        }
-        
+        _searchData = nil;
+        [self.outlineView reloadItem:nil reloadChildren:YES];
+
         NSString *searchStr = self.searchField.stringValue;
         
         if (searchStr.length > 0) {
-            
-            NSMutableArray *array = [NSMutableArray array];
-            [self _jr_findObjFrom:self.root searchString:searchStr results:&array];
-            
-            for (P_Data *obj in [array copy]) {
-                if (![self.outlineView isItemExpanded:obj.parentData]) {
-                    [self.outlineView expandItem:obj.parentData];
-                }
-                NSInteger index = [self.outlineView rowForItem:obj];
-                P_PropertyListBasicCellView *keyCellView = [self.outlineView viewAtColumn:0 row:index makeIfNecessary:NO];
-                P_PropertyListBasicCellView *valueCellView = [self.outlineView viewAtColumn:2 row:index makeIfNecessary:NO];
-                [keyCellView p_setControlSearchString:searchStr];
-                [valueCellView p_setControlSearchString:searchStr];
-            }
-            _searchData = [array copy];
+            NSString *name = [NSString stringWithFormat:@"key CONTAINS '%@' OR valueDesc CONTAINS '%@'", searchStr, searchStr];
+            NSPredicate *p = [NSPredicate predicateWithFormat:name];
+            _searchData = [self.root.childDatas filteredArrayUsingPredicate:p];
+            [self.outlineView reloadItem:nil reloadChildren:YES];
         }
     }
 }
@@ -536,11 +519,41 @@
     searchString = [searchString lowercaseString];
     for (P_Data *obj in data.childDatas) {
         if ([[obj.key lowercaseString] containsString:searchString] || [[obj.valueDesc lowercaseString] containsString:searchString]) {
+            if (![self.outlineView isItemExpanded:obj.parentData]) {
+                [self.outlineView expandItem:obj.parentData];
+            }
             [*results addObject:obj];
         } else {
             [self _jr_findObjFrom:obj searchString:searchString results:results];
         }
     }
 }
+
+#pragma mark 高亮searchString
+- (void)setCell:(P_PropertyListBasicCellView *)cell searchString:(NSString *)string
+{
+    NSString *currentString = [cell.textField.attributedStringValue.string lowercaseString];
+    string = [string lowercaseString];
+    if (string.length > 0 && [currentString containsString:string]) {
+        NSRange range = [currentString rangeOfString:string];
+        /** 记录初始值 */
+        NSRange rangecopy = NSRangeFromString(currentString);
+        NSDictionary *currentDict = [cell.textField.attributedStringValue attributesAtIndex:0 effectiveRange:&rangecopy];
+        
+        NSMutableAttributedString *newAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:cell.textField.attributedStringValue];
+        
+        /** 改变背景颜色，字体样式 */
+        NSFont *font = [currentDict objectForKey:NSFontAttributeName];
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:currentDict];
+        [dic setValue:[NSColor yellowColor] forKey:NSBackgroundColorAttributeName];
+        [dic setValue:[NSFont boldSystemFontOfSize:font.pointSize] forKey:NSFontAttributeName];
+
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[cell.textField.attributedStringValue.string substringWithRange:range] attributes:dic];
+        
+        [newAttributedString replaceCharactersInRange:range withAttributedString:attributedString];
+        cell.textField.attributedStringValue = [newAttributedString copy];
+    }
+}
+
 @end
 

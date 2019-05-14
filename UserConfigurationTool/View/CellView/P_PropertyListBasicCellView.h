@@ -22,8 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)p_setControlEditable:(BOOL)editable;
 - (void)p_setControlEditableWithOutTextColor:(BOOL)editable;
 
-- (void)p_setControlSearchString:(NSString *)string;
-
 @end
 
 @protocol P_PropertyListCellViewDelegate <NSObject>
