@@ -245,7 +245,7 @@
          2、上级类型为Array || 不能编辑
          3、没有配置项
          */
-        if (p.level == 0 || editable || c == nil) {
+        if (p.level == 0 || !editable || c == nil) {
             cellIdentifier = PlistCell.KeyCell;
         } else {
             cellIdentifier = PlistCell.ComboKeyCell;

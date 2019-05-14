@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+FOUNDATION_EXTERN int P_SortSpecialKey(NSString *key);
+
 @class P_Data;
 
 @interface P_Config : NSObject
@@ -33,7 +35,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (P_Config *)configAtKey:(NSString *)key;
 
 /** 匹配下级key的对象 */
-- (P_Config *)completedKey:(NSString *)key;
+- (P_Config *)compareKey:(NSString *)key;
+
+- (P_Config *)compareData:(P_Data *)p;
 
 @end
 

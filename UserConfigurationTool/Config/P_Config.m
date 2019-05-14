@@ -9,11 +9,44 @@
 #import "P_Config.h"
 #import "P_Data+P_Exten.h"
 
+int P_SortSpecialKey(NSString *key)
+{
+    int _sort = 0;
+    /** 特别排序 */
+    if ([key isEqualToString:@"host"]) {
+        _sort = 999;
+    } else if ([key isEqualToString:@"port"]) {
+        _sort = 998;
+    } else if ([key isEqualToString:@"webPort"]) {
+        _sort = 997;
+    } else if ([key isEqualToString:@"appInHost"]) {
+        _sort = 996;
+    } else if ([key isEqualToString:@"VPNFile"]) {
+        _sort = 995;
+    } else if ([key isEqualToString:@"VPNDefaultFile"]) {
+        _sort = 994;
+    } else if ([key isEqualToString:@"Server_Key"]) {
+        _sort = 993;
+    } else if ([key isEqualToString:@"Custom_Key"]) {
+        _sort = 992;
+    } else if ([key isEqualToString:@"Private_Key"]) {
+        _sort = 991;
+    } else if ([key isEqualToString:@"Theme"]) {
+        _sort = 990;
+    } else if ([key isEqualToString:@"Vendors_Key"]) {
+        _sort = 989;
+    }
+    return _sort;
+}
+
 static P_Config *root_config;
 
 @interface P_Config ()
 
 @property (nonatomic, strong) NSMutableArray <P_Config *>*m_childDatas;
+
+/** 排序 */
+@property (nonatomic, assign) int sort;
 
 @end
 
@@ -42,6 +75,9 @@ static P_Config *root_config;
 {
     self = [self init];
     if (self) {
+        /** 特别排序 */
+        _sort = P_SortSpecialKey(key);
+        
         _key = key;
         _keyDesc = desc;
         _value = ([defaultValue isKindOfClass:[NSDictionary class]] || [defaultValue isKindOfClass:[NSArray class]]) ? nil : defaultValue;
@@ -73,41 +109,9 @@ static P_Config *root_config;
         }
         
         /** 排序 */
-        if ([_key isEqualToString:@"Root"]) {
-            /** 特别排序 */
-            NSMutableArray *new_childDatas = [NSMutableArray arrayWithObjects:@NO,@NO,@NO,@NO,@NO,@NO,@NO,@NO,@NO,@NO,@NO,nil];
-            for (P_Config *c in _m_childDatas) {
-                if ([c.key isEqualToString:@"host"]) {
-                    [new_childDatas replaceObjectAtIndex:0 withObject:c];
-                } else if ([c.key isEqualToString:@"port"]) {
-                    [new_childDatas replaceObjectAtIndex:1 withObject:c];
-                } else if ([c.key isEqualToString:@"webPort"]) {
-                    [new_childDatas replaceObjectAtIndex:2 withObject:c];
-                } else if ([c.key isEqualToString:@"appInHost"]) {
-                    [new_childDatas replaceObjectAtIndex:3 withObject:c];
-                } else if ([c.key isEqualToString:@"VPNFile"]) {
-                    [new_childDatas replaceObjectAtIndex:4 withObject:c];
-                } else if ([c.key isEqualToString:@"VPNDefaultFile"]) {
-                    [new_childDatas replaceObjectAtIndex:5 withObject:c];
-                } else if ([c.key isEqualToString:@"Server_Key"]) {
-                    [new_childDatas replaceObjectAtIndex:6 withObject:c];
-                } else if ([c.key isEqualToString:@"Custom_Key"]) {
-                    [new_childDatas replaceObjectAtIndex:7 withObject:c];
-                } else if ([c.key isEqualToString:@"Private_Key"]) {
-                    [new_childDatas replaceObjectAtIndex:8 withObject:c];
-                } else if ([c.key isEqualToString:@"Theme"]) {
-                    [new_childDatas replaceObjectAtIndex:9 withObject:c];
-                } else if ([c.key isEqualToString:@"Vendors_Key"]) {
-                    [new_childDatas replaceObjectAtIndex:10 withObject:c];
-                }
-            }
-            [new_childDatas removeObject:@NO];
-            _m_childDatas = new_childDatas;
-            
-        } else {
-            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"key" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
-            [_m_childDatas sortUsingDescriptors:@[sortDescriptor]];
-        }
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sort" ascending:NO selector:@selector(compare:)];
+        NSSortDescriptor *sortKey = [NSSortDescriptor sortDescriptorWithKey:@"key" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+        [_m_childDatas sortUsingDescriptors:@[sort, sortKey]];
     }
     return self;
 }
@@ -199,7 +203,9 @@ static P_Config *root_config;
 {
     if (key) {
         if ([self.type isEqualToString:Plist.Dictionary] && [self.key isEqualToString:key]) {
-            return self;
+            if (self.m_childDatas.count) {
+                return self;
+            }
         } else {
             P_Config *tmp = nil;
             for (P_Config *c in self.m_childDatas) {
@@ -213,11 +219,22 @@ static P_Config *root_config;
     return nil;
 }
 
-- (P_Config *)completedKey:(NSString *)key
+- (P_Config *)compareKey:(NSString *)key
 {
     for (P_Config *c in self.m_childDatas) {
         if ([c.key isEqualToString:key]) {
             return c;
+        }
+    }
+    return nil;
+}
+
+- (P_Config *)compareData:(P_Data *)p
+{
+    P_Config *c = [self configAtKey:p.parentData.key];
+    for (P_Config *tmp_c in c.m_childDatas) {
+        if ([tmp_c.key isEqualToString:p.key] && [tmp_c.type isEqualToString:p.type]) {
+            return tmp_c;
         }
     }
     return nil;

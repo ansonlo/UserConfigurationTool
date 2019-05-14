@@ -159,7 +159,7 @@
     
     NSTextField *textField = obj.object;
     //    NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
-    [self comboBoxDidEndEditing:textField config:[self.config completedKey:textField.stringValue]];
+    [self comboBoxDidEndEditing:textField config:[self.config compareKey:textField.stringValue]];
 }
 
 - (BOOL)control:(NSControl *)control isValidObject:(nullable id)obj
