@@ -7,16 +7,17 @@
 //
 
 #import "P_OperationViewController.h"
+#import "P_PropertyListToolbarView.h"
+
 #import "P_TypeHeader.h"
 #import "P_Data.h"
 #import "P_Data+P_Exten.h"
 
-@interface P_OperationViewController ()
+@interface P_OperationViewController () <P_PropertyListToolbarViewDelegate>
 
 @property (nonatomic, strong) NSURL *savePlistUrl;
 
-@property (weak) IBOutlet NSButton *plusButton;
-@property (weak) IBOutlet NSButton *minusButton;
+@property (weak) IBOutlet P_PropertyListToolbarView *toolbar;
 
 @end
 
@@ -25,9 +26,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.toolbar.delegate = self;
     NSURL *propertyListURL = [[NSBundle mainBundle].bundleURL URLByAppendingPathComponent:@"Contents/Info.plist"];
-//    NSURL *propertyListURL = [[NSBundle mainBundle] URLForResource:@"Config" withExtension:@"plist"];
     [self __loadPlistData:propertyListURL];
     
 }
@@ -39,7 +39,39 @@
     // Update the view, if already loaded.
 }
 
-#pragma mark - action
+#pragma mark - P_PropertyListToolbarViewDelegate
+- (void)P_PropertyListToolbarView:(P_PropertyListToolbarView *)toolbar didClickButton:(P_PropertyListToolbarButton)buttonType
+{
+    switch (buttonType) {
+        case P_PropertyListToolbarButtonOpen:
+        {
+            [self openPlistFileAction:nil];
+        }
+            break;
+        case P_PropertyListToolbarButtonReset:
+        {
+            [self resetAction:nil];
+        }
+            break;
+        case P_PropertyListToolbarButtonAdd:
+        {
+            [self addAction:nil];
+        }
+            break;
+        case P_PropertyListToolbarButtonRemove:
+        {
+            [self removeAction:nil];
+        }
+            break;
+        case P_PropertyListToolbarButtonSave:
+        {
+            [self savePlistAction:nil];
+        }
+        default:
+            break;
+    }
+}
+
 - (IBAction)openPlistFileAction:(id)sender {
     NSOpenPanel *panel = [NSOpenPanel openPanel];
     [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
@@ -70,7 +102,7 @@
 - (IBAction)removeAction:(id)sender {
     [self.outlineView deleteItem:[self.outlineView itemAtRow:self.outlineView.selectedRow]];
 }
-- (IBAction)createPlistAction:(id)sender {
+- (IBAction)savePlistAction:(id)sender {
     if (_savePlistUrl) {
         [self __savePlistData:_savePlistUrl];
     } else {
@@ -93,7 +125,7 @@
 
 - (void)saveDocument:(id)sender
 {
-    [self createPlistAction:sender];
+    [self savePlistAction:sender];
 }
 
 - (void)saveDocumentAs:(id)sender
@@ -111,7 +143,7 @@
         if (result == NSModalResponseOK)
         {
             self.savePlistUrl = [panel URL];
-            [self createPlistAction:sender];
+            [self savePlistAction:sender];
         }
     }];
 }
@@ -200,11 +232,15 @@
 }
 
 #pragma mark - NSOutlineViewDelegate
+- (BOOL)selectionShouldChangeInOutlineView:(NSOutlineView *)outlineView
+{
+    return YES;
+}
+
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
 {
     P_Data *p = item;
-    self.plusButton.enabled = p.operation & P_Data_Operation_Insert;
-    self.minusButton.enabled = p.operation & P_Data_Operation_Delete;
+    [self.toolbar p_setControlSelected:YES addButtonEnabled:(p.operation & P_Data_Operation_Insert) deleteButtonEnabled:(p.operation & P_Data_Operation_Delete)];
     return YES;
 }
 

@@ -151,7 +151,6 @@
 
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
-    
     if (self.textFieldEditing == NO) {
         return;
     }

@@ -727,7 +727,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="openPlistFileAction:" target="XfG-lQ-9wD" id="gsO-I6-4EX"/>
+                                            <action selector="openAction:" target="whW-ah-oIr" id="HfF-uo-IhA"/>
                                         </connections>
                                     </button>
                                     <button toolTip="重置" translatesAutoresizingMaskIntoConstraints="NO" id="rBm-bc-8aN">
@@ -741,7 +741,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="resetAction:" target="XfG-lQ-9wD" id="TIF-ii-a4l"/>
+                                            <action selector="resetAction:" target="whW-ah-oIr" id="dRf-dR-hup"/>
                                         </connections>
                                     </button>
                                     <button toolTip="添加" translatesAutoresizingMaskIntoConstraints="NO" id="IiG-wE-b77">
@@ -755,7 +755,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="addAction:" target="XfG-lQ-9wD" id="bBl-Ls-qdE"/>
+                                            <action selector="addAction:" target="whW-ah-oIr" id="Kek-he-2yF"/>
                                         </connections>
                                     </button>
                                     <button toolTip="删除" translatesAutoresizingMaskIntoConstraints="NO" id="fom-b4-SMA">
@@ -769,7 +769,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="removeAction:" target="XfG-lQ-9wD" id="rTA-Kd-3Nh"/>
+                                            <action selector="removeAction:" target="whW-ah-oIr" id="3Zh-AI-h5C"/>
                                         </connections>
                                     </button>
                                     <button toolTip="保存" translatesAutoresizingMaskIntoConstraints="NO" id="3CL-dI-jFO">
@@ -783,7 +783,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="createPlistAction:" target="XfG-lQ-9wD" id="dfE-1y-4z8"/>
+                                            <action selector="saveAction:" target="whW-ah-oIr" id="nvA-ko-xKM"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -800,6 +800,10 @@ CA
                                     <constraint firstItem="rBm-bc-8aN" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="t9J-sW-xGc"/>
                                     <constraint firstItem="fom-b4-SMA" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="xfa-TR-8zO"/>
                                 </constraints>
+                                <connections>
+                                    <outlet property="minusButton" destination="fom-b4-SMA" id="h9q-FH-mpl"/>
+                                    <outlet property="plusButton" destination="IiG-wE-b77" id="b3e-c3-Mvt"/>
+                                </connections>
                             </customView>
                             <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gz0-Cc-DAE">
                                 <rect key="frame" x="0.0" y="0.0" width="720" height="436"/>
@@ -1162,9 +1166,8 @@ CA
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="minusButton" destination="fom-b4-SMA" id="WWD-a7-dPq"/>
                         <outlet property="outlineView" destination="kM5-ov-lof" id="iPR-4Y-dYg"/>
-                        <outlet property="plusButton" destination="IiG-wE-b77" id="smc-40-Fmo"/>
+                        <outlet property="toolbar" destination="whW-ah-oIr" id="EBe-0A-IP7"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

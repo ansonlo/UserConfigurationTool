@@ -10,7 +10,28 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSUInteger, P_PropertyListToolbarButton) {
+    P_PropertyListToolbarButtonNone,
+    P_PropertyListToolbarButtonOpen,
+    P_PropertyListToolbarButtonReset,
+    P_PropertyListToolbarButtonAdd,
+    P_PropertyListToolbarButtonRemove,
+    P_PropertyListToolbarButtonSave,
+};
+
+@class P_PropertyListToolbarView;
+
+@protocol P_PropertyListToolbarViewDelegate <NSObject>
+
+- (void)P_PropertyListToolbarView:(P_PropertyListToolbarView *)toolbar didClickButton:(P_PropertyListToolbarButton)buttonType;
+
+@end
+
 @interface P_PropertyListToolbarView : NSView
+
+@property (nonatomic, weak) id<P_PropertyListToolbarViewDelegate> delegate;
+
+- (void)p_setControlSelected:(BOOL)isSelected addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled;
 
 @end
 

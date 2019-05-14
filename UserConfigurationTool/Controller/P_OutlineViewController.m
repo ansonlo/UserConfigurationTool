@@ -333,6 +333,7 @@
             [cellView p_flashError];
             
             [self p_showAlertViewWith:NSLocalizedString(@"The key can not be empty.", @"")];
+            [(P_PropertyList2ButtonCellView *)cellView p_setControlData:p];
             
             return NO;
         }
@@ -342,6 +343,7 @@
             [cellView p_flashError];
             
             [self p_showAlertViewWith:[NSString stringWithFormat:NSLocalizedString(@"The key “%@” already exists in containing item.", @""), key]];
+            [(P_PropertyList2ButtonCellView *)cellView p_setControlData:p];
             
             return NO;
         }
