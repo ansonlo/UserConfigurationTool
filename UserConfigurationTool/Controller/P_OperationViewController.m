@@ -112,6 +112,11 @@
     NSLog(@"Save File");
 }
 
+- (void)saveDocumentAs:(id)sender
+{
+    NSLog(@"Save File As");
+}
+
 #pragma mark - public
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText
