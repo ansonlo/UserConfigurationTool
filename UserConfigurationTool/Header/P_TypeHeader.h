@@ -58,6 +58,7 @@ typedef NSString *P_PlistCellName NS_EXTENSIBLE_STRING_ENUM;
 struct PlistCellType {
     
     P_PlistCellName KeyCell;
+    P_PlistCellName ComboKeyCell;
     P_PlistCellName TypeCell;
     P_PlistCellName ValueCell;
     P_PlistCellName ValueBoolCell;
@@ -67,7 +68,7 @@ struct PlistCellType {
 static struct PlistColumnIdentifierType const PlistColumnIdentifier = {@"Key", @"Type", @"Value"};
 static struct PlistType const Plist = {@"Dictionary", @"Array", @"Boolean", @"String", @"Number", @"Date", @"Data"};
 static struct PlistBooleanType const PlistBoolean = {@"YES", @"NO"};
-static struct PlistCellType const PlistCell = {@"P_KeyCell", @"P_TypeCell", @"P_ValueCell", @"P_ValueBoolCell", @"P_ValueDateCell"};
+static struct PlistCellType const PlistCell = {@"P_KeyCell", @"P_ComboKeyCell", @"P_TypeCell", @"P_ValueCell", @"P_ValueBoolCell", @"P_ValueDateCell"};
 
 typedef NS_ENUM(NSUInteger, P_Data_EditableType) {
     /** 可编辑key */

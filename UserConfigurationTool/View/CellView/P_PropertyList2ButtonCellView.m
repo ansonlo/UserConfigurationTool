@@ -14,7 +14,6 @@
 
 @property (weak) IBOutlet NSButton *minusButton;
 @property (weak) IBOutlet NSButton *plusButton;
-
 @property (weak) IBOutlet NSLayoutConstraint *comboBoxTrailing;
 
 @property (nonatomic, strong) P_Config *config;
@@ -41,7 +40,9 @@
 - (void)setConfig:(P_Config *)config
 {
     _config = config;
-    [(NSComboBox *)self.textField noteNumberOfItemsChanged];
+    if ([self.textField isKindOfClass:[NSComboBox class]]) {
+        [(NSComboBox *)self.textField noteNumberOfItemsChanged];
+    }
 }
 
 - (void)prepareForReuse
@@ -150,15 +151,15 @@
 
 - (void)controlTextDidEndEditing:(NSNotification *)obj
 {
-    NSComboBox *comboBox = obj.object;
     
     if (self.textFieldEditing == NO) {
         return;
     }
     self.textFieldEditing = NO;
     
+    NSTextField *textField = obj.object;
     //    NSLog(@"config:%@", [self.config completedKey:comboBox.stringValue].data);
-    [self comboBoxDidEndEditing:comboBox config:[self.config completedKey:comboBox.stringValue]];
+    [self comboBoxDidEndEditing:textField config:[self.config completedKey:textField.stringValue]];
 }
 
 - (BOOL)control:(NSControl *)control isValidObject:(nullable id)obj
@@ -173,14 +174,14 @@
 
 
 #pragma mark - 处理数据
-- (void)comboBoxDidEndEditing:(NSComboBox *)comboBox config:(P_Config *)config
+- (void)comboBoxDidEndEditing:(NSTextField *)textField config:(P_Config *)config
 {
     if ([self.delegate respondsToSelector:@selector(p_propertyListCellDidEndEditing:value:)]) {
         P_Data *new_p = config.data;
         if (new_p == nil) {
             /** 创建全新对象，避免需要更新权限问题，直接更新对象 */
             new_p = [[P_Data alloc] init];
-            new_p.key = comboBox.stringValue;
+            new_p.key = textField.stringValue;
         }
         id realValue = [self.delegate p_propertyListCellDidEndEditing:self value:new_p];
         if ([realValue isKindOfClass:[P_Data class]]) {

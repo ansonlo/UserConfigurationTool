@@ -829,7 +829,7 @@ CA
                                                     <sortDescriptor key="sortDescriptorPrototype" selector="localizedCaseInsensitiveCompare:" sortKey="key"/>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
-                                                        <tableCellView identifier="P_KeyCell" id="Uum-ob-r42" customClass="P_PropertyList2ButtonCellView">
+                                                        <tableCellView identifier="P_ComboKeyCell" id="Uum-ob-r42" customClass="P_PropertyList2ButtonCellView">
                                                             <rect key="frame" x="1" y="1" width="240" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -888,6 +888,66 @@ CA
                                                                 <outlet property="minusButton" destination="3ty-OT-mPX" id="8kS-lX-HTY"/>
                                                                 <outlet property="plusButton" destination="hjt-pY-XuY" id="rYu-1S-Ohv"/>
                                                                 <outlet property="textField" destination="9X5-pM-AXl" id="jM7-hj-E5z"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                        <tableCellView identifier="P_KeyCell" id="4ai-pj-JG6" customClass="P_PropertyList2ButtonCellView">
+                                                            <rect key="frame" x="1" y="21" width="240" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nzF-lG-PVi">
+                                                                    <rect key="frame" x="227" y="3" width="11" height="11"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="11" id="rMS-1L-7er"/>
+                                                                        <constraint firstAttribute="height" constant="11" id="tgA-Up-geq"/>
+                                                                    </constraints>
+                                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="minus" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="JKV-J1-OKP">
+                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="p_minusAction:" target="4ai-pj-JG6" id="PT0-6x-xpH"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ml6-eQ-IRF">
+                                                                    <rect key="frame" x="214" y="3" width="11" height="11"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="11" id="acv-5P-VQP"/>
+                                                                        <constraint firstAttribute="height" constant="11" id="ikc-Cs-rl5"/>
+                                                                    </constraints>
+                                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="plus" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="xcW-h5-fOG">
+                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="p_plusAction:" target="4ai-pj-JG6" id="AOg-qU-lUd"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eaq-uj-8JK">
+                                                                    <rect key="frame" x="4" y="2" width="240" height="14"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" id="Hl6-HE-a5S">
+                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                    <connections>
+                                                                        <outlet property="delegate" destination="4ai-pj-JG6" id="VGy-Gy-LUm"/>
+                                                                    </connections>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstAttribute="trailing" secondItem="nzF-lG-PVi" secondAttribute="trailing" constant="2" id="38e-qm-NMg"/>
+                                                                <constraint firstItem="ml6-eQ-IRF" firstAttribute="centerY" secondItem="nzF-lG-PVi" secondAttribute="centerY" id="BmZ-Ej-NII"/>
+                                                                <constraint firstItem="nzF-lG-PVi" firstAttribute="centerY" secondItem="4ai-pj-JG6" secondAttribute="centerY" id="Fdr-ov-Ghw"/>
+                                                                <constraint firstItem="nzF-lG-PVi" firstAttribute="leading" secondItem="ml6-eQ-IRF" secondAttribute="trailing" constant="2" id="Iyd-yG-cKT"/>
+                                                                <constraint firstItem="eaq-uj-8JK" firstAttribute="trailing" secondItem="4ai-pj-JG6" secondAttribute="trailing" constant="2" id="QHH-4S-RGn"/>
+                                                                <constraint firstItem="eaq-uj-8JK" firstAttribute="centerY" secondItem="4ai-pj-JG6" secondAttribute="centerY" id="i1H-UP-Fxp"/>
+                                                                <constraint firstItem="eaq-uj-8JK" firstAttribute="leading" secondItem="4ai-pj-JG6" secondAttribute="leading" constant="6" id="nSz-QO-IWd"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="comboBoxTrailing" destination="QHH-4S-RGn" id="dl8-cl-eAP"/>
+                                                                <outlet property="minusButton" destination="nzF-lG-PVi" id="ryz-iq-XkH"/>
+                                                                <outlet property="plusButton" destination="ml6-eQ-IRF" id="CzC-qb-61K"/>
+                                                                <outlet property="textField" destination="eaq-uj-8JK" id="Rbm-Jj-rI8"/>
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>

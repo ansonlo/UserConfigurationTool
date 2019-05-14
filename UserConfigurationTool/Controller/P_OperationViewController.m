@@ -13,8 +13,7 @@
 
 @interface P_OperationViewController ()
 
-@property (nonatomic, strong) NSURL *plistUrl;
-@property (nonatomic, assign) BOOL hasSaveUrl;
+@property (nonatomic, strong) NSURL *savePlistUrl;
 
 @property (weak) IBOutlet NSButton *plusButton;
 @property (weak) IBOutlet NSButton *minusButton;
@@ -29,7 +28,6 @@
     
     NSURL *propertyListURL = [[NSBundle mainBundle].bundleURL URLByAppendingPathComponent:@"Contents/Info.plist"];
 //    NSURL *propertyListURL = [[NSBundle mainBundle] URLForResource:@"Config" withExtension:@"plist"];
-    _plistUrl = propertyListURL;
     [self __loadPlistData:propertyListURL];
     
 }
@@ -43,7 +41,6 @@
 
 #pragma mark - action
 - (IBAction)openPlistFileAction:(id)sender {
-    _hasSaveUrl = NO;
     NSOpenPanel *panel = [NSOpenPanel openPanel];
     [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
     [panel setAllowsMultipleSelection:NO];
@@ -74,8 +71,8 @@
     [self.outlineView deleteItem:[self.outlineView itemAtRow:self.outlineView.selectedRow]];
 }
 - (IBAction)createPlistAction:(id)sender {
-    if (_hasSaveUrl) {
-        [self __savePlistData:_plistUrl];
+    if (_savePlistUrl) {
+        [self __savePlistData:_savePlistUrl];
     } else {
         NSSavePanel *panel = [NSSavePanel savePanel];
         [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
@@ -89,8 +86,7 @@
         [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result){
             if (result == NSModalResponseOK)
             {
-                self.hasSaveUrl = YES;
-                self.plistUrl = [panel URL];
+                self.savePlistUrl = [panel URL];
                 [self createPlistAction:sender];
             }
         }];
@@ -99,17 +95,20 @@
 
 - (void)newDocument:(id)sender
 {
-    NSLog(@"New File");
+    NSURL *propertyListURL = [[NSBundle mainBundle] URLForResource:@"Config" withExtension:@"plist"];
+    if (propertyListURL) {
+        [self __loadPlistData:propertyListURL];
+    }
 }
 
 - (void)openDocument:(id)sender
 {
-    NSLog(@"open New File");
+    [self openPlistFileAction:sender];
 }
 
 - (void)saveDocument:(id)sender
 {
-    NSLog(@"Save File");
+    [self createPlistAction:sender];
 }
 
 #pragma mark - public
@@ -142,26 +141,51 @@
 
 - (void)__listPlistFile:(NSString *)appPath
 {
-    _plistUrl = nil;
+    NSURL *plistUrl = nil;
     if (appPath.length) {
-        NSURL *plistUrl = [NSURL fileURLWithPath:appPath];
-        _plistUrl = plistUrl;
+        plistUrl = [NSURL fileURLWithPath:appPath];
     }
-    if (_plistUrl == nil) {
-        [self p_showAlertViewWith:@"Plist Url Error!!!"];
-    } else {
-        [self __loadPlistData:_plistUrl];
-    }
+    
+    [self __loadPlistData:plistUrl];
 }
 
 - (void)__loadPlistData:(NSURL *)plistUrl
 {
-    NSLog(@"subClass to overwrite the method.");
+    _plistUrl = nil;
+    _savePlistUrl = nil;
+    P_Data *p = [P_Data rootWithPlistUrl:plistUrl];
+    if (p) {
+        _plistUrl = plistUrl;
+        if ([plistUrl.lastPathComponent.pathExtension isEqualToString:PlistGlobalConfig.encryptFileExtension]) {
+            _savePlistUrl = plistUrl;
+        }
+        _root = p;
+        
+        [self.outlineView setIndentationMarkerFollowsCell:YES];
+        //        [self.outlineView setIgnoresMultiClick:YES];
+        [self.outlineView reloadData];
+        //设置子项的展开
+        [self.outlineView expandItem:_root expandChildren:NO];
+    } else {
+        [self p_showAlertViewWith:@"This is not a plist file url."];
+        [self newDocument:nil];
+    }
 }
 
 - (void)__savePlistData:(NSURL *)plistUrl
 {
-    NSLog(@"subClass to overwrite the method.");
+    P_Data *root = self.root;
+    
+    NSData *data = root.data;
+    
+    BOOL success = [data writeToURL:plistUrl atomically:YES];
+    
+    if (success) {
+        _plistUrl = plistUrl;
+        [self p_showAlertViewWith:NSLocalizedString(@"save plist success!", @"")];
+    } else {
+        [self p_showAlertViewWith:NSLocalizedString(@"save plist fail!", @"")];
+    }
 }
 
 #pragma mark - NSOutlineViewDataSource

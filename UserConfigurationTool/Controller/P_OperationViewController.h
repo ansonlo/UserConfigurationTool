@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "P_PropertyListOutlineView.h"
+#import "P_Data.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak) IBOutlet P_PropertyListOutlineView *outlineView;
 
+@property (nonatomic, readonly) P_Data *root;
 @property (nonatomic, readonly) NSURL *plistUrl;
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText;

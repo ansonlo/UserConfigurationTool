@@ -28,8 +28,6 @@
     
 }
 
-@property (nonatomic, strong) P_Data *root;
-
 @property (nonatomic, strong) NSArray <P_Data *>*dragItems;
 
 @end
@@ -50,41 +48,11 @@
     // Update the view, if already loaded.
 }
 
-#pragma mark - overwrite
-- (void)__loadPlistData:(NSURL *)plistUrl
-{
-    P_Data *p = [P_Data rootWithPlistUrl:plistUrl];
-    if (p) {
-        _root = p;
-        
-        [self.outlineView setIndentationMarkerFollowsCell:YES];
-//        [self.outlineView setIgnoresMultiClick:YES];
-        [self.outlineView reloadData];
-        //设置子项的展开
-        [self.outlineView expandItem:_root expandChildren:NO];
-    }
-}
-
-- (void)__savePlistData:(NSURL *)plistUrl
-{
-    P_Data *root = self.root;
-    
-    NSData *data = root.data;
-    
-    BOOL success = [data writeToURL:plistUrl atomically:YES];
-    
-    if (success) {
-        [self p_showAlertViewWith:NSLocalizedString(@"save plist success!", @"")];
-    } else {
-        [self p_showAlertViewWith:NSLocalizedString(@"save plist fail!", @"")];
-    }
-}
-
 // The NSOutlineView uses 'nil' to indicate the root item. We return our root tree node for that case.
 - (NSArray *)childrenForItem:(id)item {
     if (item == nil) {
-        if (_root) {
-            return @[_root];
+        if (self.root) {
+            return @[self.root];
         } else {
             return @[];
         }
@@ -220,7 +188,7 @@
     id item = [outlineView itemAtRow:outlineView.selectedRow];
     
     /** 排序&刷新 */
-    [_root sortWithSortDescriptors:outlineView.sortDescriptors recursively:YES];
+    [self.root sortWithSortDescriptors:outlineView.sortDescriptors recursively:YES];
     [self.outlineView reloadItem:nil reloadChildren:YES];
     
     /** 重置选中对象的视图 */
@@ -261,16 +229,27 @@
     P_Data *p = item;
     P_PlistCellName cellIdentifier = nil;
     BOOL editable = YES;
+    P_Config *c = nil;
     
     NSString *identifier = [tableColumn identifier];
     if ([identifier isEqualToString:PlistColumnIdentifier.Key])
     {
-        if ([p.parentData.type isEqualToString:Plist.Array]) {
-            cellIdentifier = PlistCell.ValueCell;
-        } else {
-            cellIdentifier = PlistCell.KeyCell;
-        }
         editable = (p.editable & P_Data_Editable_Key) && ![p.parentData.type isEqualToString: Plist.Array];
+        if (editable) {
+            c = [[P_Config config] configAtKey: p.parentData.key];
+        }
+        
+        /**
+         以下情况不需要显示下拉框
+         1、root
+         2、上级类型为Array || 不能编辑
+         3、没有配置项
+         */
+        if (p.level == 0 || editable || c == nil) {
+            cellIdentifier = PlistCell.KeyCell;
+        } else {
+            cellIdentifier = PlistCell.ComboKeyCell;
+        }
     }
     else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
     {
@@ -295,15 +274,8 @@
     
     if ([identifier isEqualToString:PlistColumnIdentifier.Key])
     {
-        if ([p.parentData.type isEqualToString:Plist.Array]) {
-            [cellView p_setControlWithString:p.key toolTip:p.keyDesc];
-        } else {
-            P_Config *c = nil;
-            if (editable) {
-                c = [[P_Config config] configAtKey: p.parentData.key];
-            }
-            [(P_PropertyList2ButtonCellView *)cellView p_setControlData:p config:c];
-        }
+        
+        [(P_PropertyList2ButtonCellView *)cellView p_setControlData:p config:c];
     }
     else if ([identifier isEqualToString:PlistColumnIdentifier.Type])
     {
@@ -320,7 +292,7 @@
         }
     }
     
-    if ([identifier isEqualToString:PlistColumnIdentifier.Key] && [p.parentData.type isEqualToString:Plist.Array]) {
+    if ([identifier isEqualToString:PlistColumnIdentifier.Key] && (p.level == 0 || [p.parentData.type isEqualToString:Plist.Array])) {
         [cellView p_setControlEditableWithOutTextColor:editable];
     } else {
         [cellView p_setControlEditable:editable];
