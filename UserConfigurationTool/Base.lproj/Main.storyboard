@@ -786,6 +786,31 @@ CA
                                             <action selector="createPlistAction:" target="XfG-lQ-9wD" id="dfE-1y-4z8"/>
                                         </connections>
                                     </button>
+                                    <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I2m-Zg-0oG">
+                                        <rect key="frame" x="414" y="11" width="246" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="246" id="fsr-QI-gLF"/>
+                                        </constraints>
+                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="kaT-6M-6bp">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </searchFieldCell>
+                                        <connections>
+                                            <outlet property="delegate" destination="XfG-lQ-9wD" id="c1A-CN-Qw1"/>
+                                        </connections>
+                                    </searchField>
+                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i5b-re-dVJ">
+                                        <rect key="frame" x="336" y="5" width="72" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="square" title="Done" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="n8h-s0-jWC">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="endSearchAction:" target="XfG-lQ-9wD" id="Kbf-En-5S1"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="3CL-dI-jFO" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="2k0-wp-oYh"/>
@@ -795,7 +820,9 @@ CA
                                     <constraint firstAttribute="height" constant="44" id="RpC-eX-kNG"/>
                                     <constraint firstItem="IiG-wE-b77" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="Tkz-iy-tG3"/>
                                     <constraint firstItem="rBm-bc-8aN" firstAttribute="leading" secondItem="alq-ha-xSF" secondAttribute="trailing" constant="40" id="Tqf-eT-iZM"/>
+                                    <constraint firstItem="I2m-Zg-0oG" firstAttribute="centerY" secondItem="3CL-dI-jFO" secondAttribute="centerY" id="WsD-mf-WHh"/>
                                     <constraint firstItem="fom-b4-SMA" firstAttribute="leading" secondItem="IiG-wE-b77" secondAttribute="trailing" constant="20" id="bRL-Aa-Loz"/>
+                                    <constraint firstItem="3CL-dI-jFO" firstAttribute="leading" secondItem="I2m-Zg-0oG" secondAttribute="trailing" constant="8" symbolic="YES" id="de2-mw-jrR"/>
                                     <constraint firstItem="alq-ha-xSF" firstAttribute="leading" secondItem="whW-ah-oIr" secondAttribute="leading" constant="20" id="hCh-Ua-Mcn"/>
                                     <constraint firstItem="rBm-bc-8aN" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="t9J-sW-xGc"/>
                                     <constraint firstItem="fom-b4-SMA" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="xfa-TR-8zO"/>
@@ -1105,6 +1132,7 @@ CA
                         <outlet property="minusButton" destination="fom-b4-SMA" id="WWD-a7-dPq"/>
                         <outlet property="outlineView" destination="kM5-ov-lof" id="iPR-4Y-dYg"/>
                         <outlet property="plusButton" destination="IiG-wE-b77" id="smc-40-Fmo"/>
+                        <outlet property="searchField" destination="I2m-Zg-0oG" id="RTL-Bz-LCo"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

@@ -117,6 +117,10 @@
     NSLog(@"Save File As");
 }
 
+- (void)performFindPanelAction:(id)sender
+{
+    [self.searchField becomeFirstResponder];
+}
 #pragma mark - public
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText
@@ -184,4 +188,10 @@
     return YES;
 }
 
+
+- (IBAction)endSearchAction:(id)sender {
+    [self.searchField resignFirstResponder];
+    self.searchField.stringValue = @"";
+    [self.outlineView reloadData];
+}
 @end

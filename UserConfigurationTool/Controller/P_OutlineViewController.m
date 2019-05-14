@@ -25,12 +25,14 @@
 
 @interface P_OutlineViewController () <P_PropertyList2ButtonCellViewDelegate>
 {
-    
+
 }
 
 @property (nonatomic, strong) P_Data *root;
 
 @property (nonatomic, strong) NSArray <P_Data *>*dragItems;
+
+@property (nonatomic, strong) NSArray *searchData;
 
 @end
 
@@ -42,6 +44,7 @@
     // Do any additional setup after loading the view.
     /** outlineView注册操作类型 */
     [self.outlineView registerForDraggedTypes:[NSArray arrayWithObjects:self.outlineView.pasteboardType, nil]];
+    
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -326,7 +329,14 @@
         [cellView p_setControlEditable:editable];
     }
     
-    
+//    if (self.isSearching) {
+//        NSString *searchKey = self.searchField.stringValue;
+//        if ([p.key isEqualToString:searchKey] || [p.valueDesc isEqualToString:searchKey]) {
+//        }
+//        [cellView p_setControlSearchString:self.searchField.stringValue];
+//    } else {
+//        [cellView p_setControlSearchString:@""];
+//    }
     return cellView;
 }
 
@@ -458,5 +468,79 @@
     [self.outlineView deleteItem:item];
 }
 
+
+#pragma mark - NSControlTextEditingDelegate
+- (void)controlTextDidChange:(NSNotification *)notification
+{
+    id obj = notification.object;
+    if ([obj isEqual:self.searchField]) {
+        [self.outlineView deselectAll:self.root];
+        for (P_Data *obj in _searchData) {
+            [self.outlineView reloadItem:obj];
+        }
+        
+        NSString *searchStr = self.searchField.stringValue;
+        
+        if (searchStr.length > 0) {
+            
+            NSMutableArray *array = [NSMutableArray array];
+            [self _jr_findObjFrom:self.root searchString:searchStr results:&array];
+            
+            for (P_Data *obj in [array copy]) {
+                if (![self.outlineView isItemExpanded:obj.parentData]) {
+                    [self.outlineView expandItem:obj.parentData];
+                }
+                NSInteger index = [self.outlineView rowForItem:obj];
+                P_PropertyListBasicCellView *keyCellView = [self.outlineView viewAtColumn:0 row:index makeIfNecessary:NO];
+                P_PropertyListBasicCellView *valueCellView = [self.outlineView viewAtColumn:2 row:index makeIfNecessary:NO];
+                [keyCellView p_setControlSearchString:searchStr];
+                [valueCellView p_setControlSearchString:searchStr];
+            }
+            _searchData = [array copy];
+        }
+    }
+}
+
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector
+{
+    if ([control isEqual:self.searchField]) {
+        if ([textView respondsToSelector:commandSelector]) {
+            if ([NSStringFromSelector(commandSelector) isEqualToString:@"insertNewline:"]) {
+                NSInteger row = [self.outlineView selectedRow];
+                NSString *searchString = [self.searchField.stringValue lowercaseString];
+                for (P_Data *obj in _searchData) {
+                    if ([[obj.key lowercaseString] containsString:searchString] || [[obj.valueDesc lowercaseString] containsString:searchString]) {
+                        NSInteger index = [self.outlineView rowForItem:obj];
+                        if (index <= row) {
+                            [self.outlineView deselectRow:index];
+                            continue;
+                        } else {
+                            NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:index];
+                            [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
+                            [self.outlineView scrollRowToVisible:index];
+                            break;
+                        }
+                        
+                    }
+                }
+            }
+            return NO;
+        }
+    }
+    return [super control:control textView:textView doCommandBySelector:commandSelector];
+}
+
+
+- (void)_jr_findObjFrom:(P_Data *)data searchString:(NSString *)searchString results:(NSMutableArray **)results
+{
+    searchString = [searchString lowercaseString];
+    for (P_Data *obj in data.childDatas) {
+        if ([[obj.key lowercaseString] containsString:searchString] || [[obj.valueDesc lowercaseString] containsString:searchString]) {
+            [*results addObject:obj];
+        } else {
+            [self _jr_findObjFrom:obj searchString:searchString results:results];
+        }
+    }
+}
 @end
 
