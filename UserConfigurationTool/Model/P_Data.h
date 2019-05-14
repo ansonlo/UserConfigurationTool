@@ -16,7 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *key;
 @property (nonatomic, strong) P_PlistTypeName type;
 @property (nonatomic, strong) id value;
+/** value描述 */
 @property (nonatomic, readonly) NSString *valueDesc;
+/** key描述 */
 @property (nonatomic, strong) NSString *keyDesc;
 
 /** 是否有子数据 */
@@ -53,6 +55,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)containsChildrenWithKey:(NSString*)key;
 /** key是否在同级中有相同的并且排除自身 */
 - (BOOL)containsChildrenAndWithOutSelfWithKey:(NSString*)key;
+
+/** 根据关键字匹配key、value当前对象与下级对象 */
+- (NSArray <P_Data *> *)filteredChildrenWithString:(NSString*)string;
 
 #pragma mark - isEqualToP_Data
 - (BOOL)isEqualToP_Data:(P_Data *)object;

@@ -331,6 +331,23 @@
     return [self.parentData.m_childDatas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@ && self != %@", key, self]].count > 0;
 }
 
+- (NSArray <P_Data *> *)filteredChildrenWithString:(NSString*)string
+{
+    NSMutableArray <P_Data *> *m_list = [NSMutableArray arrayWithCapacity:1];
+    
+    if ([self.key.lowercaseString containsString:string.lowercaseString] || [self.valueDesc.lowercaseString isEqualToString:string.lowercaseString]) {
+        [m_list addObject:self];
+    }
+    NSArray *tmpArr = nil;
+    for (P_Data *p in self.m_childDatas) {
+        tmpArr = [p filteredChildrenWithString:string];
+        if (tmpArr) {
+            [m_list addObjectsFromArray:tmpArr];
+        }
+    }
+    return m_list.count ? [m_list copy] : nil;
+}
+
 #pragma mark - conver to plist
 
 - (id)plist
