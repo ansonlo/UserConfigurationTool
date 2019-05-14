@@ -927,7 +927,7 @@ CA
                                                                     </connections>
                                                                 </button>
                                                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eaq-uj-8JK">
-                                                                    <rect key="frame" x="4" y="2" width="240" height="14"/>
+                                                                    <rect key="frame" x="4" y="2" width="236" height="14"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" id="Hl6-HE-a5S">
                                                                         <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -943,7 +943,7 @@ CA
                                                                 <constraint firstItem="ml6-eQ-IRF" firstAttribute="centerY" secondItem="nzF-lG-PVi" secondAttribute="centerY" id="BmZ-Ej-NII"/>
                                                                 <constraint firstItem="nzF-lG-PVi" firstAttribute="centerY" secondItem="4ai-pj-JG6" secondAttribute="centerY" id="Fdr-ov-Ghw"/>
                                                                 <constraint firstItem="nzF-lG-PVi" firstAttribute="leading" secondItem="ml6-eQ-IRF" secondAttribute="trailing" constant="2" id="Iyd-yG-cKT"/>
-                                                                <constraint firstItem="eaq-uj-8JK" firstAttribute="trailing" secondItem="4ai-pj-JG6" secondAttribute="trailing" constant="2" id="QHH-4S-RGn"/>
+                                                                <constraint firstAttribute="trailing" secondItem="eaq-uj-8JK" secondAttribute="trailing" priority="750" constant="2" id="QHH-4S-RGn"/>
                                                                 <constraint firstItem="eaq-uj-8JK" firstAttribute="centerY" secondItem="4ai-pj-JG6" secondAttribute="centerY" id="i1H-UP-Fxp"/>
                                                                 <constraint firstItem="eaq-uj-8JK" firstAttribute="leading" secondItem="4ai-pj-JG6" secondAttribute="leading" constant="6" id="nSz-QO-IWd"/>
                                                             </constraints>

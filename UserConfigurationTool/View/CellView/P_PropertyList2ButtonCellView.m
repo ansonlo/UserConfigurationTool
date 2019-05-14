@@ -49,12 +49,16 @@
 {
     [super prepareForReuse];
     
+    [self p_setShowsControlButtons:NO];
+    self.config = nil;
+}
+
+- (void)viewDidMoveToSuperview
+{
+    [super viewDidMoveToSuperview];
     if ([self.superview isKindOfClass:[NSTableRowView class]]) {
         [self p_setShowsControlButtons:[(NSTableRowView *)self.superview isSelected]];
-    } else {
-        [self p_setShowsControlButtons:NO];
     }
-    self.config = nil;
 }
 
 #pragma mark - overwrite
