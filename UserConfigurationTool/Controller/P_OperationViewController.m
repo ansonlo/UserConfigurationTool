@@ -97,6 +97,21 @@
     }
 }
 
+- (void)newDocument:(id)sender
+{
+    NSLog(@"New File");
+}
+
+- (void)openDocument:(id)sender
+{
+    NSLog(@"open New File");
+}
+
+- (void)saveDocument:(id)sender
+{
+    NSLog(@"Save File");
+}
+
 #pragma mark - public
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText
