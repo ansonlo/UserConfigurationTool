@@ -60,10 +60,28 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="File" id="bib-Uj-vzu">
                                     <items>
-                                        <menuItem title="New" keyEquivalent="n" id="Was-JA-tGl">
-                                            <connections>
-                                                <action selector="newDocument:" target="Ady-hI-5gd" id="4Si-XN-c54"/>
-                                            </connections>
+                                        <menuItem title="New" id="Was-JA-tGl">
+                                            <menu key="submenu" id="uWd-oi-25n">
+                                                <items>
+                                                    <menuItem title="Plist" keyEquivalent="n" id="4R2-Ri-AyO" userLabel="Plist">
+                                                        <connections>
+                                                            <action selector="newDocument:" target="Ady-hI-5gd" id="U8L-qa-6Nd"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="MrlPlist" id="xQQ-TR-rKw" userLabel="MrlPlist">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="newMrlPlist:" target="Ady-hI-5gd" id="yZX-87-pgH"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="VPN" id="tYR-av-x43" userLabel="VPN">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="newVpnPlist:" target="Ady-hI-5gd" id="zNb-l8-vFl"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
                                         </menuItem>
                                         <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                             <connections>

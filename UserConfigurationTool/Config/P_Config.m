@@ -36,6 +36,20 @@ int P_SortSpecialKey(NSString *key)
     } else if ([key isEqualToString:@"Vendors_Key"]) {
         _sort = 989;
     }
+    // vpn
+    else if ([key isEqualToString:@"userId"]) {
+        _sort = 988;
+    } else if ([key isEqualToString:@"password"]) {
+        _sort = 987;
+    } else if ([key isEqualToString:@"name"]) {
+        _sort = 986;
+    } else if ([key isEqualToString:@"class"]) {
+        _sort = 985;
+    } else if ([key isEqualToString:@"key"]) {
+        _sort = 984;
+    }
+    
+    
     return _sort;
 }
 

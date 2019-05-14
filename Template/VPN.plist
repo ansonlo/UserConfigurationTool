@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>desc</key>
+	<dict>
+		<key>key</key>
+		<string>唯一标识</string>
+		<key>class</key>
+		<string>对应的类名</string>
+		<key>name</key>
+		<string>提供商</string>
+		<key>host</key>
+		<string>VPN地址</string>
+		<key>port</key>
+		<string>VPN端口</string>
+		<key>userId</key>
+		<string>用户名称</string>
+		<key>password</key>
+		<string>验证密码</string>
+	</dict>
+	<key>value</key>
+	<dict>
+		<key>key</key>
+		<string>Sangfor</string>
+		<key>class</key>
+		<string>Sangfor_V1</string>
+		<key>name</key>
+		<string>深信服</string>
+		<key>host</key>
+		<string></string>
+		<key>port</key>
+		<integer>0</integer>
+		<key>userId</key>
+		<string></string>
+		<key>password</key>
+		<string></string>
+	</dict>
+</dict>
+</plist>

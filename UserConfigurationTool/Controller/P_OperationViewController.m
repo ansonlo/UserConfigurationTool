@@ -27,9 +27,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.toolbar.delegate = self;
-    NSURL *propertyListURL = [[NSBundle mainBundle].bundleURL URLByAppendingPathComponent:@"Contents/Info.plist"];
-    [self __loadPlistData:propertyListURL];
-    
+    // 新建空白
+    [self newDocument:nil];
 }
 
 
@@ -110,9 +109,24 @@
     }
 }
 
+#pragma mark - MENU
 - (void)newDocument:(id)sender
 {
     NSURL *propertyListURL = [[NSBundle mainBundle] URLForResource:@"Config" withExtension:@"plist"];
+    if (propertyListURL) {
+        [self __loadPlistData:propertyListURL];
+    }
+}
+- (void)newMrlPlist:(id)sender
+{
+    NSURL *propertyListURL = [[NSBundle mainBundle] URLForResource:@"MRL" withExtension:@"plist"];
+    if (propertyListURL) {
+        [self __loadPlistData:propertyListURL];
+    }
+}
+- (void)newVpnPlist:(id)sender
+{
+    NSURL *propertyListURL = [[NSBundle mainBundle] URLForResource:@"VPN" withExtension:@"plist"];
     if (propertyListURL) {
         [self __loadPlistData:propertyListURL];
     }
