@@ -192,6 +192,7 @@
     _savePlistUrl = nil;
     P_Data *p = [P_Data rootWithPlistUrl:plistUrl];
     if (p) {
+        [self.toolbar p_setControlSelected:NO addButtonEnabled:NO deleteButtonEnabled:NO];
         _plistUrl = plistUrl;
         if ([plistUrl.lastPathComponent.pathExtension isEqualToString:PlistGlobalConfig.encryptFileExtension]) {
             _savePlistUrl = plistUrl;
@@ -234,6 +235,7 @@
 #pragma mark - NSOutlineViewDelegate
 - (BOOL)selectionShouldChangeInOutlineView:(NSOutlineView *)outlineView
 {
+    [self.toolbar p_setControlSelected:NO addButtonEnabled:NO deleteButtonEnabled:NO];
     return YES;
 }
 
