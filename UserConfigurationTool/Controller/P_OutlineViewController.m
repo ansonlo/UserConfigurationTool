@@ -188,7 +188,10 @@
     id item = [outlineView itemAtRow:outlineView.selectedRow];
     
     /** 排序&刷新 */
-    [self.root sortWithSortDescriptors:outlineView.sortDescriptors recursively:YES];
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sort" ascending:NO selector:@selector(compare:)];
+    NSMutableArray *sortDescriptors = [outlineView.sortDescriptors mutableCopy];
+    [sortDescriptors addObject:sort];
+    [self.root sortWithSortDescriptors:sortDescriptors recursively:YES];
     [self.outlineView reloadItem:nil reloadChildren:YES];
     
     /** 重置选中对象的视图 */
