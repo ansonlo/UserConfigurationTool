@@ -17,7 +17,7 @@
 		<key>appInHost</key>
 		<string>访问应用服务器的host【必填】</string>
 		<key>VPNFile</key>
-		<string>指向VPN配置文件名称（vpn1.plist,vpn2.plist），关联配置文件读取信息，多个配置文件使用逗号(,)隔开</string>
+		<string>指向VPN配置文件名称（vpn1,vpn2），关联配置文件读取信息，多个配置文件使用逗号(,)隔开</string>
 		<key>VPNDefaultFile</key>
 		<string>vpn2.plist，默认显示的配置文件，必须在VPNFile内包含， 否则默认为第一个文件</string>
 		<key>Server_Key(服务器属性，可与网络同步)</key>
