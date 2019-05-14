@@ -380,7 +380,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [self endEditing];
     
     NSAssert(item != nil, @"Item is nil.");
-    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    NSAssert([self rowForItem:item] != -1, @"Item is not in the list.");
     
     P_Data *new_p = newItem;
     P_Data *p = item;
@@ -488,7 +488,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [self endEditing];
     
     NSAssert(item != nil, @"Item is nil.");
-    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    NSAssert([self rowForItem:item] != -1, @"Item is not in the list.");
     
     P_Data *p = item;
     
@@ -542,7 +542,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [self endEditing];
     
     NSAssert(item != nil, @"Item is nil.");
-    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    NSAssert([self rowForItem:item] != -1, @"Item is not in the list.");
     
     P_Data *new_p = newItem;
     P_Data *p = item;
@@ -571,7 +571,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
 {
     NSAssert(item != nil, @"Item is nil.");
-    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    NSAssert([self rowForItem:item] != -1, @"Item is not in the list.");
     
     P_Data *p = item;
     if([p.key isEqualToString:key])
@@ -604,7 +604,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *_Nullable)childDatas ofItem:(id)item
 {
     NSAssert(item != nil, @"Item is nil.");
-    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    NSAssert([self rowForItem:item] != -1, @"Item is not in the list.");
     
     P_Data *p = item;
     if([p.type isEqualToString:type])
@@ -638,7 +638,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
 {
     NSAssert(item != nil, @"Item is nil.");
-    NSAssert([self rowForItem:item], @"Item is not in the list.");
+    NSAssert([self rowForItem:item] != -1, @"Item is not in the list.");
     
     P_Data *p = item;
     if ([p.valueDesc isEqual: value]) {

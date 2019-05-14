@@ -8,6 +8,7 @@
 
 #import "P_Data.h"
 #import <AESCrypt/AESCrypt.h>
+#import "P_Config.h"
 
 @interface P_Data ()
 
@@ -22,6 +23,8 @@
 @property (nonatomic, assign) P_Data_OperationType operation;
 /** 必填 */
 @property (nonatomic, assign) BOOL requested;
+/** 排序 */
+@property (nonatomic, assign) int sort;
 
 @end
 
@@ -44,15 +47,26 @@
 + (instancetype)rootWithPlistUrl:(NSURL *)plistUrl
 {
     NSData *data = [NSData dataWithContentsOfURL:plistUrl];
-    if ([plistUrl.lastPathComponent.pathExtension isEqualToString:PlistGlobalConfig.encryptFileExtension]) {
-        data = [AESCrypt encrypt]->decrypt(data);
+    if (data) {    
+        if ([plistUrl.lastPathComponent.pathExtension isEqualToString:PlistGlobalConfig.encryptFileExtension]) {
+            data = [AESCrypt encrypt]->decrypt(data);
+        }
     }
-    id obj = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    id obj = nil;
+    if (data) {
+        obj = [NSPropertyListSerialization propertyListWithData:data options:0 format:nil error:NULL];
+    }
     P_Data *p = nil;
     if ([obj isKindOfClass:[NSDictionary class]] || [obj isKindOfClass:[NSArray class]]) {
         p = [[[self class] alloc] initWithPlistKey:@"Root" value:obj];
         p.editable ^= P_Data_Editable_Key;
         p.operation = P_Data_Operation_Insert;
+        
+        /** 排序key */
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sort" ascending:NO selector:@selector(compare:)];
+        NSSortDescriptor *sortKey = [NSSortDescriptor sortDescriptorWithKey:@"key" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+        [p sortWithSortDescriptors:@[sort, sortKey] recursively:YES];
+        
     } else {
         NSLog(@"The plistUrl is not a plist file url.");
     }
@@ -63,6 +77,9 @@
 {
     self = [self init];
     if (self) {
+        /** 特别排序 */
+        _sort = P_SortSpecialKey(key);
+        
         _key = key;
         _value = value;
         if ([value isKindOfClass:[NSDictionary class]]) {
@@ -101,8 +118,15 @@
             id value = plistData[key];
             P_Data *p = [[[self class] alloc] initWithPlistKey:key value:value];
             if (p) {
-                p.parentData = self;
                 [childDatas addObject:p];
+                p.parentData = self;
+                P_Config *c = [[P_Config config] compareData:p];
+                if (c) {
+                    P_Data *tmp_p = c.data;
+                    p.operation = tmp_p.operation;
+                    p.editable = tmp_p.editable;
+                    p.requested = tmp_p.requested;
+                }
             }
         }
     } else if ([contents isKindOfClass:[NSArray class]]) {
@@ -112,8 +136,15 @@
             id value = plistData[i];
             P_Data *p = [[[self class] alloc] initWithPlistKey:@"" value:value];
             if (p) {
-                p.parentData = self;
                 [childDatas addObject:p];
+                p.parentData = self;
+                P_Config *c = [[P_Config config] compareData:p];
+                if (c) {
+                    P_Data *tmp_p = c.data;
+                    p.operation = tmp_p.operation;
+                    p.editable = tmp_p.editable;
+                    p.requested = tmp_p.requested;
+                }
             }
         }
     }
@@ -298,6 +329,23 @@
 - (BOOL)containsChildrenAndWithOutSelfWithKey:(NSString*)key
 {
     return [self.parentData.m_childDatas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.key == %@ && self != %@", key, self]].count > 0;
+}
+
+- (NSArray <P_Data *> *)filteredChildrenWithString:(NSString*)string
+{
+    NSMutableArray <P_Data *> *m_list = [NSMutableArray arrayWithCapacity:1];
+    
+    if ([self.key.lowercaseString containsString:string.lowercaseString] || [self.valueDesc.lowercaseString isEqualToString:string.lowercaseString]) {
+        [m_list addObject:self];
+    }
+    NSArray *tmpArr = nil;
+    for (P_Data *p in self.m_childDatas) {
+        tmpArr = [p filteredChildrenWithString:string];
+        if (tmpArr) {
+            [m_list addObjectsFromArray:tmpArr];
+        }
+    }
+    return m_list.count ? [m_list copy] : nil;
 }
 
 #pragma mark - conver to plist

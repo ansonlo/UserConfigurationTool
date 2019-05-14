@@ -7,14 +7,10 @@
 //
 
 #import "P_OperationViewController.h"
-#import "P_Data.h"
-#import "P_Data+P_Exten.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface P_OutlineViewController : P_OperationViewController
-
-@property (nonatomic, readonly) P_Data *root;
 
 @end
 

@@ -60,10 +60,28 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="File" id="bib-Uj-vzu">
                                     <items>
-                                        <menuItem title="New" keyEquivalent="n" id="Was-JA-tGl">
-                                            <connections>
-                                                <action selector="newDocument:" target="Ady-hI-5gd" id="4Si-XN-c54"/>
-                                            </connections>
+                                        <menuItem title="New" id="Was-JA-tGl">
+                                            <menu key="submenu" id="uWd-oi-25n">
+                                                <items>
+                                                    <menuItem title="Plist" keyEquivalent="n" id="4R2-Ri-AyO" userLabel="Plist">
+                                                        <connections>
+                                                            <action selector="newDocument:" target="Ady-hI-5gd" id="U8L-qa-6Nd"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="MrlPlist" id="xQQ-TR-rKw" userLabel="MrlPlist">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="newMrlPlist:" target="Ady-hI-5gd" id="yZX-87-pgH"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="VPN" id="tYR-av-x43" userLabel="VPN">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="newVpnPlist:" target="Ady-hI-5gd" id="zNb-l8-vFl"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
                                         </menuItem>
                                         <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                             <connections>
@@ -727,7 +745,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="openPlistFileAction:" target="XfG-lQ-9wD" id="gsO-I6-4EX"/>
+                                            <action selector="openAction:" target="whW-ah-oIr" id="HfF-uo-IhA"/>
                                         </connections>
                                     </button>
                                     <button toolTip="重置" translatesAutoresizingMaskIntoConstraints="NO" id="rBm-bc-8aN">
@@ -741,7 +759,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="resetAction:" target="XfG-lQ-9wD" id="TIF-ii-a4l"/>
+                                            <action selector="resetAction:" target="whW-ah-oIr" id="dRf-dR-hup"/>
                                         </connections>
                                     </button>
                                     <button toolTip="添加" translatesAutoresizingMaskIntoConstraints="NO" id="IiG-wE-b77">
@@ -755,7 +773,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="addAction:" target="XfG-lQ-9wD" id="bBl-Ls-qdE"/>
+                                            <action selector="addAction:" target="whW-ah-oIr" id="Kek-he-2yF"/>
                                         </connections>
                                     </button>
                                     <button toolTip="删除" translatesAutoresizingMaskIntoConstraints="NO" id="fom-b4-SMA">
@@ -769,7 +787,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="removeAction:" target="XfG-lQ-9wD" id="rTA-Kd-3Nh"/>
+                                            <action selector="removeAction:" target="whW-ah-oIr" id="3Zh-AI-h5C"/>
                                         </connections>
                                     </button>
                                     <button toolTip="保存" translatesAutoresizingMaskIntoConstraints="NO" id="3CL-dI-jFO">
@@ -783,32 +801,7 @@ CA
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="createPlistAction:" target="XfG-lQ-9wD" id="dfE-1y-4z8"/>
-                                        </connections>
-                                    </button>
-                                    <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I2m-Zg-0oG">
-                                        <rect key="frame" x="414" y="11" width="246" height="22"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="246" id="fsr-QI-gLF"/>
-                                        </constraints>
-                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="kaT-6M-6bp">
-                                            <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        </searchFieldCell>
-                                        <connections>
-                                            <outlet property="delegate" destination="XfG-lQ-9wD" id="c1A-CN-Qw1"/>
-                                        </connections>
-                                    </searchField>
-                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i5b-re-dVJ">
-                                        <rect key="frame" x="336" y="5" width="72" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="square" title="Done" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="n8h-s0-jWC">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="endSearchAction:" target="XfG-lQ-9wD" id="Kbf-En-5S1"/>
+                                            <action selector="saveAction:" target="whW-ah-oIr" id="nvA-ko-xKM"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -820,13 +813,15 @@ CA
                                     <constraint firstAttribute="height" constant="44" id="RpC-eX-kNG"/>
                                     <constraint firstItem="IiG-wE-b77" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="Tkz-iy-tG3"/>
                                     <constraint firstItem="rBm-bc-8aN" firstAttribute="leading" secondItem="alq-ha-xSF" secondAttribute="trailing" constant="40" id="Tqf-eT-iZM"/>
-                                    <constraint firstItem="I2m-Zg-0oG" firstAttribute="centerY" secondItem="3CL-dI-jFO" secondAttribute="centerY" id="WsD-mf-WHh"/>
                                     <constraint firstItem="fom-b4-SMA" firstAttribute="leading" secondItem="IiG-wE-b77" secondAttribute="trailing" constant="20" id="bRL-Aa-Loz"/>
-                                    <constraint firstItem="3CL-dI-jFO" firstAttribute="leading" secondItem="I2m-Zg-0oG" secondAttribute="trailing" constant="8" symbolic="YES" id="de2-mw-jrR"/>
                                     <constraint firstItem="alq-ha-xSF" firstAttribute="leading" secondItem="whW-ah-oIr" secondAttribute="leading" constant="20" id="hCh-Ua-Mcn"/>
                                     <constraint firstItem="rBm-bc-8aN" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="t9J-sW-xGc"/>
                                     <constraint firstItem="fom-b4-SMA" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="xfa-TR-8zO"/>
                                 </constraints>
+                                <connections>
+                                    <outlet property="minusButton" destination="fom-b4-SMA" id="h9q-FH-mpl"/>
+                                    <outlet property="plusButton" destination="IiG-wE-b77" id="b3e-c3-Mvt"/>
+                                </connections>
                             </customView>
                             <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gz0-Cc-DAE">
                                 <rect key="frame" x="0.0" y="0.0" width="720" height="436"/>
@@ -856,7 +851,7 @@ CA
                                                     <sortDescriptor key="sortDescriptorPrototype" selector="localizedCaseInsensitiveCompare:" sortKey="key"/>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
-                                                        <tableCellView identifier="P_KeyCell" id="Uum-ob-r42" customClass="P_PropertyList2ButtonCellView">
+                                                        <tableCellView identifier="P_ComboKeyCell" id="Uum-ob-r42" customClass="P_PropertyList2ButtonCellView">
                                                             <rect key="frame" x="1" y="1" width="240" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -915,6 +910,66 @@ CA
                                                                 <outlet property="minusButton" destination="3ty-OT-mPX" id="8kS-lX-HTY"/>
                                                                 <outlet property="plusButton" destination="hjt-pY-XuY" id="rYu-1S-Ohv"/>
                                                                 <outlet property="textField" destination="9X5-pM-AXl" id="jM7-hj-E5z"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                        <tableCellView identifier="P_KeyCell" id="4ai-pj-JG6" customClass="P_PropertyList2ButtonCellView">
+                                                            <rect key="frame" x="1" y="21" width="240" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nzF-lG-PVi">
+                                                                    <rect key="frame" x="227" y="3" width="11" height="11"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="11" id="rMS-1L-7er"/>
+                                                                        <constraint firstAttribute="height" constant="11" id="tgA-Up-geq"/>
+                                                                    </constraints>
+                                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="minus" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="JKV-J1-OKP">
+                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="p_minusAction:" target="4ai-pj-JG6" id="PT0-6x-xpH"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ml6-eQ-IRF">
+                                                                    <rect key="frame" x="214" y="3" width="11" height="11"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="11" id="acv-5P-VQP"/>
+                                                                        <constraint firstAttribute="height" constant="11" id="ikc-Cs-rl5"/>
+                                                                    </constraints>
+                                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="plus" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="xcW-h5-fOG">
+                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="p_plusAction:" target="4ai-pj-JG6" id="AOg-qU-lUd"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eaq-uj-8JK">
+                                                                    <rect key="frame" x="4" y="2" width="236" height="14"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" id="Hl6-HE-a5S">
+                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                    <connections>
+                                                                        <outlet property="delegate" destination="4ai-pj-JG6" id="VGy-Gy-LUm"/>
+                                                                    </connections>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstAttribute="trailing" secondItem="nzF-lG-PVi" secondAttribute="trailing" constant="2" id="38e-qm-NMg"/>
+                                                                <constraint firstItem="ml6-eQ-IRF" firstAttribute="centerY" secondItem="nzF-lG-PVi" secondAttribute="centerY" id="BmZ-Ej-NII"/>
+                                                                <constraint firstItem="nzF-lG-PVi" firstAttribute="centerY" secondItem="4ai-pj-JG6" secondAttribute="centerY" id="Fdr-ov-Ghw"/>
+                                                                <constraint firstItem="nzF-lG-PVi" firstAttribute="leading" secondItem="ml6-eQ-IRF" secondAttribute="trailing" constant="2" id="Iyd-yG-cKT"/>
+                                                                <constraint firstAttribute="trailing" secondItem="eaq-uj-8JK" secondAttribute="trailing" priority="750" constant="2" id="QHH-4S-RGn"/>
+                                                                <constraint firstItem="eaq-uj-8JK" firstAttribute="centerY" secondItem="4ai-pj-JG6" secondAttribute="centerY" id="i1H-UP-Fxp"/>
+                                                                <constraint firstItem="eaq-uj-8JK" firstAttribute="leading" secondItem="4ai-pj-JG6" secondAttribute="leading" constant="6" id="nSz-QO-IWd"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="comboBoxTrailing" destination="QHH-4S-RGn" id="dl8-cl-eAP"/>
+                                                                <outlet property="minusButton" destination="nzF-lG-PVi" id="ryz-iq-XkH"/>
+                                                                <outlet property="plusButton" destination="ml6-eQ-IRF" id="CzC-qb-61K"/>
+                                                                <outlet property="textField" destination="eaq-uj-8JK" id="Rbm-Jj-rI8"/>
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
@@ -1129,10 +1184,8 @@ CA
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="minusButton" destination="fom-b4-SMA" id="WWD-a7-dPq"/>
                         <outlet property="outlineView" destination="kM5-ov-lof" id="iPR-4Y-dYg"/>
-                        <outlet property="plusButton" destination="IiG-wE-b77" id="smc-40-Fmo"/>
-                        <outlet property="searchField" destination="I2m-Zg-0oG" id="RTL-Bz-LCo"/>
+                        <outlet property="toolbar" destination="whW-ah-oIr" id="EBe-0A-IP7"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

@@ -8,16 +8,15 @@
 
 #import <Cocoa/Cocoa.h>
 #import "P_PropertyListOutlineView.h"
+#import "P_Data.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource, NSSearchFieldDelegate>
+@interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource>
 
 @property (weak) IBOutlet P_PropertyListOutlineView *outlineView;
 
-@property (weak) IBOutlet NSSearchField *searchField;
-
-
+@property (nonatomic, readonly) P_Data *root;
 @property (nonatomic, readonly) NSURL *plistUrl;
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText;

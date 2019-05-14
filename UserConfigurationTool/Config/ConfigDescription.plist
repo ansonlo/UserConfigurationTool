@@ -214,6 +214,8 @@
 		</dict>
 		<key>Vendors_Key(商户key+产品key)</key>
 		<dict>
+			<key>AppStore</key>
+			<string>苹果商店info</string>
 			<key>Baidu</key>
 			<dict>
 				<key>MapServiceKey</key>
