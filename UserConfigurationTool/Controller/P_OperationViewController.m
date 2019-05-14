@@ -74,22 +74,7 @@
     if (_savePlistUrl) {
         [self __savePlistData:_savePlistUrl];
     } else {
-        NSSavePanel *panel = [NSSavePanel savePanel];
-        [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
-        [panel setNameFieldStringValue:[@"Untitle" stringByAppendingPathExtension:PlistGlobalConfig.encryptFileExtension]];
-        [panel setMessage:@"Choose the path to save the mrlPlist"];
-        [panel setAllowsOtherFileTypes:YES];
-        [panel setAllowedFileTypes:@[@"mrlPlist"]];
-        [panel setExtensionHidden:YES];
-        [panel setCanCreateDirectories:YES];
-        [panel setAllowsOtherFileTypes:NO];
-        [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result){
-            if (result == NSModalResponseOK)
-            {
-                self.savePlistUrl = [panel URL];
-                [self createPlistAction:sender];
-            }
-        }];
+        [self saveDocumentAs:sender];
     }
 }
 
@@ -113,7 +98,22 @@
 
 - (void)saveDocumentAs:(id)sender
 {
-    NSLog(@"Save File As");
+    NSSavePanel *panel = [NSSavePanel savePanel];
+    [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
+    [panel setNameFieldStringValue:[@"Untitle" stringByAppendingPathExtension:PlistGlobalConfig.encryptFileExtension]];
+    [panel setMessage:@"Choose the path to save the mrlPlist"];
+    [panel setAllowsOtherFileTypes:YES];
+    [panel setAllowedFileTypes:@[@"mrlPlist"]];
+    [panel setExtensionHidden:YES];
+    [panel setCanCreateDirectories:YES];
+    [panel setAllowsOtherFileTypes:NO];
+    [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result){
+        if (result == NSModalResponseOK)
+        {
+            self.savePlistUrl = [panel URL];
+            [self createPlistAction:sender];
+        }
+    }];
 }
 
 #pragma mark - public
