@@ -51,6 +51,13 @@
 
 #pragma mark - overwrite
 
+- (void)didAddSubview:(NSView *)subview
+{
+    [super didAddSubview:subview];
+    [self p_updateEditButtons];
+    [self p_updatePopUpButtons];
+}
+
 - (void)updateTrackingAreas
 {
     [super updateTrackingAreas];
