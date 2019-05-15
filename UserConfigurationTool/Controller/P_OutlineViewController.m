@@ -466,6 +466,17 @@
     }
 }
 
+#pragma mark - MENU
+- (void)performFindNextAction:(id)sender
+{
+    [self _findNext:YES];
+}
+
+- (void)performFindPreviousAction:(id)sender
+{
+    [self _findNext:NO];
+}
+
 - (void)_searchNewResult:(NSString *)searchKey
 {
     [self.outlineView deselectAll:self.root];
@@ -488,6 +499,46 @@
 
 }
 
+- (void)_findNext:(BOOL)next
+{
+    NSInteger row = [self.outlineView selectedRow];
+    P_Data *p = [self.outlineView itemAtRow:row];
+    
+    [self.outlineView deselectAll:nil];
+    
+    if (p) {
+        if ([_searchData containsObject:p]) {
+            NSInteger index = [_searchData indexOfObject:p];
+            if (next) {
+                index ++;
+            } else {
+                index --;
+            }
+            if (index == _searchData.count) {
+                index = 0;
+            } else if (index < 0) {
+                index = _searchData.count - 1;
+            }
+            P_Data *nextP = [_searchData objectAtIndex:index];
+            NSInteger nextRow = [self.outlineView rowForItem:nextP];
+            
+            NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:nextRow];
+            [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
+            [self.outlineView scrollRowToVisible:nextRow];
+        }
+    } else {
+        if (next) {
+            p = [_searchData firstObject];
+        } else {
+            p = [_searchData lastObject];
+        }
+        NSInteger index = [self.outlineView rowForItem:p];
+        NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:index];
+        [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
+        [self.outlineView scrollRowToVisible:index];
+    }
+}
+
 #pragma mark - P_SearchViewDelegate
 -(void)searchView:(P_SearchView *)view didChangeSearchString:(NSString *)searchString
 {
@@ -501,34 +552,7 @@
 - (BOOL)searchView:(P_SearchView *)view doCommandBySelector:(SEL)commandSelector
 {
     if ([NSStringFromSelector(commandSelector) isEqualToString:@"insertNewline:"]) {
-        
-        NSInteger row = [self.outlineView selectedRow];
-        P_Data *p = [self.outlineView itemAtRow:row];
-        
-        [self.outlineView deselectAll:nil];
-
-        if (p) {
-            if ([_searchData containsObject:p]) {
-                NSInteger index = [_searchData indexOfObject:p];
-                index ++;
-                if (index == _searchData.count) {
-                    index = 0;
-                }
-                P_Data *nextP = [_searchData objectAtIndex:index];
-                NSInteger nextRow = [self.outlineView rowForItem:nextP];
-
-                NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:nextRow];
-                [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
-                [self.outlineView scrollRowToVisible:nextRow];
-            }
-        } else {
-            p = [_searchData firstObject];
-            NSInteger index = [self.outlineView rowForItem:p];
-            NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:index];
-            [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
-            [self.outlineView scrollRowToVisible:index];
-        }
-
+        [self _findNext:YES];
     }
     return NO;
 }

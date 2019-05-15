@@ -175,6 +175,16 @@
     [self.searchView startSearch];
 }
 
+- (void)performFindNextAction:(id)sender
+{
+    
+}
+
+- (void)performFindPreviousAction:(id)sender
+{
+    
+}
+
 #pragma mark - public
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText
