@@ -390,9 +390,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     /** willChangeNode */
     
-    [self beginUpdates];
-    
     NSInteger index;
+    
+    
     
     if([self isItemExpanded:p])
     {
@@ -401,8 +401,14 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     }
     else
     {
-        parent_p = p.parentData;
-        index = [parent_p.childDatas indexOfObject:p] + 1;
+        if (p.level == 0) { //root
+            [self expandItem:p];
+            parent_p = p;
+            index = 0;
+        } else {
+            parent_p = p.parentData;
+            index = [parent_p.childDatas indexOfObject:p] + 1;
+        }
     }
     
     if (isEmptyKey) {
@@ -442,6 +448,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
         }
     }
     
+    [self beginUpdates];
     
     [self insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:index] inParent:parent_p withAnimation:NSTableViewAnimationEffectNone];
     [parent_p insertChildData:new_p atIndex:index];
