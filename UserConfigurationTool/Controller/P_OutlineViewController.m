@@ -305,7 +305,7 @@
     }
     
     if ([_searchData containsObject:p]) {
-        [self setCell:cellView searchString:self.searchString];
+        [self setCell:cellView searchString:self.searchView.searchString];
     }
     return cellView;
 }
@@ -440,61 +440,6 @@
     [self.outlineView deleteItem:item];
 }
 
-
-#pragma mark - NSControlTextEditingDelegate
-- (void)controlTextDidChange:(NSNotification *)notification
-{
-    id obj = notification.object;
-    if ([obj isKindOfClass:[NSSearchField class]]) {
-        [self.outlineView deselectAll:self.root];
-        _searchData = nil;
-        [self.outlineView reloadItem:nil reloadChildren:YES];
-
-        NSString *searchStr = self.searchString;
-        
-        if (searchStr.length > 0) {
-            _searchData = [self.root filteredChildrenWithString:searchStr];
-            for (P_Data *obj in _searchData) {
-                if (![self.outlineView isItemExpanded:obj.parentData]) {
-                    [self.outlineView expandItem:obj.parentData expandChildren:YES];
-                }
-            }
-            [self.outlineView reloadItem:nil reloadChildren:YES];
-        }
-    }
-}
-
-- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector
-{
-    if ([control isKindOfClass:[NSSearchField class]]) {
-        if ([textView respondsToSelector:commandSelector]) {
-            if ([NSStringFromSelector(commandSelector) isEqualToString:@"insertNewline:"]) {
-                NSInteger row = [self.outlineView selectedRow];
-                NSString *searchString = [self.searchString lowercaseString];
-                for (P_Data *obj in _searchData) {
-                    if ([[obj.key lowercaseString] containsString:searchString] || [[obj.valueDesc lowercaseString] containsString:searchString]) {
-                        NSInteger index = [self.outlineView rowForItem:obj];
-                        if (index <= row) {
-                            [self.outlineView deselectRow:index];
-                            continue;
-                        } else {
-                            NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:index];
-                            [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
-                            [self.outlineView scrollRowToVisible:index];
-                            break;
-                        }
-                        
-                    }
-                }
-            }
-            return NO;
-        }
-    }
-    return [super control:control textView:textView doCommandBySelector:commandSelector];
-}
-
-
-
 #pragma mark 高亮searchString
 - (void)setCell:(P_PropertyListBasicCellView *)cell searchString:(NSString *)string
 {
@@ -518,6 +463,110 @@
         
         [newAttributedString replaceCharactersInRange:range withAttributedString:attributedString];
         cell.textField.attributedStringValue = [newAttributedString copy];
+    }
+}
+
+#pragma mark - MENU
+- (void)performFindNextAction:(id)sender
+{
+    [self _findNext:YES];
+}
+
+- (void)performFindPreviousAction:(id)sender
+{
+    [self _findNext:NO];
+}
+
+- (void)_searchNewResult:(NSString *)searchKey
+{
+    [self.outlineView deselectAll:self.root];
+    
+    _searchData = nil;
+    
+    if (searchKey.length > 0) {
+        NSMutableArray *array = @[].mutableCopy;
+        _searchData = [self.root filteredChildrenWithString:searchKey];
+        for (P_Data *obj in _searchData) {
+            [self isExpanded:obj expand:&array completeBlock:^{
+                NSArray *resluts = [array copy];
+                [resluts enumerateObjectsWithOptions:(NSEnumerationReverse) usingBlock:^(P_Data *p, NSUInteger idx, BOOL * _Nonnull stop) {
+                    [self.outlineView expandItem:p];
+                }];
+            }];
+        }
+    }
+    [self.outlineView reloadItem:nil reloadChildren:YES];
+
+}
+
+- (void)_findNext:(BOOL)next
+{
+    NSInteger row = [self.outlineView selectedRow];
+    P_Data *p = [self.outlineView itemAtRow:row];
+    
+    [self.outlineView deselectAll:nil];
+    
+    if (p) {
+        if ([_searchData containsObject:p]) {
+            NSInteger index = [_searchData indexOfObject:p];
+            if (next) {
+                index ++;
+            } else {
+                index --;
+            }
+            if (index == _searchData.count) {
+                index = 0;
+            } else if (index < 0) {
+                index = _searchData.count - 1;
+            }
+            P_Data *nextP = [_searchData objectAtIndex:index];
+            NSInteger nextRow = [self.outlineView rowForItem:nextP];
+            
+            NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:nextRow];
+            [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
+            [self.outlineView scrollRowToVisible:nextRow];
+        }
+    } else {
+        if (next) {
+            p = [_searchData firstObject];
+        } else {
+            p = [_searchData lastObject];
+        }
+        NSInteger index = [self.outlineView rowForItem:p];
+        NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:index];
+        [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
+        [self.outlineView scrollRowToVisible:index];
+    }
+}
+
+#pragma mark - P_SearchViewDelegate
+-(void)searchView:(P_SearchView *)view didChangeSearchString:(NSString *)searchString
+{
+    // 先取消调用搜索方法
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_searchNewResult:) object:nil];
+    // 0.5秒后调用搜索方法
+    [self performSelector:@selector(_searchNewResult:) withObject:searchString afterDelay:0.5];
+}
+
+
+- (BOOL)searchView:(P_SearchView *)view doCommandBySelector:(SEL)commandSelector
+{
+    if ([NSStringFromSelector(commandSelector) isEqualToString:@"insertNewline:"]) {
+        [self _findNext:YES];
+    }
+    return NO;
+}
+
+
+- (void)isExpanded:(P_Data *)p expand:(NSMutableArray **)expand completeBlock:(void(^)(void))completeBlock
+{
+    if (![self.outlineView isItemExpanded:p.parentData]) {
+        [*expand addObject:p.parentData];
+        [self isExpanded:p.parentData expand:expand completeBlock:completeBlock];
+    } else {
+        if (completeBlock) {
+            completeBlock();
+        }
     }
 }
 
