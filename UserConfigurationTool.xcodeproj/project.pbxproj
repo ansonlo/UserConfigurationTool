@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05C9831D228BB1DE00D9EECB /* P_SearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 05C9831C228BB1DE00D9EECB /* P_SearchView.m */; };
 		C71439552269CD7F008D15C6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439542269CD7F008D15C6 /* AppDelegate.m */; };
 		C71439582269CD7F008D15C6 /* P_OperationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439572269CD7F008D15C6 /* P_OperationViewController.m */; };
 		C714395A2269CD80008D15C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C71439592269CD80008D15C6 /* Assets.xcassets */; };
@@ -35,6 +36,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05C9831B228BB1DE00D9EECB /* P_SearchView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_SearchView.h; sourceTree = "<group>"; };
+		05C9831C228BB1DE00D9EECB /* P_SearchView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_SearchView.m; sourceTree = "<group>"; };
 		C71439502269CD7F008D15C6 /* UserConfigurationTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UserConfigurationTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C71439532269CD7F008D15C6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C71439542269CD7F008D15C6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -95,6 +98,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05C98317228BA98D00D9EECB /* SearchView */ = {
+			isa = PBXGroup;
+			children = (
+				05C9831B228BB1DE00D9EECB /* P_SearchView.h */,
+				05C9831C228BB1DE00D9EECB /* P_SearchView.m */,
+			);
+			path = SearchView;
+			sourceTree = "<group>";
+		};
 		C71439472269CD7F008D15C6 = {
 			isa = PBXGroup;
 			children = (
@@ -165,6 +177,7 @@
 		C71439AC226EF0F8008D15C6 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				05C98317228BA98D00D9EECB /* SearchView */,
 				C71439AD226EF11C008D15C6 /* P_PropertyListOutlineView.h */,
 				C71439AE226EF11C008D15C6 /* P_PropertyListOutlineView.m */,
 				C71439B0226EF75A008D15C6 /* P_PropertyListRowView.h */,
@@ -339,6 +352,7 @@
 				C71439552269CD7F008D15C6 /* AppDelegate.m in Sources */,
 				C7BD9A1B2275877600CA3351 /* NSString+P_16Data.m in Sources */,
 				C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */,
+				05C9831D228BB1DE00D9EECB /* P_SearchView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
