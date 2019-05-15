@@ -804,15 +804,28 @@ CA
                                             <action selector="saveAction:" target="whW-ah-oIr" id="nvA-ko-xKM"/>
                                         </connections>
                                     </button>
+                                    <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GSP-KW-7Mn">
+                                        <rect key="frame" x="452" y="11" width="208" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="208" id="RD4-RA-lnd"/>
+                                        </constraints>
+                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="Zul-cO-ZFg">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </searchFieldCell>
+                                    </searchField>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="3CL-dI-jFO" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="2k0-wp-oYh"/>
+                                    <constraint firstItem="GSP-KW-7Mn" firstAttribute="centerY" secondItem="3CL-dI-jFO" secondAttribute="centerY" id="2k7-9r-NU7"/>
                                     <constraint firstItem="IiG-wE-b77" firstAttribute="leading" secondItem="rBm-bc-8aN" secondAttribute="trailing" constant="60" id="Jz3-Uj-ghT"/>
                                     <constraint firstAttribute="trailing" secondItem="3CL-dI-jFO" secondAttribute="trailing" constant="20" id="LSN-HM-VIL"/>
                                     <constraint firstItem="alq-ha-xSF" firstAttribute="centerY" secondItem="whW-ah-oIr" secondAttribute="centerY" id="RGs-1U-Gzw"/>
                                     <constraint firstAttribute="height" constant="44" id="RpC-eX-kNG"/>
                                     <constraint firstItem="IiG-wE-b77" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="Tkz-iy-tG3"/>
                                     <constraint firstItem="rBm-bc-8aN" firstAttribute="leading" secondItem="alq-ha-xSF" secondAttribute="trailing" constant="40" id="Tqf-eT-iZM"/>
+                                    <constraint firstItem="3CL-dI-jFO" firstAttribute="leading" secondItem="GSP-KW-7Mn" secondAttribute="trailing" constant="8" symbolic="YES" id="ZaF-d2-1NL"/>
                                     <constraint firstItem="fom-b4-SMA" firstAttribute="leading" secondItem="IiG-wE-b77" secondAttribute="trailing" constant="20" id="bRL-Aa-Loz"/>
                                     <constraint firstItem="alq-ha-xSF" firstAttribute="leading" secondItem="whW-ah-oIr" secondAttribute="leading" constant="20" id="hCh-Ua-Mcn"/>
                                     <constraint firstItem="rBm-bc-8aN" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="t9J-sW-xGc"/>
@@ -1185,6 +1198,7 @@ CA
                     </view>
                     <connections>
                         <outlet property="outlineView" destination="kM5-ov-lof" id="iPR-4Y-dYg"/>
+                        <outlet property="searchField" destination="GSP-KW-7Mn" id="B1j-js-g89"/>
                         <outlet property="toolbar" destination="whW-ah-oIr" id="EBe-0A-IP7"/>
                     </connections>
                 </viewController>

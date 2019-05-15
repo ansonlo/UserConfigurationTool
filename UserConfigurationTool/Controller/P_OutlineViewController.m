@@ -25,10 +25,12 @@
 
 @interface P_OutlineViewController () <P_PropertyList2ButtonCellViewDelegate>
 {
-    
+
 }
 
 @property (nonatomic, strong) NSArray <P_Data *>*dragItems;
+
+@property (nonatomic, strong) NSArray *searchData;
 
 @end
 
@@ -40,6 +42,7 @@
     // Do any additional setup after loading the view.
     /** outlineView注册操作类型 */
     [self.outlineView registerForDraggedTypes:[NSArray arrayWithObjects:self.outlineView.pasteboardType, nil]];
+    
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -301,7 +304,9 @@
         [cellView p_setControlEditable:editable];
     }
     
-    
+    if ([_searchData containsObject:p]) {
+        [self setCell:cellView searchString:self.searchString];
+    }
     return cellView;
 }
 
@@ -433,6 +438,87 @@
     id item = [self.outlineView itemAtRow:row];
     
     [self.outlineView deleteItem:item];
+}
+
+
+#pragma mark - NSControlTextEditingDelegate
+- (void)controlTextDidChange:(NSNotification *)notification
+{
+    id obj = notification.object;
+    if ([obj isKindOfClass:[NSSearchField class]]) {
+        [self.outlineView deselectAll:self.root];
+        _searchData = nil;
+        [self.outlineView reloadItem:nil reloadChildren:YES];
+
+        NSString *searchStr = self.searchString;
+        
+        if (searchStr.length > 0) {
+            _searchData = [self.root filteredChildrenWithString:searchStr];
+            for (P_Data *obj in _searchData) {
+                if (![self.outlineView isItemExpanded:obj.parentData]) {
+                    [self.outlineView expandItem:obj.parentData expandChildren:YES];
+                }
+            }
+            [self.outlineView reloadItem:nil reloadChildren:YES];
+        }
+    }
+}
+
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector
+{
+    if ([control isKindOfClass:[NSSearchField class]]) {
+        if ([textView respondsToSelector:commandSelector]) {
+            if ([NSStringFromSelector(commandSelector) isEqualToString:@"insertNewline:"]) {
+                NSInteger row = [self.outlineView selectedRow];
+                NSString *searchString = [self.searchString lowercaseString];
+                for (P_Data *obj in _searchData) {
+                    if ([[obj.key lowercaseString] containsString:searchString] || [[obj.valueDesc lowercaseString] containsString:searchString]) {
+                        NSInteger index = [self.outlineView rowForItem:obj];
+                        if (index <= row) {
+                            [self.outlineView deselectRow:index];
+                            continue;
+                        } else {
+                            NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:index];
+                            [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
+                            [self.outlineView scrollRowToVisible:index];
+                            break;
+                        }
+                        
+                    }
+                }
+            }
+            return NO;
+        }
+    }
+    return [super control:control textView:textView doCommandBySelector:commandSelector];
+}
+
+
+
+#pragma mark 高亮searchString
+- (void)setCell:(P_PropertyListBasicCellView *)cell searchString:(NSString *)string
+{
+    NSString *currentString = [cell.textField.attributedStringValue.string lowercaseString];
+    string = [string lowercaseString];
+    if (string.length > 0 && [currentString containsString:string]) {
+        NSRange range = [currentString rangeOfString:string];
+        /** 记录初始值 */
+        NSRange rangecopy = NSRangeFromString(currentString);
+        NSDictionary *currentDict = [cell.textField.attributedStringValue attributesAtIndex:0 effectiveRange:&rangecopy];
+        
+        NSMutableAttributedString *newAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:cell.textField.attributedStringValue];
+        
+        /** 改变背景颜色，字体样式 */
+        NSFont *font = [currentDict objectForKey:NSFontAttributeName];
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:currentDict];
+        [dic setValue:[NSColor yellowColor] forKey:NSBackgroundColorAttributeName];
+        [dic setValue:[NSFont boldSystemFontOfSize:font.pointSize] forKey:NSFontAttributeName];
+
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[cell.textField.attributedStringValue.string substringWithRange:range] attributes:dic];
+        
+        [newAttributedString replaceCharactersInRange:range withAttributedString:attributedString];
+        cell.textField.attributedStringValue = [newAttributedString copy];
+    }
 }
 
 @end

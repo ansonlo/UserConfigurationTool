@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) P_Data *root;
 @property (nonatomic, readonly) NSURL *plistUrl;
+@property (nonatomic, readonly) NSString *searchString;
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText;
 -(void)p_showAlertViewWith:(NSString *)InformativeText completionHandler:(void (^ __nullable)(void))handler;
