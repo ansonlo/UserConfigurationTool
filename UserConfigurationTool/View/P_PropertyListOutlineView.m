@@ -141,6 +141,37 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [self.window endEditingFor:self];
 }
 
+- (void)expandItem:(id)item
+{
+    if ([item isKindOfClass:[P_Data class]]) {
+        [self __expandItem:item];
+    } else {
+        [super expandItem:item];
+    }
+}
+
+- (BOOL)__expandItem:(P_Data *)p
+{
+    BOOL expand = NO;
+    
+    if (p == nil) {
+        return YES;
+    }
+    
+    if (![self isItemExpanded:p]) {
+        
+        expand = [self __expandItem:p.parentData];
+        
+        if (expand) {
+            [super expandItem:p];
+        }
+        
+    } else {
+        expand = YES;
+    }
+    return expand;
+}
+
 #pragma mark - NSPopUpButtonWillPopUpNotification
 - (void)popUpButtonWillPopUpNotification:(NSNotification *)notify
 {

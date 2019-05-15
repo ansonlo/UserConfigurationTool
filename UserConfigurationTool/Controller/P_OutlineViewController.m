@@ -484,15 +484,9 @@
     _searchData = nil;
     
     if (searchKey.length > 0) {
-        NSMutableArray *array = @[].mutableCopy;
         _searchData = [self.root filteredChildrenWithString:searchKey];
         for (P_Data *obj in _searchData) {
-            [self isExpanded:obj expand:&array completeBlock:^{
-                NSArray *resluts = [array copy];
-                [resluts enumerateObjectsWithOptions:(NSEnumerationReverse) usingBlock:^(P_Data *p, NSUInteger idx, BOOL * _Nonnull stop) {
-                    [self.outlineView expandItem:p];
-                }];
-            }];
+            [self.outlineView expandItem:obj];
         }
     }
     [self.outlineView reloadItem:nil reloadChildren:YES];
@@ -555,19 +549,6 @@
         [self _findNext:YES];
     }
     return NO;
-}
-
-
-- (void)isExpanded:(P_Data *)p expand:(NSMutableArray **)expand completeBlock:(void(^)(void))completeBlock
-{
-    if (![self.outlineView isItemExpanded:p.parentData]) {
-        [*expand addObject:p.parentData];
-        [self isExpanded:p.parentData expand:expand completeBlock:completeBlock];
-    } else {
-        if (completeBlock) {
-            completeBlock();
-        }
-    }
 }
 
 @end
