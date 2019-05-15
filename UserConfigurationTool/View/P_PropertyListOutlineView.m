@@ -648,7 +648,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     NSAssert([self rowForItem:item] != -1, @"Item is not in the list.");
     
     P_Data *p = item;
-    if ([p.valueDesc isEqual: value]) {
+    if ([p.value isEqual:value] || [p.valueDesc isEqual: value]) {
         return;
     }
     

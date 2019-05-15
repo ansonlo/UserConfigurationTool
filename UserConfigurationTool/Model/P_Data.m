@@ -237,6 +237,16 @@
             return PlistBoolean.N;
         }
     } else if ([self.type isEqualToString: Plist.Date]) {
+        if ([self.value isKindOfClass:[NSDate class]]) {
+            static NSDateFormatter* __dateFormatter;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                __dateFormatter = [NSDateFormatter new];
+                __dateFormatter.dateFormat = @"yyyy/M/dd HH:mm:ss";
+            });
+            
+            return [__dateFormatter stringFromDate:self.value];
+        }
         return [self.value description];
     } else if ([self.type isEqualToString: Plist.Data]) {
         if ([self.value isKindOfClass:[NSData class]]) {
@@ -335,9 +345,19 @@
 {
     NSMutableArray <P_Data *> *m_list = [NSMutableArray arrayWithCapacity:1];
     
-    if ([self.key.lowercaseString containsString:string.lowercaseString] || [self.valueDesc.lowercaseString isEqualToString:string.lowercaseString]) {
-        [m_list addObject:self];
+    // key 匹配 （Array 忽略）
+    if ([self.key.lowercaseString containsString:string.lowercaseString]) {
+        if (![self.parentData.type isEqualToString:Plist.Array]) {
+            [m_list addObject:self];
+        }
     }
+    // value 匹配 （Dictionary 忽略）
+    else if ([self.valueDesc.lowercaseString containsString:string.lowercaseString]) {
+        if (![self.type isEqualToString:Plist.Dictionary]) {
+            [m_list addObject:self];
+        }
+    }
+    
     NSArray *tmpArr = nil;
     for (P_Data *p in self.m_childDatas) {
         tmpArr = [p filteredChildrenWithString:string];
