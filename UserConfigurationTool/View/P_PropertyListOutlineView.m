@@ -714,4 +714,10 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     NSLog(@"update %@", p);
 }
 
+#pragma mark - NSTextFinderClient
+- (BOOL)allowsMultipleSelection
+{
+    return NO;
+}
+
 @end

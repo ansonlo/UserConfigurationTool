@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface P_PropertyListOutlineView : NSOutlineView
+@interface P_PropertyListOutlineView : NSOutlineView <NSTextFinderClient>
 
 @property (nonatomic, readonly) NSPasteboardType pasteboardType;
 
