@@ -19,8 +19,6 @@
 
 @property (weak) IBOutlet P_PropertyListToolbarView *toolbar;
 
-@property (nonatomic, strong) NSTextFinder *textFinder;
-
 
 @end
 
@@ -34,10 +32,6 @@
     [self newDocument:nil];
     
     self.searchView.delegate = self;
-    
-    _textFinder = [[NSTextFinder alloc] init];
-    [_textFinder setClient:self.outlineView];
-    [_textFinder setFindBarContainer:self.outlineView.enclosingScrollView];
 }
 
 
@@ -174,21 +168,6 @@
             [self savePlistAction:sender];
         }
     }];
-}
-
-- (void)performFindPanelAction:(id)sender
-{
-    [self.textFinder performAction:NSTextFinderActionShowFindInterface];
-}
-
-- (void)performFindNextAction:(id)sender
-{
-    
-}
-
-- (void)performFindPreviousAction:(id)sender
-{
-    
 }
 
 #pragma mark - public

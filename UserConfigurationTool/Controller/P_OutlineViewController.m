@@ -467,6 +467,11 @@
 }
 
 #pragma mark - MENU
+- (void)performFindPanelAction:(id)sender
+{
+    [self.searchView startSearch];
+}
+
 - (void)performFindNextAction:(id)sender
 {
     [self _findNext:YES];
