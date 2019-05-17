@@ -18,8 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<P_SearchViewDelegate>delegate;
 
-- (void)startSearch;
-
 @end
 
 @protocol P_SearchViewDelegate <NSObject>

@@ -27,14 +27,30 @@
 {
     [super awakeFromNib];
 //    NSLog(@"awakeFromNib");
-    _searchField.delegate = self;
-    _searchField.enabled = NO;
 }
 
-- (void)startSearch
+- (BOOL)becomeFirstResponder
 {
-    _searchField.enabled = YES;
-    [_searchField becomeFirstResponder];
+    BOOL rv = [super becomeFirstResponder];
+    
+    if(rv)
+    {
+        [_searchField becomeFirstResponder];
+    }
+    
+    return rv;
+}
+
+- (BOOL)resignFirstResponder
+{
+    BOOL rv = [super resignFirstResponder];
+    
+    if(rv)
+    {
+        [_searchField resignFirstResponder];
+    }
+    
+    return rv;
 }
 
 - (NSString *)searchString
@@ -57,7 +73,7 @@
 - (void)controlTextDidChange:(NSNotification *)notification
 {
     id obj = notification.object;
-    if ([obj isKindOfClass:[NSSearchField class]]) {
+    if ([obj isEqual:_searchField]) {
         if ([self.delegate respondsToSelector:@selector(searchView:didChangeSearchString:)]) {
             [self.delegate searchView:self didChangeSearchString:self.searchString];
         }

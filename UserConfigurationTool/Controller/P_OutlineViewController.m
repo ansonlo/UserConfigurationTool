@@ -469,7 +469,7 @@
 #pragma mark - MENU
 - (void)performFindPanelAction:(id)sender
 {
-    [self.searchView startSearch];
+    [self.searchView becomeFirstResponder];
 }
 
 - (void)performFindNextAction:(id)sender
