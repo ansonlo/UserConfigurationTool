@@ -32,6 +32,7 @@
     [self newDocument:nil];
     
     self.searchView.delegate = self;
+    self.outlineView.dragDelegate = self;
 }
 
 
@@ -156,9 +157,8 @@
     [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
     [panel setNameFieldStringValue:[@"Untitle" stringByAppendingPathExtension:PlistGlobalConfig.encryptFileExtension]];
     [panel setMessage:@"Choose the path to save the mrlPlist"];
-    [panel setAllowsOtherFileTypes:YES];
     [panel setAllowedFileTypes:@[@"mrlPlist"]];
-    [panel setExtensionHidden:YES];
+    [panel setExtensionHidden:NO];
     [panel setCanCreateDirectories:YES];
     [panel setAllowsOtherFileTypes:NO];
     [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result){
@@ -281,6 +281,20 @@
     P_Data *p = item;
     [self.toolbar p_setControlSelected:YES addButtonEnabled:(p.operation & P_Data_Operation_Insert) deleteButtonEnabled:(p.operation & P_Data_Operation_Delete)];
     return YES;
+}
+
+#pragma mark - NSViewDraggingDestination
+- (NSArray<NSString *> *)supportFile
+{
+    return @[@"plist", @"mrlPlist"];
+}
+
+- (void)didDragFiles:(NSArray *)files
+{
+    if (files.count > 0) {
+        NSString *filePath = [files firstObject];
+        [self __listPlistFile:filePath];
+    }
 }
 
 @end

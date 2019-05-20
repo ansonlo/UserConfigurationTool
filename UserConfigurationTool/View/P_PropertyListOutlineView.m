@@ -20,10 +20,12 @@
 
 static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfigurationTool";
 
-@interface P_PropertyListOutlineView ()
+@interface P_PropertyListOutlineView () <NSDraggingDestination>
 {
     NSUndoManager* _undoManager;
 }
+
+@property (nonatomic, assign) BOOL dragInSide;
 
 @end
 
@@ -35,7 +37,6 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     
     self.enclosingScrollView.wantsLayer = YES;
     self.enclosingScrollView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
-    
     [self setDoubleAction:@selector(doubleClick:)];
 }
 
@@ -712,6 +713,65 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     /** didChangeNode */
     
     NSLog(@"update %@", p);
+}
+
+#pragma mark - NSDraggingDestination
+// 拖放显示图标
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
+    _dragInSide = YES;
+    if (self.dragDelegate) {
+        return NSDragOperationGeneric;
+    }
+    return NSDragOperationNone;
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender {
+    _dragInSide = YES;
+    if (self.dragDelegate) {
+        return NSDragOperationGeneric;
+    }
+    return NSDragOperationNone;
+}
+
+- (void)draggingEnded:(id<NSDraggingInfo>)sender {
+    if (self.dragInSide) {
+        NSPasteboard *pasteboard = [sender draggingPasteboard];
+        NSArray *files = [pasteboard propertyListForType:NSFilenamesPboardType];
+        NSMutableArray *results = [NSMutableArray arrayWithCapacity:files.count];
+        for (NSString *filePath in files) {
+            if ([self.dragDelegate respondsToSelector:@selector(supportFile)]) {
+                NSString *pathExtension = [filePath pathExtension];
+                NSArray *array = [self.dragDelegate supportFile];
+                if ([array containsObject:pathExtension]) {
+                    [results addObject:filePath];
+                }
+            }
+        }
+        if ([self.dragDelegate respondsToSelector:@selector(didDragFiles:)]) {
+            [self.dragDelegate didDragFiles:[results copy]];
+        }
+    }
+}
+
+- (void)draggingExited:(id<NSDraggingInfo>)sender
+{
+    _dragInSide = NO;
+}
+
+// 拖放操作
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
+    NSPasteboard *pasteboard = [sender draggingPasteboard];
+    NSArray *files = [pasteboard propertyListForType:NSFilenamesPboardType];
+    for (NSString *filePath in files) {
+        if ([self.dragDelegate respondsToSelector:@selector(supportFile)]) {
+            NSString *pathExtension = [filePath pathExtension];
+            NSArray *array = [self.dragDelegate supportFile];
+            if (![array containsObject:pathExtension]) {
+                return NO;
+            }
+        }
+    }
+    return YES;
 }
 
 @end

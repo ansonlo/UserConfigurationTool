@@ -10,6 +10,8 @@
 #import "P_TypeHeader.h"
 @class P_Data;
 
+@protocol NSViewDraggingDestination;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface P_PropertyListOutlineView : NSOutlineView
@@ -27,6 +29,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView;
 - (void)updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> * _Nullable)childDatas ofItem:(id)item;
 - (void)updateValue:(id)value ofItem:(id)item withView:(BOOL)withView;
+
+@property (nonatomic, weak) id<NSViewDraggingDestination>dragDelegate;
+
+@end
+
+@protocol NSViewDraggingDestination <NSObject>
+
+- (NSArray <NSString *>*)supportFile;
+
+- (void)didDragFiles:(NSArray *)files;
 
 @end
 
