@@ -795,7 +795,7 @@ CA
                                             <searchField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Srg-SB-7pH">
                                                 <rect key="frame" x="10" y="5" width="290" height="22"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="qPC-xe-bPI">
+                                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" maximumRecents="9" id="qPC-xe-bPI">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1195,6 +1195,40 @@ CA
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <toolbar implicitIdentifier="09D11707-F4A3-4FD5-970E-AC5832E91C2B" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="vo6-kS-ipp">
+                    <allowedToolbarItems>
+                        <toolbarItem implicitItemIdentifier="E54B7BC1-7F9F-47EF-9AA2-5EF6F572320F" label="open" paletteLabel="open" tag="-1" image="NSTouchBarFolderTemplate" id="WjT-qj-hdU">
+                            <size key="minSize" width="22" height="30"/>
+                            <size key="maxSize" width="22" height="30"/>
+                        </toolbarItem>
+                        <toolbarItem implicitItemIdentifier="429DB6FC-FB37-477C-B408-5E3AF99A4BFC" label="reset" paletteLabel="reset" tag="-1" image="NSTouchBarRefreshTemplate" id="hIf-jP-4mh">
+                            <size key="minSize" width="19" height="30"/>
+                            <size key="maxSize" width="19" height="30"/>
+                        </toolbarItem>
+                        <toolbarItem implicitItemIdentifier="F474565E-4AA2-4B42-AD92-2781E56BFBC2" label="add" paletteLabel="add" tag="-1" image="NSTouchBarAddTemplate" id="2vK-yV-cjv">
+                            <size key="minSize" width="14" height="30"/>
+                            <size key="maxSize" width="14" height="30"/>
+                        </toolbarItem>
+                        <toolbarItem implicitItemIdentifier="16FA0DB4-0D48-4625-A0D0-425763B659A3" label="remove" paletteLabel="remove" tag="-1" image="NSTouchBarRemoveTemplate" id="OPX-2C-kVx">
+                            <size key="minSize" width="14" height="30"/>
+                            <size key="maxSize" width="14" height="30"/>
+                        </toolbarItem>
+                        <toolbarItem implicitItemIdentifier="F72A4FAC-6C64-414F-B0CD-5B862F4D9F6E" label="save" paletteLabel="save" tag="-1" image="NSTouchBarShareTemplate" id="Mzf-VC-9w4">
+                            <size key="minSize" width="15" height="30"/>
+                            <size key="maxSize" width="15" height="30"/>
+                        </toolbarItem>
+                        <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="rjv-XY-F8H"/>
+                    </allowedToolbarItems>
+                    <defaultToolbarItems>
+                        <toolbarItem reference="WjT-qj-hdU"/>
+                        <toolbarItem reference="hIf-jP-4mh"/>
+                        <toolbarItem reference="rjv-XY-F8H"/>
+                        <toolbarItem reference="2vK-yV-cjv"/>
+                        <toolbarItem reference="OPX-2C-kVx"/>
+                        <toolbarItem reference="rjv-XY-F8H"/>
+                        <toolbarItem reference="Mzf-VC-9w4"/>
+                    </defaultToolbarItems>
+                </toolbar>
                 <menu id="uOl-QW-3fO">
                     <items>
                         <menuItem title="Cut" id="lJ0-pv-5JW">
@@ -1277,6 +1311,11 @@ CA
         </scene>
     </scenes>
     <resources>
+        <image name="NSTouchBarAddTemplate" width="14" height="30"/>
+        <image name="NSTouchBarFolderTemplate" width="22" height="30"/>
+        <image name="NSTouchBarRefreshTemplate" width="19" height="30"/>
+        <image name="NSTouchBarRemoveTemplate" width="14" height="30"/>
+        <image name="NSTouchBarShareTemplate" width="15" height="30"/>
         <image name="add" width="32" height="32"/>
         <image name="chongzhi" width="32" height="32"/>
         <image name="dakai" width="32" height="28"/>

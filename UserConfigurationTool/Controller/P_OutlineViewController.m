@@ -467,6 +467,11 @@
 }
 
 #pragma mark - MENU
+- (void)performFindPanelAction:(id)sender
+{
+    [self.searchView becomeFirstResponder];
+}
+
 - (void)performFindNextAction:(id)sender
 {
     [self _findNext:YES];
@@ -486,7 +491,7 @@
     if (searchKey.length > 0) {
         _searchData = [self.root filteredChildrenWithString:searchKey];
         for (P_Data *obj in _searchData) {
-            [self.outlineView expandItem:obj];
+            [self.outlineView expandItem:obj.parentData];
         }
     }
     [self.outlineView reloadItem:nil reloadChildren:YES];
