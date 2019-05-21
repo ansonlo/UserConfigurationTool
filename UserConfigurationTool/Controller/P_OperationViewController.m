@@ -31,6 +31,7 @@
     // Do any additional setup after loading the view.
     self.textFinder = [[P_TextFinder alloc] initWithOutLineView:self.outlineView];
     self.toolbar.delegate = self;
+    self.outlineView.dragDelegate = self;
     // 新建空白
     [self newDocument:nil];
     
@@ -158,9 +159,8 @@
     [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
     [panel setNameFieldStringValue:[@"Untitle" stringByAppendingPathExtension:PlistGlobalConfig.encryptFileExtension]];
     [panel setMessage:@"Choose the path to save the mrlPlist"];
-    [panel setAllowsOtherFileTypes:YES];
     [panel setAllowedFileTypes:@[@"mrlPlist"]];
-    [panel setExtensionHidden:YES];
+    [panel setExtensionHidden:NO];
     [panel setCanCreateDirectories:YES];
     [panel setAllowsOtherFileTypes:NO];
     [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result){
@@ -295,5 +295,20 @@
     /** 重置搜索数据源 */
     self.textFinder.root = self.root;
 }
+
+#pragma mark - NSViewDraggingDestination
+- (NSArray<NSString *> *)supportFile
+{
+    return @[@"plist", @"mrlPlist"];
+}
+
+- (void)didDragFiles:(NSArray *)files
+{
+    if (files.count > 0) {
+        NSString *filePath = [files firstObject];
+        [self __listPlistFile:filePath];
+    }
+}
+
 
 @end

@@ -32,6 +32,7 @@
 
 @property (nonatomic, strong) NSArray *searchData;
 
+
 @end
 
 @implementation P_OutlineViewController
@@ -41,8 +42,7 @@
     
     // Do any additional setup after loading the view.
     /** outlineView注册操作类型 */
-    [self.outlineView registerForDraggedTypes:[NSArray arrayWithObjects:self.outlineView.pasteboardType, nil]];
-    
+    [self.outlineView registerForDraggedTypes:[NSArray arrayWithObjects:self.outlineView.pasteboardType, NSFilenamesPboardType, nil]];
 }
 
 - (void)setRepresentedObject:(id)representedObject {

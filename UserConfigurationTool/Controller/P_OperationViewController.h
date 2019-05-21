@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource>
+@interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource, NSViewDraggingDestination>
 
 @property (weak) IBOutlet P_PropertyListOutlineView *outlineView;
 

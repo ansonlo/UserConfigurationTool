@@ -10,11 +10,14 @@
 #import "P_TypeHeader.h"
 @class P_Data;
 
+@protocol NSViewDraggingDestination;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface P_PropertyListOutlineView : NSOutlineView
 
 @property (nonatomic, readonly) NSPasteboardType pasteboardType;
+@property (nonatomic, weak) id<NSViewDraggingDestination>dragDelegate;
 
 #pragma mark - 移动
 - (void)moveItem:(id)item toIndex:(NSUInteger)toIndex inParent:(id)parent;
@@ -27,6 +30,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView;
 - (void)updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> * _Nullable)childDatas ofItem:(id)item;
 - (void)updateValue:(id)value ofItem:(id)item withView:(BOOL)withView;
+
+@end
+
+@protocol NSViewDraggingDestination <NSObject>
+
+- (NSArray <NSString *>*)supportFile;
+
+- (void)didDragFiles:(NSArray *)files;
 
 @end
 
