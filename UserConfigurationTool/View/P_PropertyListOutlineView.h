@@ -30,4 +30,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@protocol P_PropertyListOutlineViewDelegate <NSOutlineViewDelegate>
+
+/** 调用编辑方法后触发 */
+- (void)p_propertyListOutlineView:(P_PropertyListOutlineView *)outlineView didEditable:(id)item;
+
+@end
+
 NS_ASSUME_NONNULL_END

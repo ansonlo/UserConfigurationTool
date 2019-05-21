@@ -81,9 +81,11 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     NSInteger row = [self clickedRow];
     NSInteger column = [self clickedColumn];
     // Do something...
-    P_PropertyListBasicCellView *cellView = [self viewAtColumn:column row:row makeIfNecessary:NO];
-    if ([cellView.textField acceptsFirstResponder]) {
-        [cellView.textField becomeFirstResponder];
+    if (row != -1 && column != -1) {
+        P_PropertyListBasicCellView *cellView = [self viewAtColumn:column row:row makeIfNecessary:NO];
+        if ([cellView.textField acceptsFirstResponder]) {
+            [cellView.textField becomeFirstResponder];
+        }        
     }
 }
 
@@ -120,7 +122,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 
 - (void)keyDown:(NSEvent *)event
 {
-    if (event.keyCode == kVK_Return) { //回车
+    if (event.keyCode == kVK_Return && self.selectedRow != -1) { //回车
         [self add:nil];
     } else {
         [super keyDown:event];
@@ -402,6 +404,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     /** didChangeNode */
     
     NSLog(@"move %@", item);
+    [self callDelegate:item];
 }
 
 #pragma mark - 插入值key、type、value
@@ -517,6 +520,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     }
     
     NSLog(@"insert %@", new_p);
+    [self callDelegate:new_p];
 }
 
 #pragma mark - 删除值key、type、value
@@ -570,6 +574,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     /** didChangeNode */
     
     NSLog(@"delete %@", item);
+    [self callDelegate:p];
 }
 
 #pragma mark - 更新值key、type、value
@@ -604,6 +609,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     /** didChangeNode */
     
     NSLog(@"update %@", item);
+    [self callDelegate:p];
 }
 
 - (void)updateKey:(NSString *)key ofItem:(id)item withView:(BOOL)withView
@@ -637,6 +643,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     /** didChangeNode */
     
     NSLog(@"update %@", p);
+    [self callDelegate:p];
 }
 
 - (void)updateType:(P_PlistTypeName)type value:(id)value childDatas:(NSArray <P_Data *> *_Nullable)childDatas ofItem:(id)item
@@ -671,6 +678,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     /** didChangeNode */
     
     NSLog(@"update %@", p);
+    [self callDelegate:p];
 }
 
 - (void)updateValue:(id)value ofItem:(id)item withView:(BOOL)withView
@@ -712,6 +720,15 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     /** didChangeNode */
     
     NSLog(@"update %@", p);
+    [self callDelegate:p];
+}
+
+#pragma mark - call delegate
+- (void)callDelegate:(id)item
+{
+    if ([self.delegate respondsToSelector:@selector(p_propertyListOutlineView:didEditable:)]) {
+        [(id <P_PropertyListOutlineViewDelegate>)self.delegate p_propertyListOutlineView:self didEditable:item];
+    }
 }
 
 @end

@@ -788,27 +788,6 @@ CA
                                             <action selector="saveAction:" target="whW-ah-oIr" id="nvA-ko-xKM"/>
                                         </connections>
                                     </button>
-                                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OX9-Ea-27A" customClass="P_SearchView">
-                                        <rect key="frame" x="315" y="6" width="337" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <subviews>
-                                            <searchField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Srg-SB-7pH">
-                                                <rect key="frame" x="10" y="5" width="290" height="22"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" maximumRecents="9" id="qPC-xe-bPI">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                </searchFieldCell>
-                                                <connections>
-                                                    <outlet property="delegate" destination="OX9-Ea-27A" id="1wJ-PX-wty"/>
-                                                </connections>
-                                            </searchField>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="searchField" destination="Srg-SB-7pH" id="fy9-HW-2wK"/>
-                                        </connections>
-                                    </customView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="3CL-dI-jFO" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="2k0-wp-oYh"/>
@@ -1190,7 +1169,6 @@ CA
                     </view>
                     <connections>
                         <outlet property="outlineView" destination="kM5-ov-lof" id="iPR-4Y-dYg"/>
-                        <outlet property="searchView" destination="OX9-Ea-27A" id="Ggy-BL-8R6"/>
                         <outlet property="toolbar" destination="whW-ah-oIr" id="EBe-0A-IP7"/>
                     </connections>
                 </viewController>

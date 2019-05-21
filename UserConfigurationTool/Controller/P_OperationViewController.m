@@ -19,6 +19,8 @@
 
 @property (weak) IBOutlet P_PropertyListToolbarView *toolbar;
 
+@property (nonatomic, strong) P_TextFinder *textFinder;
+
 
 @end
 
@@ -27,11 +29,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.textFinder = [[P_TextFinder alloc] initWithOutLineView:self.outlineView];
     self.toolbar.delegate = self;
     // 新建空白
     [self newDocument:nil];
     
-    self.searchView.delegate = self;
 }
 
 
@@ -170,6 +172,23 @@
     }];
 }
 
+#pragma mark - 搜索Action
+- (void)performFindPanelAction:(id)sender
+{
+    [self.textFinder performAction:NSTextFinderActionShowFindInterface];
+}
+
+- (void)performFindNextAction:(id)sender
+{
+    [self.textFinder performAction:NSTextFinderActionNextMatch];
+}
+
+- (void)performFindPreviousAction:(id)sender
+{
+    [self.textFinder performAction:NSTextFinderActionPreviousMatch];
+}
+
+
 #pragma mark - public
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText
@@ -220,6 +239,8 @@
             _savePlistUrl = plistUrl;
         }
         _root = p;
+        /** 设置搜索数据源 */
+        self.textFinder.root = p;
         
         [self.outlineView setIndentationMarkerFollowsCell:YES];
         //        [self.outlineView setIgnoresMultiClick:YES];
@@ -266,6 +287,13 @@
     P_Data *p = item;
     [self.toolbar p_setControlSelected:YES addButtonEnabled:(p.operation & P_Data_Operation_Insert) deleteButtonEnabled:(p.operation & P_Data_Operation_Delete)];
     return YES;
+}
+
+#pragma mark - P_PropertyListOutlineViewDelegate
+- (void)p_propertyListOutlineView:(P_PropertyListOutlineView *)outlineView didEditable:(id)item
+{
+    /** 重置搜索数据源 */
+    self.textFinder.root = self.root;
 }
 
 @end

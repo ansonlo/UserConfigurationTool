@@ -56,9 +56,6 @@ NS_ASSUME_NONNULL_BEGIN
 /** key是否在同级中有相同的并且排除自身 */
 - (BOOL)containsChildrenAndWithOutSelfWithKey:(NSString*)key;
 
-/** 根据关键字匹配key、value当前对象与下级对象 */
-- (NSArray <P_Data *> *)filteredChildrenWithString:(NSString*)string;
-
 #pragma mark - isEqualToP_Data
 - (BOOL)isEqualToP_Data:(P_Data *)object;
 #pragma mark - copyP_Data

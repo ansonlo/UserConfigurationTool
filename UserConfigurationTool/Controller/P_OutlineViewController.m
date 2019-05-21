@@ -304,9 +304,6 @@
         [cellView p_setControlEditable:editable];
     }
     
-    if ([_searchData containsObject:p]) {
-        [self setCell:cellView searchString:self.searchView.searchString];
-    }
     return cellView;
 }
 
@@ -440,121 +437,6 @@
     [self.outlineView deleteItem:item];
 }
 
-#pragma mark 高亮searchString
-- (void)setCell:(P_PropertyListBasicCellView *)cell searchString:(NSString *)string
-{
-    NSString *currentString = [cell.textField.attributedStringValue.string lowercaseString];
-    string = [string lowercaseString];
-    if (string.length > 0 && [currentString containsString:string]) {
-        NSRange range = [currentString rangeOfString:string];
-        /** 记录初始值 */
-        NSRange rangecopy = NSRangeFromString(currentString);
-        NSDictionary *currentDict = [cell.textField.attributedStringValue attributesAtIndex:0 effectiveRange:&rangecopy];
-        
-        NSMutableAttributedString *newAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:cell.textField.attributedStringValue];
-        
-        /** 改变背景颜色，字体样式 */
-        NSFont *font = [currentDict objectForKey:NSFontAttributeName];
-        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:currentDict];
-        [dic setValue:[NSColor yellowColor] forKey:NSBackgroundColorAttributeName];
-        [dic setValue:[NSFont boldSystemFontOfSize:font.pointSize] forKey:NSFontAttributeName];
-
-        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[cell.textField.attributedStringValue.string substringWithRange:range] attributes:dic];
-        
-        [newAttributedString replaceCharactersInRange:range withAttributedString:attributedString];
-        cell.textField.attributedStringValue = [newAttributedString copy];
-    }
-}
-
-#pragma mark - MENU
-- (void)performFindPanelAction:(id)sender
-{
-    [self.searchView becomeFirstResponder];
-}
-
-- (void)performFindNextAction:(id)sender
-{
-    [self _findNext:YES];
-}
-
-- (void)performFindPreviousAction:(id)sender
-{
-    [self _findNext:NO];
-}
-
-- (void)_searchNewResult:(NSString *)searchKey
-{
-    [self.outlineView deselectAll:self.root];
-    
-    _searchData = nil;
-    
-    if (searchKey.length > 0) {
-        _searchData = [self.root filteredChildrenWithString:searchKey];
-        for (P_Data *obj in _searchData) {
-            [self.outlineView expandItem:obj.parentData];
-        }
-    }
-    [self.outlineView reloadItem:nil reloadChildren:YES];
-
-}
-
-- (void)_findNext:(BOOL)next
-{
-    NSInteger row = [self.outlineView selectedRow];
-    P_Data *p = [self.outlineView itemAtRow:row];
-    
-    [self.outlineView deselectAll:nil];
-    
-    if (p) {
-        if ([_searchData containsObject:p]) {
-            NSInteger index = [_searchData indexOfObject:p];
-            if (next) {
-                index ++;
-            } else {
-                index --;
-            }
-            if (index == _searchData.count) {
-                index = 0;
-            } else if (index < 0) {
-                index = _searchData.count - 1;
-            }
-            P_Data *nextP = [_searchData objectAtIndex:index];
-            NSInteger nextRow = [self.outlineView rowForItem:nextP];
-            
-            NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:nextRow];
-            [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
-            [self.outlineView scrollRowToVisible:nextRow];
-        }
-    } else {
-        if (next) {
-            p = [_searchData firstObject];
-        } else {
-            p = [_searchData lastObject];
-        }
-        NSInteger index = [self.outlineView rowForItem:p];
-        NSIndexSet *willIndexSet = [NSIndexSet indexSetWithIndex:index];
-        [self.outlineView selectRowIndexes:willIndexSet byExtendingSelection:YES];
-        [self.outlineView scrollRowToVisible:index];
-    }
-}
-
-#pragma mark - P_SearchViewDelegate
--(void)searchView:(P_SearchView *)view didChangeSearchString:(NSString *)searchString
-{
-    // 先取消调用搜索方法
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_searchNewResult:) object:nil];
-    // 0.5秒后调用搜索方法
-    [self performSelector:@selector(_searchNewResult:) withObject:searchString afterDelay:0.5];
-}
-
-
-- (BOOL)searchView:(P_SearchView *)view doCommandBySelector:(SEL)commandSelector
-{
-    if ([NSStringFromSelector(commandSelector) isEqualToString:@"insertNewline:"]) {
-        [self _findNext:YES];
-    }
-    return NO;
-}
 
 @end
 

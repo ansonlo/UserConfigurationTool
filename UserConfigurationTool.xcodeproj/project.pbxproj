@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		05C9831D228BB1DE00D9EECB /* P_SearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 05C9831C228BB1DE00D9EECB /* P_SearchView.m */; };
 		C71439552269CD7F008D15C6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439542269CD7F008D15C6 /* AppDelegate.m */; };
 		C71439582269CD7F008D15C6 /* P_OperationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C71439572269CD7F008D15C6 /* P_OperationViewController.m */; };
 		C714395A2269CD80008D15C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C71439592269CD80008D15C6 /* Assets.xcassets */; };
@@ -26,6 +25,7 @@
 		C78262B2228AB2A100C5C05E /* VPN.plist in Resources */ = {isa = PBXBuildFile; fileRef = C78262AF228AB2A000C5C05E /* VPN.plist */; };
 		C78262B3228AB2A100C5C05E /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = C78262B0228AB2A000C5C05E /* Config.plist */; };
 		C78262B4228AB2A100C5C05E /* MRL.plist in Resources */ = {isa = PBXBuildFile; fileRef = C78262B1228AB2A000C5C05E /* MRL.plist */; };
+		C785B51A229247AA0072682A /* P_TextFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = C785B519229247AA0072682A /* P_TextFinder.m */; };
 		C7BD99BA226FF78500CA3351 /* NSView+P_Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */; };
 		C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD99BD226FF96900CA3351 /* P_PropertyListBasicCellView.m */; };
 		C7BD9A162272EC2600CA3351 /* AESCrypt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BD9A152272EC2600CA3351 /* AESCrypt.framework */; };
@@ -36,8 +36,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		05C9831B228BB1DE00D9EECB /* P_SearchView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_SearchView.h; sourceTree = "<group>"; };
-		05C9831C228BB1DE00D9EECB /* P_SearchView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_SearchView.m; sourceTree = "<group>"; };
 		C71439502269CD7F008D15C6 /* UserConfigurationTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UserConfigurationTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C71439532269CD7F008D15C6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C71439542269CD7F008D15C6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -73,6 +71,8 @@
 		C78262AF228AB2A000C5C05E /* VPN.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = VPN.plist; sourceTree = "<group>"; };
 		C78262B0228AB2A000C5C05E /* Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		C78262B1228AB2A000C5C05E /* MRL.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MRL.plist; sourceTree = "<group>"; };
+		C785B518229247AA0072682A /* P_TextFinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_TextFinder.h; sourceTree = "<group>"; };
+		C785B519229247AA0072682A /* P_TextFinder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_TextFinder.m; sourceTree = "<group>"; };
 		C7BD99B8226FF78500CA3351 /* NSView+P_Animation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+P_Animation.h"; sourceTree = "<group>"; };
 		C7BD99B9226FF78500CA3351 /* NSView+P_Animation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+P_Animation.m"; sourceTree = "<group>"; };
 		C7BD99BC226FF96900CA3351 /* P_PropertyListBasicCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_PropertyListBasicCellView.h; sourceTree = "<group>"; };
@@ -101,8 +101,8 @@
 		05C98317228BA98D00D9EECB /* SearchView */ = {
 			isa = PBXGroup;
 			children = (
-				05C9831B228BB1DE00D9EECB /* P_SearchView.h */,
-				05C9831C228BB1DE00D9EECB /* P_SearchView.m */,
+				C785B518229247AA0072682A /* P_TextFinder.h */,
+				C785B519229247AA0072682A /* P_TextFinder.m */,
 			);
 			path = SearchView;
 			sourceTree = "<group>";
@@ -348,11 +348,11 @@
 				C71439B9226EFCAE008D15C6 /* P_PropertyListPopUpButtonCellView.m in Sources */,
 				C7BD9A282275A9D000CA3351 /* P_Config.m in Sources */,
 				C71439C0226F06EE008D15C6 /* P_PropertyListDatePicker.mm in Sources */,
+				C785B51A229247AA0072682A /* P_TextFinder.m in Sources */,
 				C71439C3226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m in Sources */,
 				C71439552269CD7F008D15C6 /* AppDelegate.m in Sources */,
 				C7BD9A1B2275877600CA3351 /* NSString+P_16Data.m in Sources */,
 				C7BD99BE226FF96900CA3351 /* P_PropertyListBasicCellView.m in Sources */,
-				05C9831D228BB1DE00D9EECB /* P_SearchView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
