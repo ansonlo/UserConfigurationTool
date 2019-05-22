@@ -31,6 +31,19 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 
 @implementation P_PropertyListOutlineView
 
+@dynamic delegate;
+
+- (void)setDelegate:(id<P_PropertyListOutlineViewDelegate>)delegate
+{
+    super.delegate = delegate;
+}
+
+- (id<P_PropertyListOutlineViewDelegate>)delegate
+{
+    id curDelegate = super.delegate;
+    return curDelegate;
+}
+
 - (void)awakeFromNib
 {
     [super awakeFromNib];
@@ -728,7 +741,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (void)callDelegate:(id)item
 {
     if ([self.delegate respondsToSelector:@selector(p_propertyListOutlineView:didEditable:)]) {
-        [(id <P_PropertyListOutlineViewDelegate>)self.delegate p_propertyListOutlineView:self didEditable:item];
+        [self.delegate p_propertyListOutlineView:self didEditable:item];
     }
 }
 
@@ -736,7 +749,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 // 拖放显示图标
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
     _dragInSide = YES;
-    if (self.dragDelegate) {
+    if (self.delegate) {
         return NSDragOperationGeneric;
     }
     return NSDragOperationNone;
@@ -744,7 +757,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 
 - (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender {
     _dragInSide = YES;
-    if (self.dragDelegate) {
+    if (self.delegate) {
         return NSDragOperationGeneric;
     }
     return NSDragOperationNone;
@@ -756,16 +769,16 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
         NSArray *files = [pasteboard propertyListForType:NSFilenamesPboardType];
         NSMutableArray *results = [NSMutableArray arrayWithCapacity:files.count];
         for (NSString *filePath in files) {
-            if ([self.dragDelegate respondsToSelector:@selector(supportFile)]) {
+            if ([self.delegate respondsToSelector:@selector(p_propertyListOutlineViewSupportFileExtension:)]) {
                 NSString *pathExtension = [filePath pathExtension];
-                NSArray *array = [self.dragDelegate supportFile];
+                NSArray *array = [self.delegate p_propertyListOutlineViewSupportFileExtension:self];
                 if ([array containsObject:pathExtension]) {
                     [results addObject:filePath];
                 }
             }
         }
-        if ([self.dragDelegate respondsToSelector:@selector(didDragFiles:)]) {
-            [self.dragDelegate didDragFiles:[results copy]];
+        if ([self.delegate respondsToSelector:@selector(p_propertyListOutlineView:didDragFiles:)]) {
+            [self.delegate p_propertyListOutlineView:self didDragFiles:[results copy]];
         }
     }
 }
@@ -780,9 +793,9 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     NSPasteboard *pasteboard = [sender draggingPasteboard];
     NSArray *files = [pasteboard propertyListForType:NSFilenamesPboardType];
     for (NSString *filePath in files) {
-        if ([self.dragDelegate respondsToSelector:@selector(supportFile)]) {
+        if ([self.delegate respondsToSelector:@selector(p_propertyListOutlineViewSupportFileExtension:)]) {
             NSString *pathExtension = [filePath pathExtension];
-            NSArray *array = [self.dragDelegate supportFile];
+            NSArray *array = [self.delegate p_propertyListOutlineViewSupportFileExtension:self];
             if (![array containsObject:pathExtension]) {
                 return NO;
             }

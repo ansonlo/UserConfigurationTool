@@ -8,16 +8,31 @@
 
 #import <Cocoa/Cocoa.h>
 #import "P_TypeHeader.h"
-@class P_Data;
+@class P_Data, P_PropertyListOutlineView;
 
 @protocol NSViewDraggingDestination;
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol P_PropertyListOutlineViewDelegate <NSOutlineViewDelegate>
+
+/** 调用编辑方法后触发 */
+- (void)p_propertyListOutlineView:(P_PropertyListOutlineView *)outlineView didEditable:(id)item;
+
+/** 允许拖拽文件加载的后缀 */
+- (NSArray <NSString *>*)p_propertyListOutlineViewSupportFileExtension:(P_PropertyListOutlineView *)outlineView;
+
+/** 拖拽成功的文件路径 */
+- (void)p_propertyListOutlineView:(P_PropertyListOutlineView *)outlineView didDragFiles:(NSArray <NSString *>*)files;
+
+@end
+
+
 @interface P_PropertyListOutlineView : NSOutlineView
 
+@property (nullable, weak) id <P_PropertyListOutlineViewDelegate> delegate;
+
 @property (nonatomic, readonly) NSPasteboardType pasteboardType;
-@property (nonatomic, weak) id<NSViewDraggingDestination>dragDelegate;
 
 #pragma mark - 移动
 - (void)moveItem:(id)item toIndex:(NSUInteger)toIndex inParent:(id)parent;
@@ -33,19 +48,5 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol NSViewDraggingDestination <NSObject>
-
-- (NSArray <NSString *>*)supportFile;
-
-- (void)didDragFiles:(NSArray *)files;
-
-@end
-
-@protocol P_PropertyListOutlineViewDelegate <NSOutlineViewDelegate>
-
-/** 调用编辑方法后触发 */
-- (void)p_propertyListOutlineView:(P_PropertyListOutlineView *)outlineView didEditable:(id)item;
-
-@end
 
 NS_ASSUME_NONNULL_END

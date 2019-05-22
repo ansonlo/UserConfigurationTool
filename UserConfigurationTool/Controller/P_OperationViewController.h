@@ -8,14 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 #import "P_PropertyListOutlineView.h"
+#import "P_PropertyListToolbarView.h"
 #import "P_Data.h"
 #import "P_TextFinder.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource, NSViewDraggingDestination>
+@interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource, P_PropertyListOutlineViewDelegate, P_PropertyListToolbarViewDelegate>
 
 @property (weak) IBOutlet P_PropertyListOutlineView *outlineView;
+@property (weak) IBOutlet P_PropertyListToolbarView *toolbar;
 
 /** 搜索框架 */
 @property (nonatomic, readonly) P_TextFinder *textFinder;

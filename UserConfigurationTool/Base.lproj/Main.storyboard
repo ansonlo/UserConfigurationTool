@@ -690,7 +690,7 @@ CA
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                    <window key="window" title="MRLPlist" allowsToolTipsWhenApplicationIsInactive="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="720" height="480"/>
@@ -705,7 +705,7 @@ CA
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="61" y="295"/>
         </scene>
         <!--Outline View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -715,106 +715,14 @@ CA
                         <rect key="frame" x="0.0" y="0.0" width="720" height="480"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="whW-ah-oIr" customClass="P_PropertyListToolbarView">
-                                <rect key="frame" x="0.0" y="436" width="720" height="44"/>
-                                <subviews>
-                                    <button toolTip="打开" translatesAutoresizingMaskIntoConstraints="NO" id="alq-ha-xSF">
-                                        <rect key="frame" x="20" y="6" width="32" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="32" id="AYo-R6-Cwf"/>
-                                            <constraint firstAttribute="width" secondItem="alq-ha-xSF" secondAttribute="height" multiplier="1:1" id="xSE-gD-4cV"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="dakai" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="a3s-bJ-s1U">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="openAction:" target="whW-ah-oIr" id="HfF-uo-IhA"/>
-                                        </connections>
-                                    </button>
-                                    <button toolTip="重置" translatesAutoresizingMaskIntoConstraints="NO" id="rBm-bc-8aN">
-                                        <rect key="frame" x="92" y="6" width="32" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="rBm-bc-8aN" secondAttribute="height" multiplier="1:1" id="UCc-bi-wlm"/>
-                                            <constraint firstAttribute="width" constant="32" id="UEj-L8-Sv4"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="chongzhi" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="1U5-lU-U11">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="resetAction:" target="whW-ah-oIr" id="dRf-dR-hup"/>
-                                        </connections>
-                                    </button>
-                                    <button toolTip="添加" translatesAutoresizingMaskIntoConstraints="NO" id="IiG-wE-b77">
-                                        <rect key="frame" x="184" y="6" width="32" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="IiG-wE-b77" secondAttribute="height" multiplier="1:1" id="Uxb-oU-tn4"/>
-                                            <constraint firstAttribute="width" constant="32" id="qnR-eA-Miu"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="add" imagePosition="only" alignment="center" enabled="NO" imageScaling="proportionallyUpOrDown" inset="2" id="bgk-la-ehn">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="addAction:" target="whW-ah-oIr" id="Kek-he-2yF"/>
-                                        </connections>
-                                    </button>
-                                    <button toolTip="删除" translatesAutoresizingMaskIntoConstraints="NO" id="fom-b4-SMA">
-                                        <rect key="frame" x="236" y="6" width="32" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="fom-b4-SMA" secondAttribute="height" multiplier="1:1" id="J7U-6E-kbz"/>
-                                            <constraint firstAttribute="width" constant="32" id="aCy-6I-VZs"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="remove" imagePosition="only" alignment="center" enabled="NO" imageScaling="proportionallyUpOrDown" inset="2" id="sjj-fn-eeK">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="removeAction:" target="whW-ah-oIr" id="3Zh-AI-h5C"/>
-                                        </connections>
-                                    </button>
-                                    <button toolTip="保存" translatesAutoresizingMaskIntoConstraints="NO" id="3CL-dI-jFO">
-                                        <rect key="frame" x="668" y="6" width="32" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="3CL-dI-jFO" secondAttribute="height" multiplier="1:1" id="Bo6-yz-W31"/>
-                                            <constraint firstAttribute="width" constant="32" id="W1K-up-tn3"/>
-                                        </constraints>
-                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="shengcheng" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="etH-8k-Evr">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="saveAction:" target="whW-ah-oIr" id="nvA-ko-xKM"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="3CL-dI-jFO" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="2k0-wp-oYh"/>
-                                    <constraint firstItem="IiG-wE-b77" firstAttribute="leading" secondItem="rBm-bc-8aN" secondAttribute="trailing" constant="60" id="Jz3-Uj-ghT"/>
-                                    <constraint firstAttribute="trailing" secondItem="3CL-dI-jFO" secondAttribute="trailing" constant="20" id="LSN-HM-VIL"/>
-                                    <constraint firstItem="alq-ha-xSF" firstAttribute="centerY" secondItem="whW-ah-oIr" secondAttribute="centerY" id="RGs-1U-Gzw"/>
-                                    <constraint firstAttribute="height" constant="44" id="RpC-eX-kNG"/>
-                                    <constraint firstItem="IiG-wE-b77" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="Tkz-iy-tG3"/>
-                                    <constraint firstItem="rBm-bc-8aN" firstAttribute="leading" secondItem="alq-ha-xSF" secondAttribute="trailing" constant="40" id="Tqf-eT-iZM"/>
-                                    <constraint firstItem="fom-b4-SMA" firstAttribute="leading" secondItem="IiG-wE-b77" secondAttribute="trailing" constant="20" id="bRL-Aa-Loz"/>
-                                    <constraint firstItem="alq-ha-xSF" firstAttribute="leading" secondItem="whW-ah-oIr" secondAttribute="leading" constant="20" id="hCh-Ua-Mcn"/>
-                                    <constraint firstItem="rBm-bc-8aN" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="t9J-sW-xGc"/>
-                                    <constraint firstItem="fom-b4-SMA" firstAttribute="centerY" secondItem="alq-ha-xSF" secondAttribute="centerY" id="xfa-TR-8zO"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="minusButton" destination="fom-b4-SMA" id="h9q-FH-mpl"/>
-                                    <outlet property="plusButton" destination="IiG-wE-b77" id="b3e-c3-Mvt"/>
-                                </connections>
-                            </customView>
                             <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gz0-Cc-DAE">
-                                <rect key="frame" x="0.0" y="0.0" width="720" height="436"/>
+                                <rect key="frame" x="0.0" y="0.0" width="720" height="480"/>
                                 <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="JNl-bk-FaF">
-                                    <rect key="frame" x="0.0" y="0.0" width="720" height="436"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="720" height="480"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="JEg-JM-MTD" viewBased="YES" indentationPerLevel="16" outlineTableColumn="23s-c7-gay" id="kM5-ov-lof" customClass="P_PropertyListOutlineView">
-                                            <rect key="frame" x="0.0" y="0.0" width="720" height="411"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="720" height="455"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="2" height="3"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1159,53 +1067,62 @@ CA
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Gz0-Cc-DAE" secondAttribute="trailing" id="2ts-NB-HPK"/>
-                            <constraint firstAttribute="trailing" secondItem="whW-ah-oIr" secondAttribute="trailing" id="Ny6-LY-nUq"/>
-                            <constraint firstItem="Gz0-Cc-DAE" firstAttribute="top" secondItem="whW-ah-oIr" secondAttribute="bottom" id="YHo-VU-mEd"/>
-                            <constraint firstItem="whW-ah-oIr" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="dFe-EI-hhx"/>
                             <constraint firstAttribute="bottom" secondItem="Gz0-Cc-DAE" secondAttribute="bottom" id="eMO-iq-Ka9"/>
-                            <constraint firstItem="whW-ah-oIr" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="m4p-SE-54u"/>
                             <constraint firstItem="Gz0-Cc-DAE" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="wOa-sF-31E"/>
+                            <constraint firstItem="Gz0-Cc-DAE" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="yUX-Xn-abk"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="outlineView" destination="kM5-ov-lof" id="iPR-4Y-dYg"/>
-                        <outlet property="toolbar" destination="whW-ah-oIr" id="EBe-0A-IP7"/>
+                        <outlet property="toolbar" destination="vo6-kS-ipp" id="8df-OX-2Ym"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <toolbar implicitIdentifier="09D11707-F4A3-4FD5-970E-AC5832E91C2B" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="vo6-kS-ipp">
+                <toolbar implicitIdentifier="F16AABBB-496E-4788-8A34-57D062A52BBF" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="small" id="vo6-kS-ipp" customClass="P_PropertyListToolbarView">
                     <allowedToolbarItems>
-                        <toolbarItem implicitItemIdentifier="E54B7BC1-7F9F-47EF-9AA2-5EF6F572320F" label="open" paletteLabel="open" tag="-1" image="NSTouchBarFolderTemplate" id="WjT-qj-hdU">
-                            <size key="minSize" width="22" height="30"/>
-                            <size key="maxSize" width="22" height="30"/>
+                        <toolbarItem implicitItemIdentifier="E54B7BC1-7F9F-47EF-9AA2-5EF6F572320F" label="open" paletteLabel="open" tag="-1" image="NSTouchBarFolderTemplate" sizingBehavior="auto" id="WjT-qj-hdU">
+                            <connections>
+                                <action selector="openAction:" target="vo6-kS-ipp" id="xha-z9-Gwz"/>
+                            </connections>
                         </toolbarItem>
-                        <toolbarItem implicitItemIdentifier="429DB6FC-FB37-477C-B408-5E3AF99A4BFC" label="reset" paletteLabel="reset" tag="-1" image="NSTouchBarRefreshTemplate" id="hIf-jP-4mh">
-                            <size key="minSize" width="19" height="30"/>
-                            <size key="maxSize" width="19" height="30"/>
+                        <toolbarItem implicitItemIdentifier="429DB6FC-FB37-477C-B408-5E3AF99A4BFC" label="reset" paletteLabel="reset" tag="-1" image="NSTouchBarRefreshTemplate" sizingBehavior="auto" id="hIf-jP-4mh">
+                            <connections>
+                                <action selector="resetAction:" target="vo6-kS-ipp" id="n0r-at-L7t"/>
+                            </connections>
                         </toolbarItem>
-                        <toolbarItem implicitItemIdentifier="F474565E-4AA2-4B42-AD92-2781E56BFBC2" label="add" paletteLabel="add" tag="-1" image="NSTouchBarAddTemplate" id="2vK-yV-cjv">
-                            <size key="minSize" width="14" height="30"/>
-                            <size key="maxSize" width="14" height="30"/>
+                        <toolbarItem implicitItemIdentifier="F474565E-4AA2-4B42-AD92-2781E56BFBC2" label="add" paletteLabel="add" tag="-1" image="NSTouchBarAddTemplate" sizingBehavior="auto" id="2vK-yV-cjv">
+                            <connections>
+                                <action selector="addAction:" target="vo6-kS-ipp" id="FQh-fO-P94"/>
+                            </connections>
                         </toolbarItem>
-                        <toolbarItem implicitItemIdentifier="16FA0DB4-0D48-4625-A0D0-425763B659A3" label="remove" paletteLabel="remove" tag="-1" image="NSTouchBarRemoveTemplate" id="OPX-2C-kVx">
-                            <size key="minSize" width="14" height="30"/>
-                            <size key="maxSize" width="14" height="30"/>
+                        <toolbarItem implicitItemIdentifier="16FA0DB4-0D48-4625-A0D0-425763B659A3" label="remove" paletteLabel="remove" tag="-1" image="NSTouchBarRemoveTemplate" sizingBehavior="auto" id="OPX-2C-kVx">
+                            <connections>
+                                <action selector="removeAction:" target="vo6-kS-ipp" id="W1D-pg-fpj"/>
+                            </connections>
                         </toolbarItem>
-                        <toolbarItem implicitItemIdentifier="F72A4FAC-6C64-414F-B0CD-5B862F4D9F6E" label="save" paletteLabel="save" tag="-1" image="NSTouchBarShareTemplate" id="Mzf-VC-9w4">
-                            <size key="minSize" width="15" height="30"/>
-                            <size key="maxSize" width="15" height="30"/>
+                        <toolbarItem implicitItemIdentifier="F72A4FAC-6C64-414F-B0CD-5B862F4D9F6E" label="save" paletteLabel="save" tag="-1" image="NSTouchBarShareTemplate" sizingBehavior="auto" id="Mzf-VC-9w4">
+                            <connections>
+                                <action selector="saveAction:" target="vo6-kS-ipp" id="gfC-Db-OGy"/>
+                            </connections>
                         </toolbarItem>
                         <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="rjv-XY-F8H"/>
+                        <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="l8q-JP-ZvW"/>
                     </allowedToolbarItems>
                     <defaultToolbarItems>
                         <toolbarItem reference="WjT-qj-hdU"/>
                         <toolbarItem reference="hIf-jP-4mh"/>
-                        <toolbarItem reference="rjv-XY-F8H"/>
+                        <toolbarItem reference="l8q-JP-ZvW"/>
                         <toolbarItem reference="2vK-yV-cjv"/>
                         <toolbarItem reference="OPX-2C-kVx"/>
                         <toolbarItem reference="rjv-XY-F8H"/>
                         <toolbarItem reference="Mzf-VC-9w4"/>
                     </defaultToolbarItems>
+                    <connections>
+                        <outlet property="delegate" destination="XfG-lQ-9wD" id="L29-gM-ABJ"/>
+                        <outlet property="minusButton" destination="OPX-2C-kVx" id="BPI-DU-3KX"/>
+                        <outlet property="plusButton" destination="2vK-yV-cjv" id="t7Y-1i-pSi"/>
+                        <outlet property="window" destination="IQv-IB-iLA" id="Duw-SY-jit"/>
+                    </connections>
                 </toolbar>
                 <menu id="uOl-QW-3fO">
                     <items>
@@ -1285,7 +1202,7 @@ CA
                     </items>
                 </menu>
             </objects>
-            <point key="canvasLocation" x="75" y="1074"/>
+            <point key="canvasLocation" x="74" y="1187"/>
         </scene>
     </scenes>
     <resources>
@@ -1294,12 +1211,7 @@ CA
         <image name="NSTouchBarRefreshTemplate" width="19" height="30"/>
         <image name="NSTouchBarRemoveTemplate" width="14" height="30"/>
         <image name="NSTouchBarShareTemplate" width="15" height="30"/>
-        <image name="add" width="32" height="32"/>
-        <image name="chongzhi" width="32" height="32"/>
-        <image name="dakai" width="32" height="28"/>
         <image name="minus" width="11" height="11"/>
         <image name="plus" width="11" height="11"/>
-        <image name="remove" width="32" height="32"/>
-        <image name="shengcheng" width="32" height="32"/>
     </resources>
 </document>

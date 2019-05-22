@@ -7,17 +7,14 @@
 //
 
 #import "P_OperationViewController.h"
-#import "P_PropertyListToolbarView.h"
 
 #import "P_TypeHeader.h"
 #import "P_Data.h"
 #import "P_Data+P_Exten.h"
 
-@interface P_OperationViewController () <P_PropertyListToolbarViewDelegate>
+@interface P_OperationViewController ()
 
 @property (nonatomic, strong) NSURL *savePlistUrl;
-
-@property (weak) IBOutlet P_PropertyListToolbarView *toolbar;
 
 @property (nonatomic, strong) P_TextFinder *textFinder;
 
@@ -29,12 +26,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    /** search */
     self.textFinder = [[P_TextFinder alloc] initWithOutLineView:self.outlineView];
-    self.toolbar.delegate = self;
-    self.outlineView.dragDelegate = self;
     // 新建空白
     [self newDocument:nil];
     
+}
+
+- (void)viewDidAppear
+{
+    [super viewDidAppear];
+    if (self.view.window.toolbar == nil) {
+        self.view.window.toolbar = self.toolbar;
+    }
 }
 
 
@@ -296,13 +301,16 @@
     self.textFinder.root = self.root;
 }
 
-#pragma mark - NSViewDraggingDestination
-- (NSArray<NSString *> *)supportFile
+#pragma mark - P_PropertyListOutlineViewDelegate
+
+/** 允许拖拽文件加载的后缀 */
+- (NSArray <NSString *>*)p_propertyListOutlineViewSupportFileExtension:(P_PropertyListOutlineView *)outlineView
 {
     return @[@"plist", @"mrlPlist"];
 }
 
-- (void)didDragFiles:(NSArray *)files
+/** 拖拽成功的文件路径 */
+- (void)p_propertyListOutlineView:(P_PropertyListOutlineView *)outlineView didDragFiles:(NSArray <NSString *>*)files
 {
     if (files.count > 0) {
         NSString *filePath = [files firstObject];

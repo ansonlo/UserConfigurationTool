@@ -21,15 +21,15 @@ typedef NS_ENUM(NSUInteger, P_PropertyListToolbarButton) {
 
 @class P_PropertyListToolbarView;
 
-@protocol P_PropertyListToolbarViewDelegate <NSObject>
+@protocol P_PropertyListToolbarViewDelegate <NSToolbarDelegate>
 
 - (void)P_PropertyListToolbarView:(P_PropertyListToolbarView *)toolbar didClickButton:(P_PropertyListToolbarButton)buttonType;
 
 @end
 
-@interface P_PropertyListToolbarView : NSView
+@interface P_PropertyListToolbarView : NSToolbar
 
-@property (nonatomic, weak) id<P_PropertyListToolbarViewDelegate> delegate;
+@property (nullable, weak) id<P_PropertyListToolbarViewDelegate> delegate;
 
 - (void)p_setControlSelected:(BOOL)isSelected addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled;
 

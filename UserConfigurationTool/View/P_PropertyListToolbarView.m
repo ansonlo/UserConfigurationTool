@@ -10,18 +10,33 @@
 
 @interface P_PropertyListToolbarView ()
 
-@property (weak) IBOutlet NSButton *plusButton;
-@property (weak) IBOutlet NSButton *minusButton;
+@property (weak) IBOutlet NSToolbarItem *plusButton;
+@property (weak) IBOutlet NSToolbarItem *minusButton;
+
+@property (weak) IBOutlet NSWindow *window;
 
 @end
 
 
 @implementation P_PropertyListToolbarView
 
-- (void)drawRect:(NSRect)dirtyRect {
-    [super drawRect:dirtyRect];
-    
-    // Drawing code here.
+@dynamic delegate;
+
+- (void)setDelegate:(id<P_PropertyListToolbarViewDelegate>)delegate
+{
+    super.delegate = delegate;
+}
+
+- (id<P_PropertyListToolbarViewDelegate>)delegate
+{
+    id curDelegate = super.delegate;
+    return curDelegate;
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self p_setControlSelected:NO addButtonEnabled:NO deleteButtonEnabled:NO];
 }
 
 - (void)p_setControlSelected:(BOOL)isSelected addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled
@@ -39,7 +54,7 @@
         id delegateObj = [firstResponder performSelector:@selector(delegate)];
         if ([delegateObj isKindOfClass:[NSTextField class]]) {
             /** 对象是outlineView的成员之一 */
-            if ([(NSTextField *)delegateObj isDescendantOf:self.superview]) {
+            if ([(NSTextField *)delegateObj isDescendantOf:self.window.windowController.contentViewController.view]) {
                 [self.window endEditingFor:delegateObj];
                 return;
             }
@@ -59,7 +74,9 @@
     [self callDelegate:P_PropertyListToolbarButtonReset];
 }
 - (IBAction)addAction:(id)sender {
-    [self callDelegate:P_PropertyListToolbarButtonAdd];
+    if (self.plusButton.isEnabled) {
+        [self callDelegate:P_PropertyListToolbarButtonAdd];
+    }
 }
 - (IBAction)removeAction:(id)sender {
     [self callDelegate:P_PropertyListToolbarButtonRemove];
