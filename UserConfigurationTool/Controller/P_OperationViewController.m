@@ -111,11 +111,24 @@
     }
 }
 - (IBAction)addAction:(id)sender {
-    P_Data *p = [[P_Data alloc] init];
-    [self.outlineView insertItem:p ofItem:[self.outlineView itemAtRow:self.outlineView.selectedRow]];
+    NSInteger selectedRow = self.outlineView.selectedRow;
+    if (selectedRow == -1) {
+        selectedRow = 0;
+    }
+    id item = [self.outlineView itemAtRow:selectedRow];
+    
+    if ([self.outlineView canAddItem:item]) {
+        [self.outlineView addItem:[[P_Data alloc] init]];
+    } else {
+        [self p_showAlertViewWith:@"This row/parentRow is not allowed to add child rows."];
+    }
 }
 - (IBAction)removeAction:(id)sender {
-    [self.outlineView deleteItem:[self.outlineView itemAtRow:self.outlineView.selectedRow]];
+    if (self.outlineView.selectedRow != -1) {
+        [self.outlineView deleteItem:[self.outlineView itemAtRow:self.outlineView.selectedRow]];
+    } else {
+        [self p_showAlertViewWith:@"Please select a row."];
+    }
 }
 - (IBAction)savePlistAction:(id)sender {
     if (_savePlistUrl) {
@@ -238,7 +251,6 @@
     _savePlistUrl = nil;
     P_Data *p = [P_Data rootWithPlistUrl:plistUrl];
     if (p) {
-        [self.toolbar p_setControlSelected:NO addButtonEnabled:NO deleteButtonEnabled:NO];
         _plistUrl = plistUrl;
         if ([plistUrl.lastPathComponent.pathExtension isEqualToString:PlistGlobalConfig.encryptFileExtension]) {
             _savePlistUrl = plistUrl;
@@ -280,28 +292,12 @@
     return 0;
 }
 
-#pragma mark - NSOutlineViewDelegate
-- (BOOL)selectionShouldChangeInOutlineView:(NSOutlineView *)outlineView
-{
-    [self.toolbar p_setControlSelected:NO addButtonEnabled:NO deleteButtonEnabled:NO];
-    return YES;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
-{
-    P_Data *p = item;
-    [self.toolbar p_setControlSelected:YES addButtonEnabled:(p.operation & P_Data_Operation_Insert) deleteButtonEnabled:(p.operation & P_Data_Operation_Delete)];
-    return YES;
-}
-
 #pragma mark - P_PropertyListOutlineViewDelegate
 - (void)p_propertyListOutlineView:(P_PropertyListOutlineView *)outlineView didEditable:(id)item
 {
     /** 重置搜索数据源 */
     self.textFinder.root = self.root;
 }
-
-#pragma mark - P_PropertyListOutlineViewDelegate
 
 /** 允许拖拽文件加载的后缀 */
 - (NSArray <NSString *>*)p_propertyListOutlineViewSupportFileExtension:(P_PropertyListOutlineView *)outlineView

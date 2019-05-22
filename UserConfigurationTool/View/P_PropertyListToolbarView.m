@@ -10,9 +10,6 @@
 
 @interface P_PropertyListToolbarView ()
 
-@property (weak) IBOutlet NSToolbarItem *plusButton;
-@property (weak) IBOutlet NSToolbarItem *minusButton;
-
 @property (weak) IBOutlet NSWindow *window;
 
 @end
@@ -33,17 +30,11 @@
     return curDelegate;
 }
 
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-    [self p_setControlSelected:NO addButtonEnabled:NO deleteButtonEnabled:NO];
-}
-
-- (void)p_setControlSelected:(BOOL)isSelected addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled
-{
-    self.plusButton.enabled = isSelected && addButtonEnabled;
-    self.minusButton.enabled = isSelected && deleteButtonEnabled;
-}
+//- (void)p_setControlSelected:(BOOL)isSelected addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled
+//{
+//    self.plusButton.enabled = isSelected && addButtonEnabled;
+//    self.minusButton.enabled = isSelected && deleteButtonEnabled;
+//}
 
 - (void)callDelegate:(P_PropertyListToolbarButton)type
 {
@@ -74,9 +65,7 @@
     [self callDelegate:P_PropertyListToolbarButtonReset];
 }
 - (IBAction)addAction:(id)sender {
-    if (self.plusButton.isEnabled) {
-        [self callDelegate:P_PropertyListToolbarButtonAdd];
-    }
+    [self callDelegate:P_PropertyListToolbarButtonAdd];
 }
 - (IBAction)removeAction:(id)sender {
     [self callDelegate:P_PropertyListToolbarButtonRemove];

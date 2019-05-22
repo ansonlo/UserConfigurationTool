@@ -31,7 +31,7 @@ typedef NS_ENUM(NSUInteger, P_PropertyListToolbarButton) {
 
 @property (nullable, weak) id<P_PropertyListToolbarViewDelegate> delegate;
 
-- (void)p_setControlSelected:(BOOL)isSelected addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled;
+//- (void)p_setControlSelected:(BOOL)isSelected addButtonEnabled:(BOOL)addButtonEnabled deleteButtonEnabled:(BOOL)deleteButtonEnabled;
 
 @end
 

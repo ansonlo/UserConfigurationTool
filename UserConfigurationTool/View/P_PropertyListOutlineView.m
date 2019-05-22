@@ -90,6 +90,38 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - public
+- (BOOL)canAddItem:(id)item
+{
+    P_Data *p = item;
+    if ([self isItemExpanded:p]) {
+        /** 自身是否允许添加 */
+        return p.operation & P_Data_Operation_Insert;
+    }
+    /** 上级是否允许添加 */
+    else {
+        if (p.parentData) {
+            return p.parentData.operation & P_Data_Operation_Insert;
+        } else {
+            /** 如果没有上级，返回自身情况 */
+            return p.operation & P_Data_Operation_Insert;
+        }
+    }
+    return NO;
+}
+
+- (void)addItem:(id)p
+{
+    id item = nil;
+    NSInteger selectedRow = self.selectedRow;
+    if (selectedRow != -1) {
+        item = [self itemAtRow:selectedRow];
+    } else {
+        item = [self itemAtRow:0];
+    }
+    [self insertItem:p ofItem:item];
+}
+
 - (void)doubleClick:(id)object {
     // This gets called after following steps 1-3.
     NSInteger row = [self clickedRow];
@@ -270,11 +302,12 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (BOOL)canAdd:(NSMenuItem *)menuItem
 {
     NSInteger selectedRow = self.selectedRow;
-    if (selectedRow != -1) {
-        P_Data *p = [self itemAtRow:selectedRow];
-        return p.operation & P_Data_Operation_Insert;
+    if (selectedRow == -1) {
+        selectedRow = 0;
     }
-    return NO;
+    id item = [self itemAtRow:selectedRow];
+    
+    return [self canAdd:item];
 }
 - (BOOL)canDelete:(NSMenuItem *)menuItem
 {
@@ -313,7 +346,7 @@ static NSPasteboardType P_PropertyListPasteboardType = @"com.gzmiracle.UserConfi
 - (IBAction)add:(id)sender
 {
     P_Data *p = [[P_Data alloc] init];
-    [self insertItem:p ofItem:[self itemAtRow:self.selectedRow]];
+    [self addItem:p];
 }
 
 /** 删除 */

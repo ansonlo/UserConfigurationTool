@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) P_Data *p;
 
+- (void)p_updateEditButtons;
+
 @end
 
 NS_ASSUME_NONNULL_END

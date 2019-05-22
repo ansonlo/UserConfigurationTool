@@ -210,6 +210,9 @@
     // Query our model for the answer to this question
     P_Data *p = item;
     // We can expand items if the model tells us it is a container
+    NSInteger row = [outlineView rowForItem:item];
+    P_PropertyListRowView* rowView = [outlineView rowViewAtRow:row makeIfNecessary:NO];
+    [rowView p_updateEditButtons];
     return p.isExpandable;
 }
 
@@ -218,6 +221,9 @@
     // Query our model for the answer to this question
     P_Data *p = item;
     // We can expand items if the model tells us it is a container
+    NSInteger row = [outlineView rowForItem:item];
+    P_PropertyListRowView* rowView = [outlineView rowViewAtRow:row makeIfNecessary:NO];
+    [rowView p_updateEditButtons];
     return p.isExpandable;
 }
 

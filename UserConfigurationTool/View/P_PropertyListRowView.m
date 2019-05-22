@@ -9,6 +9,7 @@
 #import "P_PropertyListRowView.h"
 #import "P_PropertyList2ButtonCellView.h"
 #import "P_PropertyListPopUpButtonCellView.h"
+#import "P_PropertyListOutlineView.h"
 
 #import "P_Data+P_Exten.h"
 
@@ -123,8 +124,10 @@
         
         NSTableCellView *cellView = [self viewAtColumn:0];
         if ([cellView isKindOfClass:[P_PropertyList2ButtonCellView class]]) {
+
+            P_PropertyListOutlineView *outlineView = (P_PropertyListOutlineView *)self.superview;
             
-            BOOL addButtonEnabled = self.p.operation & P_Data_Operation_Insert;
+            BOOL addButtonEnabled = [outlineView canAddItem:self.p];
             BOOL deleteButtonEnabled = self.p.operation & P_Data_Operation_Delete;
             
             [(P_PropertyList2ButtonCellView *)cellView p_setShowsControlButtons:self.selected || _mouseIn addButtonEnabled:addButtonEnabled deleteButtonEnabled:deleteButtonEnabled];
