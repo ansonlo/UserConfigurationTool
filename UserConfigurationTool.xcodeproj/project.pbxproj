@@ -34,7 +34,7 @@
 		C7BD9A25227597D800CA3351 /* DefaultConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7BD9A23227597D800CA3351 /* DefaultConfig.plist */; };
 		C7BD9A282275A9D000CA3351 /* P_Config.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD9A272275A9D000CA3351 /* P_Config.m */; };
 		C7F4DE6E2296408C00598ECF /* P_WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F4DE6D2296408C00598ECF /* P_WindowController.m */; };
-		C7F4DE702296851200598ECF /* icons8-big.png in Resources */ = {isa = PBXBuildFile; fileRef = C7F4DE6F2296851200598ECF /* icons8-big.png */; };
+		C7F4DE742296949000598ECF /* UserConfigurationToolDocument.png in Resources */ = {isa = PBXBuildFile; fileRef = C7F4DE732296948F00598ECF /* UserConfigurationToolDocument.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,7 +88,7 @@
 		C7BD9A272275A9D000CA3351 /* P_Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_Config.m; sourceTree = "<group>"; };
 		C7F4DE6C2296408C00598ECF /* P_WindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_WindowController.h; sourceTree = "<group>"; };
 		C7F4DE6D2296408C00598ECF /* P_WindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_WindowController.m; sourceTree = "<group>"; };
-		C7F4DE6F2296851200598ECF /* icons8-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-big.png"; sourceTree = "<group>"; };
+		C7F4DE732296948F00598ECF /* UserConfigurationToolDocument.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UserConfigurationToolDocument.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,7 +115,6 @@
 		C71439472269CD7F008D15C6 = {
 			isa = PBXGroup;
 			children = (
-				C7F4DE6F2296851200598ECF /* icons8-big.png */,
 				C78262AE228AB2A000C5C05E /* Template */,
 				C71439522269CD7F008D15C6 /* UserConfigurationTool */,
 				C71439512269CD7F008D15C6 /* Products */,
@@ -143,6 +142,7 @@
 				C714397A226D67F4008D15C6 /* Model */,
 				C7BD9A21227597D800CA3351 /* Config */,
 				C7BD99C322728EDE00CA3351 /* thrid-party */,
+				C7F4DE732296948F00598ECF /* UserConfigurationToolDocument.png */,
 				C71439592269CD80008D15C6 /* Assets.xcassets */,
 				C714395B2269CD80008D15C6 /* Main.storyboard */,
 				C714395E2269CD80008D15C6 /* Info.plist */,
@@ -334,11 +334,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7F4DE742296949000598ECF /* UserConfigurationToolDocument.png in Resources */,
 				C7BD9A25227597D800CA3351 /* DefaultConfig.plist in Resources */,
 				C78262B4228AB2A100C5C05E /* MRL.plist in Resources */,
 				C7BD9A24227597D800CA3351 /* ConfigDescription.plist in Resources */,
 				C78262B2228AB2A100C5C05E /* VPN.plist in Resources */,
-				C7F4DE702296851200598ECF /* icons8-big.png in Resources */,
 				C714395A2269CD80008D15C6 /* Assets.xcassets in Resources */,
 				C78262B3228AB2A100C5C05E /* Config.plist in Resources */,
 				C714395D2269CD80008D15C6 /* Main.storyboard in Resources */,

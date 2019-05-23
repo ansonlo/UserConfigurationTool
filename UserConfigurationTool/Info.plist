@@ -12,7 +12,11 @@
 				<string>mrlPlist</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>icons8-big</string>
+			<string>UserConfigurationToolDocument</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/x-mrlPlist</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MRLPlist Type</string>
 			<key>CFBundleTypeRole</key>
@@ -22,7 +26,6 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.gzmiracle.UserConfigurationTool.mrlPlist</string>
-				<string>public.text</string>
 			</array>
 		</dict>
 		<dict>
@@ -31,16 +34,28 @@
 				<string>plist</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>icons8-big</string>
+			<string></string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/plain</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>Plist Type</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Default</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.text</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Document Type</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.data</string>
 			</array>
 		</dict>
 	</array>
@@ -74,11 +89,12 @@
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.text</string>
+				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>mrlPlist</string>
 			<key>UTTypeIconFile</key>
-			<string>icons8-big</string>
+			<string>UserConfigurationToolDocument</string>
 			<key>UTTypeIdentifier</key>
 			<string>com.gzmiracle.UserConfigurationTool.mrlPlist</string>
 			<key>UTTypeTagSpecification</key>
@@ -86,6 +102,10 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>mrlPlist</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>text/x-mrlPlist</string>
 				</array>
 			</dict>
 		</dict>
