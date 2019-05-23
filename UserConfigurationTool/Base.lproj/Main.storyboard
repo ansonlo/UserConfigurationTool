@@ -63,18 +63,18 @@
                                         <menuItem title="New" id="Was-JA-tGl">
                                             <menu key="submenu" id="uWd-oi-25n">
                                                 <items>
-                                                    <menuItem title="Plist" keyEquivalent="n" id="4R2-Ri-AyO" userLabel="Plist">
+                                                    <menuItem title="MrlPlist" keyEquivalent="n" id="4R2-Ri-AyO">
                                                         <connections>
                                                             <action selector="newDocument:" target="Ady-hI-5gd" id="U8L-qa-6Nd"/>
                                                         </connections>
                                                     </menuItem>
-                                                    <menuItem title="MrlPlist" id="xQQ-TR-rKw" userLabel="MrlPlist">
+                                                    <menuItem title="UserConfig" id="xQQ-TR-rKw">
                                                         <modifierMask key="keyEquivalentModifierMask"/>
                                                         <connections>
                                                             <action selector="newMrlPlist:" target="Ady-hI-5gd" id="yZX-87-pgH"/>
                                                         </connections>
                                                     </menuItem>
-                                                    <menuItem title="VPN" id="tYR-av-x43" userLabel="VPN">
+                                                    <menuItem title="VPN" id="tYR-av-x43">
                                                         <modifierMask key="keyEquivalentModifierMask"/>
                                                         <connections>
                                                             <action selector="newVpnPlist:" target="Ady-hI-5gd" id="zNb-l8-vFl"/>
@@ -689,7 +689,7 @@ CA
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
             <objects>
-                <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
+                <windowController id="B8D-0N-5wS" customClass="P_WindowController" sceneMemberID="viewController">
                     <window key="window" title="MRLPlist" allowsToolTipsWhenApplicationIsInactive="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -1119,7 +1119,6 @@ CA
                     </defaultToolbarItems>
                     <connections>
                         <outlet property="delegate" destination="XfG-lQ-9wD" id="L29-gM-ABJ"/>
-                        <outlet property="window" destination="IQv-IB-iLA" id="Duw-SY-jit"/>
                     </connections>
                 </toolbar>
                 <menu id="uOl-QW-3fO">

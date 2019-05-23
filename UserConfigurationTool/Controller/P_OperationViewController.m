@@ -39,6 +39,7 @@
     [super viewDidAppear];
     if (self.view.window.toolbar == nil) {
         self.view.window.toolbar = self.toolbar;
+        self.toolbar.window = self.view.window;
     }
 }
 
@@ -131,11 +132,7 @@
     }
 }
 - (IBAction)savePlistAction:(id)sender {
-    if (_savePlistUrl) {
-        [self __savePlistData:_savePlistUrl];
-    } else {
-        [self saveDocumentAs:sender];
-    }
+    [self __autoSaveTips:YES complete:nil];
 }
 
 #pragma mark - MENU
@@ -173,21 +170,7 @@
 
 - (void)saveDocumentAs:(id)sender
 {
-    NSSavePanel *panel = [NSSavePanel savePanel];
-    [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
-    [panel setNameFieldStringValue:[@"Untitle" stringByAppendingPathExtension:PlistGlobalConfig.encryptFileExtension]];
-    [panel setMessage:@"Choose the path to save the mrlPlist"];
-    [panel setAllowedFileTypes:@[@"mrlPlist"]];
-    [panel setExtensionHidden:NO];
-    [panel setCanCreateDirectories:YES];
-    [panel setAllowsOtherFileTypes:NO];
-    [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result){
-        if (result == NSModalResponseOK)
-        {
-            self.savePlistUrl = [panel URL];
-            [self savePlistAction:sender];
-        }
-    }];
+    [self __autoSaveAsTips:YES complete:nil];
 }
 
 #pragma mark - 搜索Action
@@ -233,6 +216,40 @@
     }];
 }
 
+-(void)autosavesInPlace:(void (^)(P_AutosavesCode code))completionHandler
+{
+    
+    NSString *fileName = [NSLocalizedString(@"Untitle", @"") stringByAppendingPathExtension:PlistGlobalConfig.encryptFileExtension];
+    if ([self.plistUrl.lastPathComponent isEqualToString:PlistGlobalConfig.encryptFileExtension]) {
+        fileName = self.plistUrl.lastPathComponent;
+    }
+    
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to save the changes made to the document “%@”?", @""), fileName]];
+    [alert setInformativeText:NSLocalizedString(@"You can revert to undo the changes since you last saved the document.", @"")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Save", @"")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Revert Changes", @"")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"")];
+    [alert setAlertStyle:NSAlertStyleWarning];
+    [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse returnCode) {
+        if (returnCode == NSAlertFirstButtonReturn) { /** save */
+            [self __autoSaveTips:NO complete:^(BOOL isCancel) {
+                if (completionHandler) {
+                    completionHandler(isCancel ? P_AutosavesCodeCancel : P_AutosavesCodeSave);
+                }
+            }];
+        } else if (returnCode == NSAlertSecondButtonReturn) {/** Revert Changes */
+            if (completionHandler) {
+                completionHandler(P_AutosavesCodeRevertChanges);
+            }
+        } else if (returnCode == NSAlertThirdButtonReturn) {/** Cancel */
+            if (completionHandler) {
+                completionHandler(P_AutosavesCodeCancel);
+            }
+        }
+    }];
+}
+
 #pragma mark - private
 
 - (void)__listPlistFile:(NSString *)appPath
@@ -249,6 +266,7 @@
 {
     _plistUrl = nil;
     _savePlistUrl = nil;
+    _isEdited = NO;
     P_Data *p = [P_Data rootWithPlistUrl:plistUrl];
     if (p) {
         _plistUrl = plistUrl;
@@ -270,7 +288,7 @@
     }
 }
 
-- (void)__savePlistData:(NSURL *)plistUrl
+- (void)__savePlistData:(NSURL *)plistUrl tips:(BOOL)tips
 {
     P_Data *root = self.root;
     
@@ -280,10 +298,49 @@
     
     if (success) {
         _plistUrl = plistUrl;
-        [self p_showAlertViewWith:NSLocalizedString(@"save plist success!", @"")];
+        _isEdited = NO;
+        if (tips) {
+            [self p_showAlertViewWith:NSLocalizedString(@"save plist success!", @"")];
+        }
     } else {
-        [self p_showAlertViewWith:NSLocalizedString(@"save plist fail!", @"")];
+        if (tips) {
+            [self p_showAlertViewWith:NSLocalizedString(@"save plist fail!", @"")];
+        }
     }
+}
+
+- (void)__autoSaveTips:(BOOL)tips complete:(void (^ __nullable)(BOOL isCancel))complete
+{
+    if (_savePlistUrl) {
+        [self __savePlistData:_savePlistUrl tips:tips];
+        if (complete) {
+            complete(NO);
+        }
+    } else {
+        [self __autoSaveAsTips:tips complete:complete];
+    }
+}
+
+- (void)__autoSaveAsTips:(BOOL)tips complete:(void (^ __nullable)(BOOL isCancel))complete
+{
+    NSSavePanel *panel = [NSSavePanel savePanel];
+    [panel setDirectoryURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]]];
+    [panel setNameFieldStringValue:[@"Untitle" stringByAppendingPathExtension:PlistGlobalConfig.encryptFileExtension]];
+    [panel setMessage:@"Choose the path to save the mrlPlist"];
+    [panel setAllowedFileTypes:@[@"mrlPlist"]];
+    [panel setExtensionHidden:NO];
+    [panel setCanCreateDirectories:YES];
+    [panel setAllowsOtherFileTypes:NO];
+    [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result){
+        if (result == NSModalResponseOK)
+        {
+            self.savePlistUrl = [panel URL];
+            [self __savePlistData:self.savePlistUrl tips:tips];
+        }
+        if (complete) {
+            complete(result == NSModalResponseCancel);
+        }
+    }];
 }
 
 #pragma mark - NSOutlineViewDataSource
@@ -297,6 +354,7 @@
 {
     /** 重置搜索数据源 */
     self.textFinder.root = self.root;
+    _isEdited = YES;
 }
 
 /** 允许拖拽文件加载的后缀 */

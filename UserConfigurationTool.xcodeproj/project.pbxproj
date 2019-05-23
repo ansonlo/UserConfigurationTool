@@ -33,6 +33,7 @@
 		C7BD9A24227597D800CA3351 /* ConfigDescription.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7BD9A22227597D800CA3351 /* ConfigDescription.plist */; };
 		C7BD9A25227597D800CA3351 /* DefaultConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7BD9A23227597D800CA3351 /* DefaultConfig.plist */; };
 		C7BD9A282275A9D000CA3351 /* P_Config.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD9A272275A9D000CA3351 /* P_Config.m */; };
+		C7F4DE6E2296408C00598ECF /* P_WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F4DE6D2296408C00598ECF /* P_WindowController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +85,8 @@
 		C7BD9A23227597D800CA3351 /* DefaultConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultConfig.plist; sourceTree = "<group>"; };
 		C7BD9A262275A9D000CA3351 /* P_Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_Config.h; sourceTree = "<group>"; };
 		C7BD9A272275A9D000CA3351 /* P_Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_Config.m; sourceTree = "<group>"; };
+		C7F4DE6C2296408C00598ECF /* P_WindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P_WindowController.h; sourceTree = "<group>"; };
+		C7F4DE6D2296408C00598ECF /* P_WindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P_WindowController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +135,7 @@
 				C714397E226D6919008D15C6 /* Header */,
 				C71439C4226FF6F6008D15C6 /* Category */,
 				C7143979226D67E7008D15C6 /* Controller */,
+				C7F4DE6B2296406F00598ECF /* Window */,
 				C71439AC226EF0F8008D15C6 /* View */,
 				C714397A226D67F4008D15C6 /* Model */,
 				C7BD9A21227597D800CA3351 /* Config */,
@@ -256,6 +260,15 @@
 			path = Config;
 			sourceTree = "<group>";
 		};
+		C7F4DE6B2296406F00598ECF /* Window */ = {
+			isa = PBXGroup;
+			children = (
+				C7F4DE6C2296408C00598ECF /* P_WindowController.h */,
+				C7F4DE6D2296408C00598ECF /* P_WindowController.m */,
+			);
+			path = Window;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -348,6 +361,7 @@
 				C71439B9226EFCAE008D15C6 /* P_PropertyListPopUpButtonCellView.m in Sources */,
 				C7BD9A282275A9D000CA3351 /* P_Config.m in Sources */,
 				C71439C0226F06EE008D15C6 /* P_PropertyListDatePicker.mm in Sources */,
+				C7F4DE6E2296408C00598ECF /* P_WindowController.m in Sources */,
 				C785B51A229247AA0072682A /* P_TextFinder.m in Sources */,
 				C71439C3226F0740008D15C6 /* P_PropertyListPopUpButtonCell.m in Sources */,
 				C71439552269CD7F008D15C6 /* AppDelegate.m in Sources */,

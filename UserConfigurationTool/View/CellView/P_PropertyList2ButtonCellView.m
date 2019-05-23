@@ -49,7 +49,7 @@
 {
     [super prepareForReuse];
     
-    [self p_setShowsControlButtons:NO];
+//    [self p_setShowsControlButtons:NO];
     self.config = nil;
 }
 
@@ -133,8 +133,17 @@
     NSComboBox *comboBox = notification.object;
     if (comboBox.indexOfSelectedItem > -1) {
         //        NSLog(@"config:%@", [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem].data);
-        
-        [self comboBoxDidEndEditing:comboBox config:[self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem]];
+        P_Config *config = [self.config.childDatas objectAtIndex:comboBox.indexOfSelectedItem];
+        /** 需要延迟执行，因为这里仅改变了indexOfSelectedItem，而comboBox.stringValue仍未发送改变。 */
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            BOOL isContinue = YES;
+            if ([self.delegate respondsToSelector:@selector(p_propertyListCell:isValidObject:)]) {
+                isContinue = [self.delegate p_propertyListCell:self isValidObject:config.key];
+            }
+            if (isContinue) {
+                [self comboBoxDidEndEditing:comboBox config:config];
+            }
+        });
     }
 }
 

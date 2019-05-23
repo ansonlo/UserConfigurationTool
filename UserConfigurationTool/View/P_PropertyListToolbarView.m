@@ -10,8 +10,6 @@
 
 @interface P_PropertyListToolbarView ()
 
-@property (weak) IBOutlet NSWindow *window;
-
 @end
 
 

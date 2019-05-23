@@ -14,6 +14,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSUInteger, P_AutosavesCode) {
+    P_AutosavesCodeSave,
+    P_AutosavesCodeRevertChanges,
+    P_AutosavesCodeCancel,
+};
+
 @interface P_OperationViewController : NSViewController <NSOutlineViewDelegate, NSOutlineViewDataSource, P_PropertyListOutlineViewDelegate, P_PropertyListToolbarViewDelegate>
 
 @property (weak) IBOutlet P_PropertyListOutlineView *outlineView;
@@ -24,9 +30,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) P_Data *root;
 @property (nonatomic, readonly) NSURL *plistUrl;
+/** 是否编辑过 */
+@property (nonatomic, readonly) BOOL isEdited;
 
 -(void)p_showAlertViewWith:(NSString *)InformativeText;
 -(void)p_showAlertViewWith:(NSString *)InformativeText completionHandler:(void (^ __nullable)(void))handler;
+
+-(void)autosavesInPlace:(void (^)(P_AutosavesCode code))completionHandler;
 
 @end
 

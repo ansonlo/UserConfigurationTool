@@ -19,7 +19,7 @@
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-    [self p_setShowsControlButtons:NO];
+//    [self p_setShowsControlButtons:NO];
 }
 
 - (void)p_setControlWithBoolean:(BOOL)boolean
