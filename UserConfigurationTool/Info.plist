@@ -4,6 +4,46 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>mrlPlist</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>icons8-big</string>
+			<key>CFBundleTypeName</key>
+			<string>MRLPlist Type</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.gzmiracle.UserConfigurationTool.mrlPlist</string>
+				<string>public.text</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>plist</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>icons8-big</string>
+			<key>CFBundleTypeName</key>
+			<string>Plist Type</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.text</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
@@ -28,37 +68,27 @@
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>aaaa</key>
-	<date>2019-04-24T03:14:35Z</date>
-	<key>bb</key>
-	<true/>
-	<key>bb - 2</key>
-	<true/>
-	<key>bb - 3</key>
-	<true/>
-	<key>bb - 4</key>
-	<true/>
-	<key>bb - 5</key>
-	<true/>
-	<key>bb - 6</key>
+	<key>UTExportedTypeDeclarations</key>
 	<array>
-		<string>0</string>
-		<string>1</string>
-		<string>2</string>
-		<string>3</string>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>mrlPlist</string>
+			<key>UTTypeIconFile</key>
+			<string>icons8-big</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.gzmiracle.UserConfigurationTool.mrlPlist</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mrlPlist</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
-	<key>nnn</key>
-	<integer>122131</integer>
-	<key>ccc</key>
-	<dict>
-		<key>hhh</key>
-		<array>
-			<date>2019-04-24T06:50:53Z</date>
-		</array>
-	</dict>
-	<key>testS
-aaa</key>
-	<string>ppp
-123</string>
 </dict>
 </plist>

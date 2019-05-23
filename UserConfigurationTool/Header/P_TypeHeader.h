@@ -11,6 +11,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+
+
 struct PlistGlobalConfigType {
     /** 允许解析的文件后缀 bmp,jpg,xxxx */
     NSString *allowedFileTypes;

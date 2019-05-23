@@ -8,6 +8,10 @@
 
 #import "AppDelegate.h"
 
+NSNotificationName NSApplicationOpenUrls = @"NSApplicationOpenUrls";
+
+NSString * const NSApplicationOpenUrlsKey = @"NSApplicationOpenUrlsKey";
+
 @interface AppDelegate ()
 
 @end
@@ -26,6 +30,11 @@
 - (BOOL) applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender
 {
     return true;
+}
+
+- (void)application:(NSApplication *)application openURLs:(NSArray<NSURL *> *)urls
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSApplicationOpenUrls object:application userInfo:@{NSApplicationOpenUrlsKey:urls}];
 }
 
 

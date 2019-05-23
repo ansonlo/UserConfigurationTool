@@ -7,6 +7,7 @@
 //
 
 #import "P_OperationViewController.h"
+#import "AppDelegate.h"
 
 #import "P_TypeHeader.h"
 #import "P_Data.h"
@@ -26,6 +27,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationOpenURLs:) name:NSApplicationOpenUrls object:nil];
     
     /** search */
     self.textFinder = [[P_TextFinder alloc] initWithOutLineView:self.outlineView];
@@ -50,9 +53,21 @@
     // Update the view, if already loaded.
 }
 
-- (NSString *)searchString
+#pragma mark - NSApplicationOpenUrls
+- (void)applicationOpenURLs:(NSNotification *)notification
 {
-    return @"";
+    NSArray<NSURL *> *urls = notification.userInfo[NSApplicationOpenUrlsKey];
+    NSURL *url = urls.firstObject;
+    if ([[PlistGlobalConfig.allowedFileTypes componentsSeparatedByString:@","] containsObject:url.pathExtension]) {
+        [self __loadPlistData:url];
+    } else {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Failed to open file '%@'. ",@""), url.lastPathComponent]];
+        [alert setInformativeText:NSLocalizedString(@"The file may have been stored with a different encoding, or it may not be a mrlPlist file. ",@"")];
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", @"")];
+        [alert setAlertStyle:NSAlertStyleWarning];
+        [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
+    }
 }
 
 #pragma mark - P_PropertyListToolbarViewDelegate

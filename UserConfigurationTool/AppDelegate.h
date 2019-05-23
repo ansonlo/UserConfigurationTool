@@ -8,6 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+APPKIT_EXTERN NSNotificationName NSApplicationOpenUrls;
+APPKIT_EXTERN NSString * const NSApplicationOpenUrlsKey; // NSArray<NSURL *> *
+
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
 
