@@ -40,6 +40,8 @@
 			<string>主界面我的</string>
 			<key>HomeView_Subviews_AppSample_Title</key>
 			<string>主界面工作</string>
+			<key>HomeView_Subviews_AppSampleWeb_Title</key>
+			<string>主界面工作</string>
 			<key>HomeView_Subviews_OAMailCenter_Title</key>
 			<string>主界面应用</string>
 			<key>HomeView_Subviews_ZhongHeCenter_Title</key>
@@ -183,6 +185,20 @@
 			<string>&quot;Publicfree&quot; 表示使用 融云的免费服务器Demo; &quot;Commercialcharges&quot; ： https://www.rongcloud.cn/docs/server_rtc.html#get_rtc_token 获取token.</string>
 			<key>MicroApp_BatchSet_NoNewTag_AfterDays</key>
 			<string> 默认值是 0 ；当默认值为0时，则不做更新保持现状,配置项值 大于0 并且 当前时间对比消息时间大于该配置项值;对工作助手类型微应用的消息列表数据，根据设置的定时天数，对其批量进行“已读”设置</string>
+			<key>MediaChatRoomMaxUserCount</key>
+			<string>房间最大人数</string>
+			<key>MediaChatWaitingPartnerJoinOverSecond</key>
+			<string>接收方进入房间后，等待X秒对方也没有进来</string>
+			<key>MediaChatCalleeNoAcceptOverSecond</key>
+			<string>接收方等待超过X秒</string>
+			<key>MediaChatCallerTotalWaitSecond</key>
+			<string>发起方主动挂断</string>
+			<key>MediaChatCallerWaitingTipsShowIntervalSecond</key>
+			<string>发起方每等待X秒</string>
+			<key>Server_SettingInfo_URL</key>
+			<string>用于使用网络来设置服务器信息</string>
+			<key>UseSSLSocketConnect</key>
+			<string> “1” 就使用 listServer 获取到的json结果的 message 节点里的 sslSocketport 链接 , 否则使用 socketPort 链接。</string>
 		</dict>
 		<key>Custom_Key(自定义属性)</key>
 		<dict>
@@ -198,8 +214,8 @@
 			<string>登录页面的头像Logo，为企业Logo</string>
 			<key>LoginIdPrefix</key>
 			<string>登录id前缀，不计算在登录id上。仅为登录业务参数-登录id附加前缀</string>
-			<key>UseSSLSocketConnect</key>
-			<string> “1” 就使用 listServer 获取到的json结果的 message 节点里的 sslSocketport 链接 , 否则使用 socketPort 链接。</string>
+			<key>LoginPassword</key>
+			<string>登陆的固定密码</string>
 		</dict>
 		<key>Private_Key(私有属性)</key>
 		<dict/>

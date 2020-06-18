@@ -30,6 +30,8 @@
 		<string>我的</string>
 		<key>HomeView_Subviews_AppSample_Title</key>
 		<string>工作</string>
+		<key>HomeView_Subviews_AppSample_WebTitle</key>
+		<string>工作</string>
 		<key>HomeView_Subviews_OAMailCenter_Title</key>
 		<string>应用</string>
 		<key>HomeView_Subviews_ZhongHeCenter_Title</key>
@@ -149,6 +151,18 @@
 		<string>0</string>
 		<key>AppDownPageURL</key>
 		<string>http://im.mesystem.cn:8080/client/mobile.html</string>
+		<key>MediaChatCallerWaitingTipsShowIntervalSecond</key>
+		<integer>20</integer>
+		<key>MediaChatCallerTotalWaitSecond</key>
+		<integer>60</integer>
+		<key>MediaChatCalleeNoAcceptOverSecond</key>
+		<integer>70</integer>
+		<key>MediaChatWaitingPartnerJoinOverSecond</key>
+		<integer>20</integer>
+		<key>MediaChatRoomMaxUserCount</key>
+		<integer>9</integer>
+		<key>UseSSLSocketConnect</key>
+		<string>1</string>
 	</dict>
 	<key>Custom_Key</key>
 	<dict>
@@ -156,8 +170,6 @@
 		<true/>
 		<key>LoginIdPrefix</key>
 		<string></string>
-		<key>UseSSLSocketConnect</key>
-		<string>1</string>
 	</dict>
 	<key>Private_Key</key>
 	<dict/>
