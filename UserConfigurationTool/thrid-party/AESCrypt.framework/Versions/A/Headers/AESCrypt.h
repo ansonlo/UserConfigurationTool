@@ -27,6 +27,16 @@
 // 	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import <Cocoa/Cocoa.h>
+
+//! Project version number for AESCrypt.
+FOUNDATION_EXPORT double AESCryptVersionNumber;
+
+//! Project version string for AESCrypt.
+FOUNDATION_EXPORT const unsigned char AESCryptVersionString[];
+
+// In this header, you should import all the public headers of your framework using statements like #import <AESCrypt/PublicHeader.h>
+
 #import <Foundation/Foundation.h>
 #import<CommonCrypto/CommonCryptor.h>
 
