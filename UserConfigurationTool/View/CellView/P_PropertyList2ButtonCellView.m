@@ -53,6 +53,13 @@
     self.config = nil;
 }
 
+- (void)viewWillDraw
+{
+    [super viewWillDraw];
+    
+    [self p_setShowsControlButtons:!self.plusButton.hidden];
+}
+
 #pragma mark - overwrite
 - (NSArray<NSDraggingImageComponent *> *)draggingImageComponents
 {
